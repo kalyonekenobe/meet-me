@@ -1,19 +1,22 @@
 const fs= require('fs')
 const pathResolver = require("./path-resolver");
+const path = require("path");
 
-const routeResolver = {
+const resolver = {
   setupRoutes: app => {
-    fs.readdir(pathResolver.resolveFolderPath('../routes/'), (err, files) => {
-      if (err) {
+    const routesDirectory = pathResolver.specificFolder('../routes/')
+    fs.readdir(routesDirectory, (err, files) => {
+      if (!err) {
+        files.forEach(filename => {
+          const file = path.parse(pathResolver.specificFile(filename))
+          const router = require(pathResolver.routes(file.name))
+          app.use(router)
+        })
+      } else {
         console.log(err)
-        return
       }
-
-      files.forEach(file => {
-        app.use(require(pathResolver.routes(pathResolver.getFileByFilename(file).name)))
-      })
     })
   }
 }
 
-module.exports = routeResolver
+module.exports = resolver
