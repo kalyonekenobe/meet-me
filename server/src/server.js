@@ -1,5 +1,5 @@
-require('./tools/database')
 require('dotenv').config()
+require('./tools/database')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const routeResolver = require('./tools/route-resolver')
