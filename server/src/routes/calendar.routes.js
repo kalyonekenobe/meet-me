@@ -1,8 +1,8 @@
 const express = require("express");
 const {requiresAuth} = require("../tools/auth-middleware");
-const {calendar} = require("../controllers/calendar.controller");
+const {details} = require("../controllers/calendar.controller");
 const router = express.Router()
 
-router.get('/calendar', requiresAuth(), calendar)
+router.get('/calendar', requiresAuth(), details)
 
 module.exports = router
