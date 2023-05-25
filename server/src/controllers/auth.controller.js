@@ -32,7 +32,7 @@ const login = async (req, res) => {
     if (user && await bcrypt.compare(password, user.password)) {
 
       const tokenPayload = {
-        userId: user._id,      // Must be replaced by user id from database
+        userId: user._id,
         email: email,
         role: user.role
       }
@@ -46,7 +46,7 @@ const login = async (req, res) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
       })
 
-      res.redirect('/')
+      res.status(200).send('User was successfully logged in.')
     } else {
       res.status(401).send('Wrong email or password!')
     }
@@ -57,7 +57,7 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
   res.clearCookie(process.env.X_ACCESS_TOKEN)
-  res.redirect('sign-in')
+  res.status(200).send('User was successfully logged out.')
 }
 
 const register = async (req, res) => {
@@ -69,7 +69,7 @@ const register = async (req, res) => {
       res.status(422).send('Some of required fields are empty!')
     }
 
-    const existingUser = await User.findOne({ email })        // Must be replaced with request to database
+    const existingUser = await User.findOne({ email })
 
     if (existingUser) {
       res.status(409).send('User with such email already exists! Please, choose another email.')
@@ -86,7 +86,7 @@ const register = async (req, res) => {
       dateOfBirth: dateOfBirth
     })
 
-    res.redirect('sign-in')
+    res.status(200).send('User was successfully registered.')
 
   } catch (error) {
     console.log(error)

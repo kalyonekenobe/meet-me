@@ -5,6 +5,6 @@ const connectionString = 'mongodb+srv://kalyonekenobe:57FqeDmAnytJYoKT@meetme.ts
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(res => console.log('Connected to database')).catch(error => console.log(error))
+}).then(() => console.log('Connected to database')).catch(error => console.log(error))
 
 module.exports = mongoose
