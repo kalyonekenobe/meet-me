@@ -1,16 +1,18 @@
 const jwt = require('jsonwebtoken')
+const User = require("../models/user.model");
 
 const requiresAuth = (roles = []) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const token = req.body.token || req.query.token || res.getHeader(process.env.X_ACCESS_TOKEN.toLowerCase()) || req.cookies[process.env.X_ACCESS_TOKEN]
     const responsePayload = {
       error: undefined
     }
 
     try {
-      const tokenPayload = jwt.verify(token, process.env.JWT_SECRET)
+      const { email } = jwt.verify(token, process.env.JWT_SECRET)
+      const user = await User.findOne({ email })
 
-      if (roles.length > 0 && !roles.includes(tokenPayload.role)) {
+      if (roles.length > 0 && !roles.includes(user.role)) {
         if (req.method !== 'GET') {
           responsePayload.error = 'Access rights are missing.'
           return res.status(403).json(responsePayload)
@@ -18,7 +20,7 @@ const requiresAuth = (roles = []) => {
         return res.reload()
       }
 
-      req.user = tokenPayload
+      req.user = user
     } catch (error) {
       if (req.method !== 'GET') {
         responsePayload.error = 'X-Access-Token is invalid or missing! Unauthorized user.'

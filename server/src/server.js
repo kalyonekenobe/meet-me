@@ -3,10 +3,13 @@ require('./tools/database')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const routeResolver = require('./tools/route-resolver')
+const appLocals = require('./tools/app-locals')
 const express = require('express')
 const app = express()
 
 const port = process.env.PORT || 8000
+
+app.locals = appLocals
 
 app.set("view engine", "ejs")
 
