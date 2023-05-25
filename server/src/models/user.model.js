@@ -29,7 +29,7 @@ const userSchema = new Schema({
   },
   profilePic: {
     type: String,
-    default: 'default.jpg',
+    default: 'default-user-image.jpg',
   },
   bio: {
     type: String,
