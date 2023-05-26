@@ -7,7 +7,6 @@ const fileUpload = require('express-fileupload')
 const AppRouter = require('./tools/app-router')
 const appLocals = require('./tools/app-locals')
 const express = require('express')
-
 const app = express()
 const port = process.env.PORT || 8000
 const router = new AppRouter(app)
@@ -20,6 +19,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
+
 app.use(fileUpload({
   createParentPath: true
 }))
