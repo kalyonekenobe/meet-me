@@ -1,5 +1,6 @@
 const pathResolver = require("../tools/path-resolver");
 const Chat = require("../models/chat.model");
+const {notFound} = require("../tools/not-found");
 
 const chats = async (req, res) => {
   try {
@@ -13,7 +14,7 @@ const chats = async (req, res) => {
     console.log(err)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 const details = async (req, res) => {
@@ -32,7 +33,7 @@ const details = async (req, res) => {
     console.log(err)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 module.exports = { chats, details }

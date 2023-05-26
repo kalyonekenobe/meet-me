@@ -1,5 +1,6 @@
 const pathResolver = require("../tools/path-resolver");
 const Calendar = require("../models/calendar.model");
+const {notFound} = require("../tools/not-found");
 
 const details = async (req, res) => {
   try {
@@ -15,7 +16,7 @@ const details = async (req, res) => {
     console.log(error)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 module.exports = { details }

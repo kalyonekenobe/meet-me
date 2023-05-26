@@ -1,5 +1,45 @@
 <%- include(`${partials}/root-layout-header`, { title: 'Not Found' }) %>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+
+  .logo {
+    font-size: 48px;
+    color: #333;
+  }
+
+  .message {
+    font-size: 24px;
+    color: #777;
+    margin: 20px 0;
+  }
+
+  .link {
+    font-size: 18px;
+    color: #555;
+    text-decoration: none;
+  }
+
+  .link:hover {
+    color: #333;
+  }
+</style>
 <div class="container">
-    Not found
+  <div class="logo">404</div>
+  <div class="message">Oops! The page you're looking for doesn't exist.</div>
+  <a class="link" href="/">Go back to the homepage</a>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

@@ -1,13 +1,15 @@
 const fs= require('fs')
 const pathResolver = require("./path-resolver");
 const path = require("path");
+const {notFound} = require("./not-found");
 
 class AppRouter {
 
   static #routesDirectory = pathResolver.specificFolder('../routes/')
+  #app
 
   constructor(app) {
-    this.app = app
+    this.#app = app
   }
 
   setupRoutes() {
@@ -16,8 +18,10 @@ class AppRouter {
         files.forEach(filename => {
           const file = path.parse(pathResolver.specificFile(filename))
           const router = require(pathResolver.routes(file.name))
-          this.app.use(router)
+          this.#app.use(router)
         })
+
+        this.#app.get('*', notFound)
       } else {
         console.log(err)
       }
@@ -25,7 +29,7 @@ class AppRouter {
   }
 
   setupRequestsSettings() {
-    this.app.use((req, res, next) => {
+    this.#app.use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       res.setHeader('Access-Control-Allow-Headers', '*');

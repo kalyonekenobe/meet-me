@@ -1,5 +1,6 @@
 const pathResolver = require("../tools/path-resolver");
 const User = require("../models/user.model");
+const {notFound} = require("../tools/not-found");
 
 const profile = async (req, res) => {
   const payload = {
@@ -12,7 +13,7 @@ const profile = async (req, res) => {
   }
 
   console.log('Cannot show profile page because req.user is undefined!')
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 const details = async (req, res) => {
@@ -31,7 +32,7 @@ const details = async (req, res) => {
     console.log(error)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 module.exports = { profile, details }

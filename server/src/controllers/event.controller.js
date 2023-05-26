@@ -1,11 +1,14 @@
 const pathResolver = require("../tools/path-resolver");
 const Event = require('../models/event.model');
+const {notFound} = require("../tools/not-found");
+const crypto = require('crypto')
+const fs = require('fs')
 
 const events = async (req, res) => {
   try {
     const payload = {
       title: `Events`,
-      events: await Event.find()
+      events: await Event.find().populate('organizer')
     }
 
     return res.render(pathResolver.views('event/list'), payload)
@@ -13,7 +16,7 @@ const events = async (req, res) => {
     console.log(err)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 const details = async (req, res) => {
@@ -21,7 +24,7 @@ const details = async (req, res) => {
     const { id } = req.params
     const payload = {
       title: `Event details`,
-      event: await Event.findById(id)
+      event: await Event.findById(id).populate('organizer')
     }
 
     if (payload.event) {
@@ -32,7 +35,7 @@ const details = async (req, res) => {
     console.log(err)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 const create = (req, res) => {
@@ -46,7 +49,7 @@ const create = (req, res) => {
     console.log(err)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 const edit = async (req, res) => {
@@ -64,15 +67,34 @@ const edit = async (req, res) => {
     console.log(err)
   }
 
-  return res.render(pathResolver.views('defaults/not-found'))
+  return notFound(req, res)
 }
 
 const add = async (req, res) => {
   try {
-    const { event } = req.body
+    const event = req.body
+    const imageUploads = []
+
+    if (req.files.image) {
+      const imageName = `${crypto.randomUUID()}.${req.files.image.name.split('.').pop()}`
+      const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
+      event.image = imageName
+      imageUploads.push(req.files.image.mv(imagePath))
+    }
+
+    if (req.files.additionalImages) {
+      event.additionalImages = req.files.additionalImages.map(image => {
+        const imageName = `${crypto.randomUUID()}.${image.name.split('.').pop()}`
+        const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
+        imageUploads.push(image.mv(imagePath))
+        return imageName
+      })
+    }
+
     const createdEvent = await Event.create(event)
 
     if (createdEvent) {
+      await Promise.all(imageUploads)
       return res.status(200).json({ message: 'Event was successfully created!' })
     }
   } catch (err) {
@@ -84,10 +106,35 @@ const add = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { event } = req.body
-    const updatedEvent = await Event.updateOne(event)
+    const { id } = req.params
+    const event = req.body
+    const imageUploads = []
+
+    if (req.files.image) {
+      const imageName = `${crypto.randomUUID()}.${req.files.image.name.split('.').pop()}`
+      const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
+      if (!fs.existsSync(imagePath)) {
+        event.image = imageName
+        imageUploads.push(req.files.image.mv(imagePath))
+      }
+    }
+
+    if (req.files.additionalImages) {
+      event.additionalImages = req.files.additionalImages.map(image => {
+        const imageName = `${crypto.randomUUID()}.${image.name.split('.').pop()}`
+        const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
+        if (!fs.existsSync(imagePath)) {
+          imageUploads.push(image.mv(imagePath))
+          return imageName
+        }
+        return image.name
+      })
+    }
+
+    const updatedEvent = await Event.updateOne({ _id: id}, event)
 
     if (updatedEvent) {
+      await Promise.all(imageUploads)
       return res.status(200).json({ message: 'Event was successfully updated!' })
     }
 

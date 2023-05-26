@@ -22,6 +22,9 @@ const eventSchema = new Schema({
     type: String,
     required: true,
   },
+  additionalImages: [{
+    type: String
+  }],
   organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
