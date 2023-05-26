@@ -1,5 +1,7 @@
 <%- include(`${partials}/root-layout-header`) %>
 <div class="container">
-
+    <% chats.forEach(chat => { %>
+        <%= chat %>
+    <% }) %>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>
