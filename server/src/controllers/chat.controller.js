@@ -4,25 +4,34 @@ const Chat = require("../models/chat.model");
 const chats = async (req, res) => {
   try {
     const payload = {
-      title: "Hello, world!",
+      title: `Chats`,
       chats: await Chat.find()
     }
-    res.render(pathResolver.views('chat/list'), payload)
+
+    return res.render(pathResolver.views('chat/list'), payload)
   } catch (err) {
     console.log(err)
+    return res.render(pathResolver.views('defaults/not-found'))
   }
 }
 
 const details = async (req, res) => {
   try {
-    const { id } = req.query
+    const { id } = req.params
     const payload = {
-      title: "Hello, world!",
-      chat: await Chat.findById({ id })
+      title: `Chat`,
+      chat: await Chat.findById(id)
     }
-    res.render(pathResolver.views('chat/details'), payload)
+
+    if (payload.chat) {
+      payload.title = `Chat: '${payload.chat.event.title}'`
+      return res.render(pathResolver.views('chat/details'), payload)
+    }
+
+    return res.render(pathResolver.views('defaults/not-found'))
   } catch (err) {
     console.log(err)
+    return res.render(pathResolver.views('defaults/not-found'))
   }
 }
 

@@ -8,14 +8,16 @@ const signIn = (req, res) => {
   const payload = {
     title: "Sign In",
   }
-  res.render(pathResolver.views('auth/sign-in'), payload)
+
+  return res.render(pathResolver.views('auth/sign-in'), payload)
 }
 
 const signUp = (req, res) => {
   const payload = {
     title: "Sign Up",
   }
-  res.render(pathResolver.views('auth/sign-up'), payload)
+
+  return res.render(pathResolver.views('auth/sign-up'), payload)
 }
 
 const login = async (req, res) => {
@@ -24,7 +26,7 @@ const login = async (req, res) => {
     const fieldsAreNotEmpty = email && password
 
     if (!fieldsAreNotEmpty) {
-      res.status(422).send('Some of required fields are empty!')
+      return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
     const user = await User.findOne({ email })
@@ -46,18 +48,19 @@ const login = async (req, res) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
       })
 
-      res.status(200).send('User was successfully logged in.')
+      return res.status(200).json({ message: 'User was successfully logged in.' })
     } else {
-      res.status(401).send('Wrong email or password!')
+      return res.status(401).json({ error: 'Wrong email or password!' })
     }
   } catch (error) {
     console.log(error)
+    return res.status(400).json({ error: 'Bad Request' })
   }
 }
 
 const logout = (req, res) => {
   res.clearCookie(process.env.X_ACCESS_TOKEN)
-  res.status(200).send('User was successfully logged out.')
+  return res.status(200).json({ message: 'User was successfully logged out.' })
 }
 
 const register = async (req, res) => {
@@ -66,13 +69,13 @@ const register = async (req, res) => {
     const fieldsAreNotEmpty = firstName && lastName && email && password
 
     if (!fieldsAreNotEmpty) {
-      res.status(422).send('Some of required fields are empty!')
+      return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
     const existingUser = await User.findOne({ email })
 
     if (existingUser) {
-      res.status(409).send('User with such email already exists! Please, choose another email.')
+      return res.status(409).json({ error: 'User with such email already exists! Please, choose another email.' })
     }
 
     const encryptedPassword = await bcrypt.hash(password, 10)
@@ -86,10 +89,11 @@ const register = async (req, res) => {
       dateOfBirth: dateOfBirth
     })
 
-    res.status(200).send('User was successfully registered.')
+    return res.status(200).json({ message: 'User was successfully registered.' })
 
   } catch (error) {
     console.log(error)
+    return res.status(400).json({ error: 'Bad request' })
   }
 }
 

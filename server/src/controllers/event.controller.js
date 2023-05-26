@@ -1,52 +1,69 @@
 const pathResolver = require("../tools/path-resolver");
-const Event = require('../models/event.model')
+const Event = require('../models/event.model');
 
 const events = async (req, res) => {
   try {
     const payload = {
-      title: "Hello, world!",
+      title: `Events`,
       events: await Event.find()
     }
-    res.render(pathResolver.views('event/list'), payload)
+
+    return res.render(pathResolver.views('event/list'), payload)
   } catch (err) {
     console.log(err)
+    return res.render(pathResolver.views('defaults/not-found'))
   }
 }
 
 const details = async (req, res) => {
   try {
-    const { id } = req.query
+    const { id } = req.params
     const payload = {
-      title: "Hello, world!",
-      event: await Event.findById({ id })
+      title: `Event details`,
+      event: await Event.findById(id)
     }
-    res.render(pathResolver.views('event/details'), payload)
+
+    if (payload.event) {
+      payload.title = payload.event.title
+      return res.render(pathResolver.views('event/details'), payload)
+    }
+
+    return res.render(pathResolver.views('defaults/not-found'))
   } catch (err) {
     console.log(err)
+    return res.render(pathResolver.views('defaults/not-found'))
   }
 }
 
 const create = (req, res) => {
   try {
     const payload = {
-      title: "Hello, world!",
+      title: `Create new event`,
     }
-    res.render(pathResolver.views('event/create'), payload)
+
+    return res.render(pathResolver.views('event/create'), payload)
   } catch (err) {
     console.log(err)
+    return res.render(pathResolver.views('defaults/not-found'))
   }
 }
 
 const edit = async (req, res) => {
   try {
-    const { id } = req.query
+    const { id } = req.params
     const payload = {
-      title: "Hello, world!",
-      event: await Event.findById({ id })
+      title: `Edit event`,
+      event: await Event.findById(id)
     }
-    res.render(pathResolver.views('event/edit'), payload)
+
+    if (payload.event) {
+      return res.render(pathResolver.views('event/edit'), payload)
+    }
+
+    return res.render(pathResolver.views('defaults/not-found'))
   } catch (err) {
     console.log(err)
+    return res.render(pathResolver.views('defaults/not-found'))
   }
 }
 
@@ -56,12 +73,13 @@ const add = async (req, res) => {
     const createdEvent = await Event.create(event)
 
     if (createdEvent) {
-      res.status(200).json({ message: 'Event was successfully created!' })
+      return res.status(200).json({ message: 'Event was successfully created!' })
     }
 
+    return res.status(400).json({ error: 'Event creation error!' })
   } catch (err) {
-    res.status(400).json({ error: 'Event creation error!' })
     console.log(err)
+    return res.status(400).json({ error: 'Event creation error!' })
   }
 }
 
@@ -71,12 +89,13 @@ const update = async (req, res) => {
     const updatedEvent = await Event.updateOne(event)
 
     if (updatedEvent) {
-      res.status(200).json({ message: 'Event was successfully updated!' })
+      return res.status(200).json({ message: 'Event was successfully updated!' })
     }
 
+    return res.status(400).json({ error: 'Event updating error!' })
   } catch (err) {
-    res.status(400).json({ error: 'Event updating error!' })
     console.log(err)
+    return res.status(400).json({ error: 'Event updating error!' })
   }
 }
 
