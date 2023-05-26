@@ -77,7 +77,7 @@ const add = async (req, res) => {
 
     if (req.files.image) {
       const imageName = `${crypto.randomUUID()}.${req.files.image.name.split('.').pop()}`
-      const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
+      const imagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
       event.image = imageName
       imageUploads.push(req.files.image.mv(imagePath))
     }
@@ -85,7 +85,7 @@ const add = async (req, res) => {
     if (req.files.additionalImages) {
       event.additionalImages = req.files.additionalImages.map(image => {
         const imageName = `${crypto.randomUUID()}.${image.name.split('.').pop()}`
-        const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
+        const imagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
         imageUploads.push(image.mv(imagePath))
         return imageName
       })
@@ -112,19 +112,23 @@ const update = async (req, res) => {
 
     if (req.files.image) {
       const imageName = `${crypto.randomUUID()}.${req.files.image.name.split('.').pop()}`
-      const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
-      if (!fs.existsSync(imagePath)) {
+      const oldImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${req.files.image.name}`)
+      const newImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
+
+      if (!fs.existsSync(oldImagePath)) {
         event.image = imageName
-        imageUploads.push(req.files.image.mv(imagePath))
+        imageUploads.push(req.files.image.mv(newImagePath))
       }
     }
 
     if (req.files.additionalImages) {
       event.additionalImages = req.files.additionalImages.map(image => {
         const imageName = `${crypto.randomUUID()}.${image.name.split('.').pop()}`
-        const imagePath = pathResolver.specificFile(`./public/uploads/images/events/${imageName}`)
-        if (!fs.existsSync(imagePath)) {
-          imageUploads.push(image.mv(imagePath))
+        const oldImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${image.name}`)
+        const newImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
+
+        if (!fs.existsSync(oldImagePath)) {
+          imageUploads.push(image.mv(newImagePath))
           return imageName
         }
         return image.name

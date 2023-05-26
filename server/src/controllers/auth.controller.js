@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require("../models/user.model");
 const e = require("express");
+const crypto = require("crypto");
+const fs = require("fs");
 
 const signIn = (req, res) => {
   const payload = {
@@ -64,31 +66,37 @@ const logout = (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, dateOfBirth } = req.body
-    const fieldsAreNotEmpty = firstName && lastName && email && password
+    const user = req.body
+    const imageUploads = []
+    user.role = 'default-user'
+
+    const fieldsAreNotEmpty = user.firstName && user.lastName && user.email && user.password
 
     if (!fieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
-    const existingUser = await User.findOne({ email })
+    const existingUser = await User.findOne({ email: user.email })
 
     if (existingUser) {
       return res.status(409).json({ error: 'User with such email already exists! Please, choose another email.' })
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 10)
+    user.password = await bcrypt.hash(user.password, 10)
 
-    await User.create({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: encryptedPassword,
-      role: 'default-user',
-      dateOfBirth: dateOfBirth
-    })
+    if (req.files.profilePicture) {
+      const imageName = `${crypto.randomUUID()}.${req.files.profilePicture.name.split('.').pop()}`
+      const imagePath = pathResolver.specificFile(`../../public/uploads/images/users/${imageName}`)
+      user.profilePicture = imageName
+      imageUploads.push(req.files.profilePicture.mv(imagePath))
+    }
 
-    return res.status(200).json({ message: 'User was successfully registered.' })
+    const createdUser = await User.create(user)
+
+    if (createdUser) {
+      await Promise.all(imageUploads)
+      return res.status(200).json({ message: 'User was successfully registered.' })
+    }
   } catch (error) {
     console.log(error)
   }
