@@ -149,4 +149,20 @@ const update = async (req, res) => {
   return res.status(400).json({ error: 'Event updating error!' })
 }
 
-module.exports = { events, details, create, edit, add, update }
+const remove = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const deletedEvent = await Event.findByIdAndDelete(id)
+
+    if (deletedEvent) {
+      return res.status(200).json({ message: 'Event was successfully deleted.' })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+
+  return res.status(400).json({ error: 'Event removal error!' })
+}
+
+module.exports = { events, details, create, edit, add, update, remove }
