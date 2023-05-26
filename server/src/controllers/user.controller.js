@@ -27,12 +27,11 @@ const details = async (req, res) => {
       payload.title = `${payload.user.firstName} ${payload.user.lastName}`
       return res.render(pathResolver.views('user/details'), payload)
     }
-
-    return res.render(pathResolver.views('defaults/not-found'))
   } catch (error) {
     console.log(error)
-    return res.render(pathResolver.views('defaults/not-found'))
   }
+
+  return res.render(pathResolver.views('defaults/not-found'))
 }
 
 module.exports = { profile, details }

@@ -49,13 +49,12 @@ const login = async (req, res) => {
       })
 
       return res.status(200).json({ message: 'User was successfully logged in.' })
-    } else {
-      return res.status(401).json({ error: 'Wrong email or password!' })
     }
   } catch (error) {
     console.log(error)
-    return res.status(400).json({ error: 'Bad Request' })
   }
+
+  return res.status(401).json({ error: 'Wrong email or password!' })
 }
 
 const logout = (req, res) => {
@@ -90,11 +89,11 @@ const register = async (req, res) => {
     })
 
     return res.status(200).json({ message: 'User was successfully registered.' })
-
   } catch (error) {
     console.log(error)
-    return res.status(400).json({ error: 'Bad request' })
   }
+
+  return res.status(400).json({ error: 'Bad request' })
 }
 
 module.exports = { signIn, signUp, login, logout, register }

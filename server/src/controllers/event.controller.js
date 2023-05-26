@@ -11,8 +11,9 @@ const events = async (req, res) => {
     return res.render(pathResolver.views('event/list'), payload)
   } catch (err) {
     console.log(err)
-    return res.render(pathResolver.views('defaults/not-found'))
   }
+
+  return res.render(pathResolver.views('defaults/not-found'))
 }
 
 const details = async (req, res) => {
@@ -27,12 +28,11 @@ const details = async (req, res) => {
       payload.title = payload.event.title
       return res.render(pathResolver.views('event/details'), payload)
     }
-
-    return res.render(pathResolver.views('defaults/not-found'))
   } catch (err) {
     console.log(err)
-    return res.render(pathResolver.views('defaults/not-found'))
   }
+
+  return res.render(pathResolver.views('defaults/not-found'))
 }
 
 const create = (req, res) => {
@@ -44,8 +44,9 @@ const create = (req, res) => {
     return res.render(pathResolver.views('event/create'), payload)
   } catch (err) {
     console.log(err)
-    return res.render(pathResolver.views('defaults/not-found'))
   }
+
+  return res.render(pathResolver.views('defaults/not-found'))
 }
 
 const edit = async (req, res) => {
@@ -59,12 +60,11 @@ const edit = async (req, res) => {
     if (payload.event) {
       return res.render(pathResolver.views('event/edit'), payload)
     }
-
-    return res.render(pathResolver.views('defaults/not-found'))
   } catch (err) {
     console.log(err)
-    return res.render(pathResolver.views('defaults/not-found'))
   }
+
+  return res.render(pathResolver.views('defaults/not-found'))
 }
 
 const add = async (req, res) => {
@@ -75,12 +75,11 @@ const add = async (req, res) => {
     if (createdEvent) {
       return res.status(200).json({ message: 'Event was successfully created!' })
     }
-
-    return res.status(400).json({ error: 'Event creation error!' })
   } catch (err) {
     console.log(err)
-    return res.status(400).json({ error: 'Event creation error!' })
   }
+
+  return res.status(400).json({ error: 'Event creation error!' })
 }
 
 const update = async (req, res) => {
@@ -92,11 +91,11 @@ const update = async (req, res) => {
       return res.status(200).json({ message: 'Event was successfully updated!' })
     }
 
-    return res.status(400).json({ error: 'Event updating error!' })
   } catch (err) {
     console.log(err)
-    return res.status(400).json({ error: 'Event updating error!' })
   }
+
+  return res.status(400).json({ error: 'Event updating error!' })
 }
 
 module.exports = { events, details, create, edit, add, update }

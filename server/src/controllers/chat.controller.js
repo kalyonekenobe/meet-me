@@ -11,8 +11,9 @@ const chats = async (req, res) => {
     return res.render(pathResolver.views('chat/list'), payload)
   } catch (err) {
     console.log(err)
-    return res.render(pathResolver.views('defaults/not-found'))
   }
+
+  return res.render(pathResolver.views('defaults/not-found'))
 }
 
 const details = async (req, res) => {
@@ -27,12 +28,11 @@ const details = async (req, res) => {
       payload.title = `Chat: '${payload.chat.event.title}'`
       return res.render(pathResolver.views('chat/details'), payload)
     }
-
-    return res.render(pathResolver.views('defaults/not-found'))
   } catch (err) {
     console.log(err)
-    return res.render(pathResolver.views('defaults/not-found'))
   }
+
+  return res.render(pathResolver.views('defaults/not-found'))
 }
 
 module.exports = { chats, details }
