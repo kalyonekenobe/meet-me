@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Calendar = require("./calendar.model");
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -38,6 +39,26 @@ const userSchema = new Schema({
     type: String,
   },
 }, { timestamps: true })
+
+
+const onCreate = async user => {
+  try {
+    const existingCalendar = await Calendar.findOne({ user: user._id })
+
+    if (!existingCalendar) {
+      const calendar = {
+        user: user,
+        events: []
+      }
+
+      await Calendar.create(calendar)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+userSchema.post('save', onCreate)
 
 const User = mongoose.model('User', userSchema)
 
