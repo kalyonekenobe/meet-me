@@ -42,12 +42,12 @@ const onDeleteCascade = async next => {
   const { _id } = this._conditions
 
   try {
-    await Chat.deleteMany({ event: _id });
+    await Chat.deleteMany({ event: _id })
 
     await Calendar.updateMany(
       { events: _id },
       { $pull: { events: _id } }
-    );
+    )
 
     next();
   } catch (error) {
@@ -56,9 +56,24 @@ const onDeleteCascade = async next => {
   }
 }
 
-eventSchema.pre('findOneAndDelete', onDeleteCascade);
-eventSchema.pre('deleteMany', onDeleteCascade);
-eventSchema.pre('deleteOne', onDeleteCascade);
+const onCreate = async event => {
+  try {
+    const chat = {
+      event: event._id,
+      participants: [ event.organizer ],
+      messages: []
+    }
+    await Chat.create(chat)
+  } catch (error) {
+    console.error('Error creating event chat:', error)
+  }
+}
+
+eventSchema.pre('findOneAndDelete', onDeleteCascade)
+eventSchema.pre('deleteMany', onDeleteCascade)
+eventSchema.pre('deleteOne', onDeleteCascade)
+
+eventSchema.post('save', onCreate)
 
 const Event = mongoose.model('Event', eventSchema)
 
