@@ -36,6 +36,20 @@ const eventSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }],
+  joinRequests: [new Schema({
+    candidate: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    status: {
+      type: String,
+      default: 'pending'
+    },
+    message: {
+      type: String
+    }
+  }, { timestamps: true })]
 }, { timestamps: true })
 
 const onDeleteCascade = async next => {

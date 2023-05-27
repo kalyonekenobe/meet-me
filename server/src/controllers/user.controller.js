@@ -1,5 +1,6 @@
 const pathResolver = require("../tools/path-resolver");
 const User = require("../models/user.model");
+const Event = require("../models/event.model")
 const {notFound} = require("../tools/not-found");
 const crypto = require("crypto");
 const fs = require("fs");
@@ -92,4 +93,62 @@ const updateProfile = async (req, res) => {
   return res.status(400).json({ error: 'User profile updating error!' })
 }
 
-module.exports = { profile, details, editProfile, updateProfile }
+const joinRequests = async (req, res) => {
+  const payload = {
+    title: `My join requests`,
+    joinRequests: await Event.find({ organizer: req.user._id }).select('title joinRequests').populate('joinRequests')
+  }
+
+  if (req.user) {
+    return res.render(pathResolver.views('user/profile-join-requests'), payload)
+  }
+
+  console.log('Cannot show profile page because req.user is undefined!')
+  return notFound(req, res)
+}
+
+const processJoinRequest = async (req, res) => {
+  try {
+    const { id, action } = req.params
+    const validActions = ['accept', 'reject']
+
+    if (!validActions.includes(action)) {
+      return res.status(404).json({ error: 'Not found' })
+    }
+
+    const updatedEvent = await Event.findOneAndUpdate(
+      {
+        joinRequests: {
+          $elemMatch: {
+            _id: id,
+            status: 'pending'
+          }
+        },
+      },
+      {
+        $set: {
+          'joinRequests.$.status': action === 'accept' ? 'accepted' : 'rejected',
+        },
+      },
+      { new: true }
+    )
+
+    if (updatedEvent) {
+      const joinRequest = updatedEvent.joinRequests.find(request => request._id.toString() === id)
+      if (joinRequest?.status === 'accepted') {
+        const participantExists = !updatedEvent.participants.find(participant => participant._id.toString() === joinRequest.candidate._id.toString())
+        if (participantExists) {
+          updatedEvent.participants.push(joinRequest.candidate)
+          await updatedEvent.save()
+        }
+      }
+      return res.status(200).json({ message: `Join request was ${joinRequest?.status}` })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+
+  return res.status(400).json({ error: 'Cannot process join request!' })
+}
+
+module.exports = { profile, details, editProfile, updateProfile, joinRequests, processJoinRequest }

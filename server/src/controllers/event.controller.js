@@ -72,7 +72,7 @@ const edit = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const event = { ...req.body, organizer: req.user }
+    const event = { ...req.body, organizer: req.user, participants: [ req.user ] }
     const imageUploads = []
     const requiredFieldsAreNotEmpty = event.title && event.description && event.date && event.location && event.organizer
 
@@ -176,4 +176,37 @@ const remove = async (req, res) => {
   return res.status(400).json({ error: 'Event removal error!' })
 }
 
-module.exports = { events, details, create, edit, add, update, remove }
+const join = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { message } = req.body
+
+    const joinRequest = {
+      candidate: req.user,
+      message: message
+    }
+
+    const updatedEvent = await Event.findOneAndUpdate(
+      { _id: id,
+              $or: [
+                { 'joinRequests.candidate': { $ne: req.user._id } },
+                { 'joinRequests.candidate': { $eq: req.user._id }, 'joinRequests.status': { $nin: [ 'accepted', 'pending' ] } }
+              ]
+            },
+      { $addToSet: { joinRequests: joinRequest } },
+      { new: true }
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ error: 'Join request already exists or event was not found!' })
+    }
+
+    return res.status(200).json({ message: 'Join request was successfully sent!' })
+  } catch (err) {
+    console.log(err)
+  }
+
+  return res.status(400).json({ error: 'Join request error!' })
+}
+
+module.exports = { events, details, create, edit, add, update, remove, join }
