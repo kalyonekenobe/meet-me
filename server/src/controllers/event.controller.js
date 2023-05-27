@@ -38,7 +38,7 @@ const details = async (req, res) => {
   return notFound(req, res)
 }
 
-const create = (req, res) => {
+const create = async (req, res) => {
   try {
     const payload = {
       title: `Create new event`,
@@ -74,15 +74,20 @@ const add = async (req, res) => {
   try {
     const event = req.body
     const imageUploads = []
+    const requiredFieldsAreNotEmpty = event.title && event.description && event.date && event.location && event.organizer
 
-    if (req.files.image) {
+    if (!requiredFieldsAreNotEmpty) {
+      return res.status(422).json({ error: 'Some of required fields are empty!' })
+    }
+
+    if (req.files?.image) {
       const imageName = `${crypto.randomUUID()}.${req.files.image.name.split('.').pop()}`
       const imagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
       event.image = imageName
       imageUploads.push(req.files.image.mv(imagePath))
     }
 
-    if (req.files.additionalImages) {
+    if (req.files?.additionalImages) {
       event.additionalImages = req.files.additionalImages.map(image => {
         const imageName = `${crypto.randomUUID()}.${image.name.split('.').pop()}`
         const imagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
@@ -109,8 +114,13 @@ const update = async (req, res) => {
     const { id } = req.params
     const event = req.body
     const imageUploads = []
+    const requiredFieldsAreNotEmpty = event.title && event.description && event.date && event.location && event.organizer
 
-    if (req.files.image) {
+    if (!requiredFieldsAreNotEmpty) {
+      return res.status(422).json({ error: 'Some of required fields are empty!' })
+    }
+
+    if (req.files?.image) {
       const imageName = `${crypto.randomUUID()}.${req.files.image.name.split('.').pop()}`
       const oldImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${req.files.image.name}`)
       const newImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
@@ -119,9 +129,11 @@ const update = async (req, res) => {
         event.image = imageName
         imageUploads.push(req.files.image.mv(newImagePath))
       }
+    } else {
+      event.image = 'default-event-image.jpg'
     }
 
-    if (req.files.additionalImages) {
+    if (req.files?.additionalImages) {
       event.additionalImages = req.files.additionalImages.map(image => {
         const imageName = `${crypto.randomUUID()}.${image.name.split('.').pop()}`
         const oldImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${image.name}`)
@@ -135,13 +147,12 @@ const update = async (req, res) => {
       })
     }
 
-    const updatedEvent = await Event.updateOne({ _id: id}, event)
+    const updatedEvent = await Event.updateOne({ _id: id }, event)
 
     if (updatedEvent) {
       await Promise.all(imageUploads)
       return res.status(200).json({ message: 'Event was successfully updated!' })
     }
-
   } catch (err) {
     console.log(err)
   }

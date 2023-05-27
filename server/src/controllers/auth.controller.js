@@ -6,7 +6,7 @@ const e = require("express");
 const crypto = require("crypto");
 const fs = require("fs");
 
-const signIn = (req, res) => {
+const signIn = async (req, res) => {
   const payload = {
     title: "Sign In",
   }
@@ -14,7 +14,7 @@ const signIn = (req, res) => {
   return res.render(pathResolver.views('auth/sign-in'), payload)
 }
 
-const signUp = (req, res) => {
+const signUp = async (req, res) => {
   const payload = {
     title: "Sign Up",
   }
@@ -59,7 +59,7 @@ const login = async (req, res) => {
   return res.status(401).json({ error: 'Wrong email or password!' })
 }
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
   res.clearCookie(process.env.X_ACCESS_TOKEN)
   return res.status(200).json({ message: 'User was successfully logged out.' })
 }
@@ -70,9 +70,9 @@ const register = async (req, res) => {
     const imageUploads = []
     user.role = 'default-user'
 
-    const fieldsAreNotEmpty = user.firstName && user.lastName && user.email && user.password
+    const requiredFieldsAreNotEmpty = user.firstName && user.lastName && user.email && user.password && user.dateOfBirth
 
-    if (!fieldsAreNotEmpty) {
+    if (!requiredFieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
@@ -84,7 +84,7 @@ const register = async (req, res) => {
 
     user.password = await bcrypt.hash(user.password, 10)
 
-    if (req.files.profilePicture) {
+    if (req.files?.profilePicture) {
       const imageName = `${crypto.randomUUID()}.${req.files.profilePicture.name.split('.').pop()}`
       const imagePath = pathResolver.specificFile(`../../public/uploads/images/users/${imageName}`)
       user.profilePicture = imageName

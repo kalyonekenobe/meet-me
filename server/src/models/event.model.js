@@ -38,15 +38,15 @@ const eventSchema = new Schema({
   }],
 }, { timestamps: true })
 
-const onDeleteOneCascade = async function (next) {
-  const conditions = this._conditions
+const onDeleteCascade = async next => {
+  const { _id } = this._conditions
 
   try {
-    await Chat.deleteMany({ event: conditions._id });
+    await Chat.deleteMany({ event: _id });
 
     await Calendar.updateMany(
-      { events: conditions._id },
-      { $pull: { events: conditions._id } }
+      { events: _id },
+      { $pull: { events: _id } }
     );
 
     next();
@@ -56,8 +56,9 @@ const onDeleteOneCascade = async function (next) {
   }
 }
 
-eventSchema.pre('findOneAndDelete', onDeleteOneCascade);
-eventSchema.pre('deleteOne', onDeleteOneCascade);
+eventSchema.pre('findOneAndDelete', onDeleteCascade);
+eventSchema.pre('deleteMany', onDeleteCascade);
+eventSchema.pre('deleteOne', onDeleteCascade);
 
 const Event = mongoose.model('Event', eventSchema)
 
