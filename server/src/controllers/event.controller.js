@@ -72,7 +72,7 @@ const edit = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const event = req.body
+    const event = { ...req.body, organizer: req.user }
     const imageUploads = []
     const requiredFieldsAreNotEmpty = event.title && event.description && event.date && event.location && event.organizer
 
@@ -112,7 +112,7 @@ const add = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const event = req.body
+    const event = { ...req.body, organizer: req.user }
     const imageUploads = []
     const requiredFieldsAreNotEmpty = event.title && event.description && event.date && event.location && event.organizer
 

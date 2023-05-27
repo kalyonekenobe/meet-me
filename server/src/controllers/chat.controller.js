@@ -6,7 +6,7 @@ const chats = async (req, res) => {
   try {
     const payload = {
       title: `Chats`,
-      chats: await Chat.find()
+      chats: await Chat.find({ participants: { $elemMatch: { $eq: req.user } } })
     }
 
     return res.render(pathResolver.views('chat/list'), payload)
@@ -20,9 +20,10 @@ const chats = async (req, res) => {
 const details = async (req, res) => {
   try {
     const { id } = req.params
+
     const payload = {
       title: `Chat`,
-      chat: await Chat.findById(id)
+      chat: await Chat.findOne({ _id: id, participants: { $in: [req.user._id] } })
     }
 
     if (payload.chat) {
