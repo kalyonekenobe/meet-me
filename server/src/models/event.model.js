@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Chat = require("./chat.model");
 const Calendar = require("./calendar.model");
 const Schema = mongoose.Schema
 
@@ -49,18 +48,31 @@ const eventSchema = new Schema({
     message: {
       type: String
     }
-  }, { timestamps: true })]
+  }, { timestamps: true })],
+  chat: {
+    messages: [new Schema({
+      sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      message: {
+        type: String,
+        required: true,
+      }
+    }, { timestamps: true })],
+  }
 }, { timestamps: true })
 
 const onDeleteCascade = async next => {
-  const { _id } = this._conditions
+  const {_id} = this._conditions
 
   try {
-    await Chat.deleteMany({ event: _id })
+    await Chat.deleteMany({event: _id})
 
     await Calendar.updateMany(
-      { events: _id },
-      { $pull: { events: _id } }
+      {events: _id},
+      {$pull: {events: _id}}
     )
 
     next();
@@ -70,24 +82,9 @@ const onDeleteCascade = async next => {
   }
 }
 
-const onCreate = async event => {
-  try {
-    const chat = {
-      event: event._id,
-      participants: [ event.organizer ],
-      messages: []
-    }
-    await Chat.create(chat)
-  } catch (error) {
-    console.error('Error creating event chat:', error)
-  }
-}
-
 eventSchema.pre('findOneAndDelete', onDeleteCascade)
 eventSchema.pre('deleteMany', onDeleteCascade)
 eventSchema.pre('deleteOne', onDeleteCascade)
-
-eventSchema.post('save', onCreate)
 
 const Event = mongoose.model('Event', eventSchema)
 

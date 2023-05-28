@@ -4,7 +4,7 @@ const {profile, details, editProfile, updateProfile, joinRequests, processJoinRe
 const router = express.Router()
 
 router.get('/profile', requiresAuth(), profile)
-router.get('/users/details/:id', requiresAuth(), details)
+router.get('/users/:id', requiresAuth(), details)
 router.get('/profile/edit', requiresAuth(), editProfile)
 router.get('/profile/join-requests', requiresAuth(), joinRequests)
 router.post('/profile/edit', requiresAuth(), updateProfile)

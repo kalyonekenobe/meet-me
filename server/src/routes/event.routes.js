@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get('/', requiresAuth(), events)
 router.get('/events', requiresAuth(), events)
-router.get('/events/details/:id', requiresAuth(), details)
+router.get('/events/:id', requiresAuth(), details)
 router.get('/events/create', requiresAuth(), create)
 router.get('/events/edit/:id', requiresAuth(), edit)
 router.post('/events/create', requiresAuth(), add)

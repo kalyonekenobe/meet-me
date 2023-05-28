@@ -136,8 +136,8 @@ const processJoinRequest = async (req, res) => {
     if (updatedEvent) {
       const joinRequest = updatedEvent.joinRequests.find(request => request._id.toString() === id)
       if (joinRequest?.status === 'accepted') {
-        const participantExists = !updatedEvent.participants.find(participant => participant._id.toString() === joinRequest.candidate._id.toString())
-        if (participantExists) {
+        const participant = updatedEvent.participants.find(participant => participant._id.toString() === joinRequest.candidate._id.toString())
+        if (!participant) {
           updatedEvent.participants.push(joinRequest.candidate)
           await updatedEvent.save()
         }
