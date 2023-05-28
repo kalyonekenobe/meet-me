@@ -5,6 +5,7 @@ const {notFound} = require("../tools/not-found");
 const crypto = require("crypto");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
+const Calendar = require("../models/calendar.model");
 
 const profile = async (req, res) => {
   const payload = {
@@ -141,6 +142,11 @@ const processJoinRequest = async (req, res) => {
           updatedEvent.participants.push(joinRequest.candidate)
           await updatedEvent.save()
         }
+        await Calendar.updateOne({ user: joinRequest.candidate }, {
+          $addToSet: {
+            events: updatedEvent._id
+          }
+        }, { new: true })
       }
       return res.status(200).json({ message: `Join request was ${joinRequest?.status}` })
     }
