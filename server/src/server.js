@@ -11,6 +11,8 @@ const app = express()
 const port = process.env.PORT || 8000
 const router = new AppRouter(app)
 
+
+
 app.locals = appLocals
 
 app.set("view engine", "ejs")
@@ -37,6 +39,7 @@ app.use(session({
 
 router.setupRequestsSettings()
 router.setupRoutes()
+
 
 app.listen(port, () => {
   console.log(`Application is running on port ${port}`)

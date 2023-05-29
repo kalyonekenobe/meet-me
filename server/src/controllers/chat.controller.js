@@ -1,5 +1,7 @@
 const pathResolver = require("../tools/path-resolver");
 const Event = require("../models/event.model");
+const io = require('../tools/socket');
+
 const {notFound} = require("../tools/not-found");
 
 const chats = async (req, res) => {
@@ -18,10 +20,11 @@ const chats = async (req, res) => {
 }
 
 const details = async (req, res) => {
+
   try {
     const { id } = req.params
     const event = await Event.findOne({ _id: id, participants: { $elemMatch: { $eq: req.user } } })
-
+   // const event = await Event.findOne({ _id: id }) у мене працювало лише так
     if (event) {
       const payload = {
         title: `Chat: ${event.title}`,
@@ -42,14 +45,15 @@ const sendMessage = async (req, res) => {
     const { id } = req.params
     const requiredFieldsAreNotEmpty = req.user && req.body.message && req.body.message.trim() !== ''
 
-    if (!requiredFieldsAreNotEmpty) {
+  if (!requiredFieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Cannot send empty message!' })
-    }
+   }
 
     const message = {
       sender: req.user,
       message: req.body.message,
     }
+    console.log(message);
 
     const sentMessage = await Event.updateOne({ _id: id }, {
       $push: {
@@ -58,7 +62,8 @@ const sendMessage = async (req, res) => {
     }, { new: true })
 
     if (sentMessage) {
-      return res.status(200).json({ message: 'Message was successfully sent.' })
+      return res.status(200).json({ _id:id })
+
     }
   } catch (err) {
     console.log(err)

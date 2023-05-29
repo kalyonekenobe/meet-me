@@ -1,5 +1,82 @@
-<%- include(`${partials}/root-layout-header`) %>
-<div class="container">
-    <%= chat %>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%=title%></title>
+    <style>
+    .message{
+        color: #00529B;
+        background-color: #BDE5F8;
+        border: 1px solid;
+        margin: 10px 0px;
+        padding:15px 10px 15px 50px;
+        background-repeat: no-repeat;
+        background-position: 10px center;
+        border-radius: 10px;
+    }
+
+    </style>
+</head>
+<body>
+<h1>Chat
+</h1>
+<form id="form" method="post" >
+    <input class="" type="text" placeholder="Message" id="message_input">
+    <button id="send_message">
+        Send
+    </button>
+</form>
+<div id="messageArea">
+    <%chat.messages.forEach(msg =>{%>
+    <div class="message"><%=msg.message %></div>
+    <%})%>
 </div>
-<%- include(`${partials}/root-layout-footer`) %>
+
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+<script>
+    const createMessage = (message) => {
+        const messageArea =  document.getElementById('messageArea');
+        const message_block = document.createElement('div');
+        message_block.classList.add('message');
+        message_block.insertAdjacentText('afterbegin',message);
+        messageArea.appendChild(message_block);
+    };
+
+    const socket = io('http://localhost:3000');
+    const room = window.location.pathname.split('/')[2];
+    socket.emit('room-connect',room);
+    const button = document.getElementById('send_message');
+    const input = document.getElementById('message_input');
+    const sendMessageForm = document.getElementById('form');
+    if (sendMessageForm) { // шоб перевірить чи є форма на сторінці
+        sendMessageForm.onsubmit = async event => {
+            event.preventDefault() // шоб не відправляти форму одразу
+            const message = input.value;
+            const response = await fetch(`${window.location}/send-message`, {
+            method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message
+            })
+        })
+        if (response.status === 200) {
+            socket.emit('send-message',message,room);
+            createMessage(message);
+            input.value='';
+        }
+    }
+        socket.on('receive-message',(message) => {
+            createMessage(message);
+        });
+
+
+   }
+</script>
+
+
+
+</body>
+</html>
