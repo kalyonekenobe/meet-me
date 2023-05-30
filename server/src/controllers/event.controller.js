@@ -3,6 +3,7 @@ const Event = require('../models/event.model');
 const {notFound} = require("../tools/not-found");
 const crypto = require('crypto')
 const fs = require('fs')
+const Calendar = require("../models/calendar.model");
 
 const events = async (req, res) => {
   try {
@@ -80,6 +81,10 @@ const add = async (req, res) => {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
+    if (new Date(event.date).getTime() < Date.now()) {
+      return res.status(422).json({ error: 'Cannot set event date in the past!' })
+    }
+
     if (req.files?.image) {
       const imageName = `${crypto.randomUUID()}.${req.files.image.name.split('.').pop()}`
       const imagePath = pathResolver.specificFile(`../../public/uploads/images/events/${imageName}`)
@@ -100,6 +105,11 @@ const add = async (req, res) => {
 
     if (createdEvent) {
       await Promise.all(imageUploads)
+      await Calendar.updateOne({ user: req.user }, {
+        $addToSet: {
+          'events': createdEvent
+        }
+      })
       return res.status(200).json({ message: 'Event was successfully created!' })
     }
   } catch (err) {
@@ -118,6 +128,10 @@ const update = async (req, res) => {
 
     if (!requiredFieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
+    }
+
+    if (new Date(event.date).getTime() < Date.now()) {
+      return res.status(422).json({ error: 'Cannot set event date in the past!' })
     }
 
     if (req.files?.image) {
