@@ -10,10 +10,10 @@ const Calendar = require("../models/calendar.model");
 const profile = async (req, res) => {
   const payload = {
     title: `Profile`,
-    user: req.user
+    authenticatedUser: req.user
   }
 
-  if (payload.user) {
+  if (payload.authenticatedUser) {
     return res.render(pathResolver.views('user/profile'), payload)
   }
 
@@ -26,7 +26,8 @@ const details = async (req, res) => {
     const { id } = req.params
     const payload = {
       title: `User details`,
-      user: await User.findById(id)
+      user: await User.findById(id),
+      authenticatedUser: req.user
     }
 
     if (payload.user) {
@@ -43,10 +44,10 @@ const details = async (req, res) => {
 const editProfile = async (req, res) => {
   const payload = {
     title: `Edit profile`,
-    user: req.user
+    authenticatedUser: req.user
   }
 
-  if (payload.user) {
+  if (payload.authenticatedUser) {
     return res.render(pathResolver.views('user/edit-profile'), payload)
   }
 
@@ -97,7 +98,8 @@ const updateProfile = async (req, res) => {
 const joinRequests = async (req, res) => {
   const payload = {
     title: `My join requests`,
-    joinRequests: await Event.find({ organizer: req.user._id }).select('title joinRequests').populate('joinRequests')
+    joinRequests: await Event.find({ organizer: req.user._id }).select('title joinRequests').populate('joinRequests'),
+    authenticatedUser: req.user
   }
 
   if (req.user) {

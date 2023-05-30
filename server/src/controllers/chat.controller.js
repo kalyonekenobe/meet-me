@@ -7,7 +7,8 @@ const chats = async (req, res) => {
     const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).select('chat')
     const payload = {
       title: `Chats`,
-      chats: events.map(event => event.chat)
+      chats: events.map(event => event.chat),
+      authenticatedUser: req.user,
     }
 
     return res.render(pathResolver.views('chat/list'), payload)
@@ -25,7 +26,8 @@ const details = async (req, res) => {
     if (event) {
       const payload = {
         title: `Chat: ${event.title}`,
-        chat: event.chat
+        chat: event.chat,
+        authenticatedUser: req.user
       }
 
       return res.render(pathResolver.views('chat/details'), payload)
@@ -49,6 +51,7 @@ const sendMessage = async (req, res) => {
     const message = {
       sender: req.user,
       message: req.body.message,
+      authenticatedUser: req.user,
     }
 
     const sentMessage = await Event.updateOne({ _id: id }, {

@@ -2,6 +2,7 @@ const fs= require('fs')
 const pathResolver = require("./path-resolver");
 const path = require("path");
 const {notFound} = require("./not-found");
+const {getAuthenticatedUser} = require("./auth-middleware");
 
 class AppRouter {
 
@@ -29,12 +30,13 @@ class AppRouter {
   }
 
   setupRequestsSettings() {
-    this.#app.use((req, res, next) => {
+    this.#app.use(async (req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       res.setHeader('Access-Control-Allow-Headers', '*');
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader(process.env.X_ACCESS_TOKEN, req.cookies[process.env.X_ACCESS_TOKEN] ?? '')
+      req.user = await getAuthenticatedUser(req, res)
       next()
     })
   }

@@ -3,14 +3,16 @@ const User = require("../models/user.model");
 
 const requiresAuth = (roles = []) => {
   return async (req, res, next) => {
-    const token = req.body.token || req.query.token || res.getHeader(process.env.X_ACCESS_TOKEN.toLowerCase()) || req.cookies[process.env.X_ACCESS_TOKEN]
     const responsePayload = {
       error: undefined
     }
 
     try {
-      const { email } = jwt.verify(token, process.env.JWT_SECRET)
-      const user = await User.findOne({ email })
+      const user = await getAuthenticatedUser(req, res)
+
+      if (!user) {
+        throw new Error('User is not authenticated!')
+      }
 
       if (roles.length > 0 && !roles.includes(user.role)) {
         if (req.method !== 'GET') {
@@ -32,4 +34,15 @@ const requiresAuth = (roles = []) => {
   }
 }
 
-module.exports = { requiresAuth }
+const getAuthenticatedUser = async (req, res) => {
+  try {
+    const token = req.body.token || req.query.token || res.getHeader(process.env.X_ACCESS_TOKEN.toLowerCase()) || req.cookies[process.env.X_ACCESS_TOKEN]
+    const { email } = jwt.verify(token, process.env.JWT_SECRET)
+
+    return await User.findOne({ email })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+module.exports = { requiresAuth, getAuthenticatedUser }

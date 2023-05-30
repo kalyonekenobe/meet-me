@@ -9,7 +9,8 @@ const events = async (req, res) => {
   try {
     const payload = {
       title: `Events`,
-      events: await Event.find().populate('organizer')
+      events: await Event.find().populate('organizer'),
+      authenticatedUser: req.user,
     }
 
     return res.render(pathResolver.views('event/list'), payload)
@@ -25,7 +26,8 @@ const details = async (req, res) => {
     const { id } = req.params
     const payload = {
       title: `Event details`,
-      event: await Event.findById(id).populate('organizer')
+      event: await Event.findById(id).populate('organizer'),
+      authenticatedUser: req.user,
     }
 
     if (payload.event) {
@@ -43,6 +45,7 @@ const create = async (req, res) => {
   try {
     const payload = {
       title: `Create new event`,
+      authenticatedUser: req.user,
     }
 
     return res.render(pathResolver.views('event/create'), payload)
@@ -58,7 +61,8 @@ const edit = async (req, res) => {
     const { id } = req.params
     const payload = {
       title: `Edit event`,
-      event: await Event.findById(id)
+      event: await Event.findById(id),
+      authenticatedUser: req.user,
     }
 
     if (payload.event) {

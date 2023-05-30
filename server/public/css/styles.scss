@@ -1,0 +1,260 @@
+@import "reset.css";
+@import "variables";
+
+body {
+  @include font();
+  background: $color-anti-flash-white !important;
+}
+
+.link {
+  color: $color-anti-flash-white;
+  text-decoration: none !important;
+
+  &.active, &:hover {
+    color: $color-ut-orange;
+  }
+
+  svg {
+    width: $font-size-2xl;
+    height: $font-size-2xl;
+  }
+}
+
+.navbar {
+  background: $color-persian-indigo;
+  color: $color-anti-flash-white;
+  position: fixed;
+  padding-block: 0 !important;
+
+  h1 {
+    @include font($font-family: $font-family-nunito, $font-size: $font-size-2xl, $font-weight: 700);
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      margin: 0;
+
+      img {
+        transition: 0.5s ease;
+        margin: 0;
+      }
+
+      span {
+        margin-left: 5px;
+      }
+
+      &:hover img {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  nav {
+    display: flex;
+    @include font($font-size: $font-size-base);
+
+    a {
+      display: inline-flex;
+      padding: 15px;
+      margin-inline: 10px;
+      font-size: $font-size-xl;
+
+      &.active {
+        border-bottom: 3px solid $color-ut-orange;
+      }
+    }
+  }
+
+  .profile-container {
+    display: inline-flex;
+    align-items: center;
+
+    .link {
+      display: inline-flex !important;
+      align-items: center;
+
+      span {
+        margin-bottom: 0 !important;
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.button {
+  @include border-radius(5px, 5px, 5px, 5px);
+  padding: 5px 10px;
+  color: $color-black;
+  outline: none;
+  border: none;
+  background: transparent;
+  transition: 0.3s ease;
+  text-decoration: none !important;
+
+  &.button-ut-orange {
+    background: $color-ut-orange;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-ut-orange, 0.9);
+    }
+  }
+
+  &.button-black {
+    background: $color-black;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-black, 0.9);
+    }
+  }
+
+  &.button-persian-indigo {
+    background: $color-persian-indigo;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-persian-indigo, 0.9);
+    }
+  }
+
+  &.button-cornflower-blue {
+    background: $color-cornflower-blue;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-cornflower-blue, 0.9);
+    }
+  }
+
+  &.button-periwinkle {
+    background: $color-periwinkle;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-periwinkle, 0.9);
+    }
+  }
+
+  &.button-anti-flash-white {
+    background: $color-anti-flash-white;
+    color: $color-black;
+
+    &:hover {
+      background: rgba($color-anti-flash-white, 0.9);
+    }
+  }
+}
+
+.errors {
+  width: 100%;
+
+  .error {
+    @include font($font-size: $font-size-sm);
+    @include border-radius(5px, 5px, 5px, 5px);
+    display: inline-flex;
+    width: 100%;
+    color: $color-red;
+    border: 1px solid $color-red;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    background: rgba($color-red, 0.1);
+
+    &:last-child {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.form {
+
+  .errors {
+    width: 100%;
+  }
+
+  .form-header {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .form-footer {
+    width: 100%;
+    margin-top: 10px;
+
+    .button {
+      width: 100%;
+    }
+  }
+
+  .form-content {
+    width: 100%;
+    flex-wrap: wrap;
+
+    .form-group {
+      display: inline-flex;
+      padding: 0;
+      margin: 0;
+
+      .form-item {
+        display: inline-flex;
+        width: 100%;
+        padding: 0;
+
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+
+        label {
+          @include font($font-size: $font-size-sm);
+          margin: 0;
+          color: rgba($color-black, 0.9);
+        }
+
+        input[type='checkbox'] {
+          margin-right: 5px;
+        }
+
+        input:not([type='submit'], [type='checkbox']), textarea, select {
+          outline: none;
+          padding: 5px 7px;
+          width: 100%;
+          border: 1px solid $color-anti-flash-white !important;
+          color: rgba($color-black, 0.9);
+          @include border-radius(5px, 5px, 5px, 5px);
+          @include font($font-size: $font-size-sm, $line-height: $line-height-sm);
+        }
+      }
+    }
+  }
+}
+
+.sign-in-container, .sign-up-container {
+  height: 100vh;
+}
+
+.sign-in-form, .sign-up-form {
+  padding: 20px;
+  border-radius: 5px;
+  background: white;
+  max-width: 500px;
+  width: 100%;
+
+  &.sign-in-form {
+
+    .sign-up-redirect {
+      max-width: 200px;
+    }
+  }
+
+  .sign-up-redirect, .sign-in-redirect {
+    @include font($font-size: $font-size-sm);
+
+    a {
+      color: $color-ut-orange;
+      border-bottom: 1px dashed $color-ut-orange;
+    }
+  }
+}

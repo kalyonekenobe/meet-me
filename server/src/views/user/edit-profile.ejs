@@ -1,5 +1,6 @@
 <%- include(`${partials}/root-layout-header`) %>
-<div class="container">
-    <%= user %>
+<div class="fluid-container">
+    <%- include(`${partials}/navbar`) %>
+    <%= authenticatedUser %>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

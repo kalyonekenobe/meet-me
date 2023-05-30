@@ -1,6 +1,36 @@
 <%- include(`${partials}/root-layout-header`) %>
-<div class="container">
-    <a id="login-test-link">Login test</a>
-    <a id="logout-test-link">Logout test</a>
+<div class="fluid-container">
+    <main class="main-container sign-in-container d-flex align-items-center justify-content-center">
+        <form class="form sign-in-form">
+            <div class="errors"></div>
+            <div class="form-header text-center">
+                <h4>Увійти до акаунту MeetMe</h4>
+            </div>
+            <div class="form-content">
+                <div class="form-group col-12 flex-wrap">
+                    <div class="form-item col-12 flex-wrap">
+                        <label for="email">Електронна пошта: </label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-item col-12 flex-wrap">
+                        <label for="password">Пароль: </label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-item col-12 justify-content-between align-items-start flex-wrap">
+                        <div class="d-flex align-items-center remember-me-container">
+                            <input type="checkbox" id="remember-me" name="rememberMe">
+                            <label for="remember-me">Запам'ятати мене</label>
+                        </div>
+                        <span class="sign-up-redirect">
+                            Не маєте акаунту в MeetMe? <a href="/sign-up" class="link">Зареєструйтесь</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-footer">
+                <input type="submit" class="button button-persian-indigo" value="Увійти">
+            </div>
+        </form>
+    </main>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

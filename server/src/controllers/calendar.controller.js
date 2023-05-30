@@ -6,7 +6,8 @@ const details = async (req, res) => {
   try {
     const payload = {
       title: `Events calendar`,
-      calendar: await Calendar.findOne({ user: req.user })
+      calendar: await Calendar.findOne({ user: req.user }),
+      authenticatedUser: req.user
     }
 
     if (payload.calendar) {
