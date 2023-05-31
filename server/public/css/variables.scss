@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+// colors palette
+$color-black: #000000;
+$color-white: #FFFFFF;
+$color-red: #FF3333;
+$color-persian-indigo: #27187E;
+$color-cornflower-blue: #758BFD;
+$color-periwinkle: #AEB8FE;
+$color-anti-flash-white: #F1F2F6;
+$color-ut-orange: #FF8600;
+
+// font families
+$font-family-inter: 'Inter', sans-serif;
+$font-family-nunito: 'Nunito', sans-serif;
+
+// font sizes
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+$font-size-4xl: 2.25rem;
+$font-size-5xl: 3rem;
+$font-size-6xl: 3.75rem;
+$font-size-7xl: 4.5rem;
+$font-size-8xl: 6rem;
+$font-size-9xl: 8rem;
+
+// line heights
+$line-height-xs: 1rem;
+$line-height-sm: 1.25rem;
+$line-height-base: 1.5rem;
+$line-height-lg: 1.75rem;
+$line-height-xl: 1.75rem;
+$line-height-2xl: 2rem;
+$line-height-3xl: 2.25rem;
+$line-height-4xl: 2.5rem;
+$line-height-5xl: 1;
+$line-height-6xl: 1;
+$line-height-7xl: 1;
+$line-height-8xl: 1;
+$line-height-9xl: 1;
+
+// font
+@mixin font($font-family: $font-family-inter, $font-size: $font-size-base, $line-height: $line-height-base, $font-weight: 400, $font-style: normal) {
+  font-family: $font-family;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  font-style: $font-style;
+  line-height: $line-height;
+}
+
+// border-radius
+@mixin border-radius($top-left: 0, $top-right: 0, $bottom-right: 0, $bottom-left: 0) {
+  border-radius: $top-left $top-right $bottom-right $bottom-left;
+}

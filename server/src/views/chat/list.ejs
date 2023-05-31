@@ -1,7 +1,8 @@
 <%- include(`${partials}/root-layout-header`) %>
-<div class="container">
-    <% chats.forEach(chat => { %>
-        <%= chat %>
+<div class="fluid-container">
+    <%- include(`${partials}/navbar`) %>
+    <% events.forEach(event => { %>
+        <%= event %>
     <% }) %>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

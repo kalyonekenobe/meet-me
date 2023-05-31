@@ -5,13 +5,13 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
 const AppRouter = require('./tools/app-router')
+const Socket = require('./tools/socket')
 const appLocals = require('./tools/app-locals')
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 8000
 const router = new AppRouter(app)
-
-
+const socket = new Socket(app)
 
 app.locals = appLocals
 
@@ -40,6 +40,7 @@ app.use(session({
 router.setupRequestsSettings()
 router.setupRoutes()
 
+socket.configure()
 
 app.listen(port, () => {
   console.log(`Application is running on port ${port}`)

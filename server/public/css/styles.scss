@@ -1,0 +1,426 @@
+@import "reset.css";
+@import "variables";
+
+body {
+  @include font();
+  background: $color-anti-flash-white !important;
+}
+
+.link {
+  color: $color-anti-flash-white;
+  text-decoration: none !important;
+
+  &.active, &:hover {
+    color: $color-ut-orange;
+  }
+
+  svg {
+    width: $font-size-2xl;
+    height: $font-size-2xl;
+  }
+}
+
+.navbar {
+  background: $color-persian-indigo;
+  color: $color-anti-flash-white;
+  padding-block: 0 !important;
+  width: 100%;
+  top: 0;
+  z-index: 10;
+
+  h1 {
+    @include font($font-family: $font-family-nunito, $font-size: $font-size-2xl, $font-weight: 700);
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      margin: 0;
+
+      img {
+        transition: 0.5s ease;
+        margin: 0;
+      }
+
+      span {
+        margin-left: 5px;
+      }
+
+      &:hover img {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  nav {
+    display: flex;
+    @include font($font-size: $font-size-base);
+
+    a {
+      display: inline-flex;
+      padding: 15px;
+      margin-inline: 10px;
+      font-size: $font-size-xl;
+
+      &.active {
+        border-bottom: 3px solid $color-ut-orange;
+      }
+    }
+  }
+
+  .profile-container {
+    display: inline-flex;
+    align-items: center;
+
+    .link {
+      display: inline-flex !important;
+      align-items: center;
+
+      span {
+        margin-bottom: 0 !important;
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.button {
+  @include border-radius(5px, 5px, 5px, 5px);
+  padding: 5px 10px;
+  color: $color-black;
+  outline: none;
+  border: none;
+  background: transparent;
+  transition: 0.3s ease;
+  text-decoration: none !important;
+
+  &.button-ut-orange {
+    background: $color-ut-orange;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-ut-orange, 0.9);
+    }
+  }
+
+  &.button-black {
+    background: $color-black;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-black, 0.9);
+    }
+  }
+
+  &.button-persian-indigo {
+    background: $color-persian-indigo;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-persian-indigo, 0.9);
+    }
+  }
+
+  &.button-cornflower-blue {
+    background: $color-cornflower-blue;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-cornflower-blue, 0.9);
+    }
+  }
+
+  &.button-periwinkle {
+    background: $color-periwinkle;
+    color: $color-anti-flash-white;
+
+    &:hover {
+      background: rgba($color-periwinkle, 0.9);
+    }
+  }
+
+  &.button-anti-flash-white {
+    background: $color-anti-flash-white;
+    color: $color-black;
+
+    &:hover {
+      background: rgba($color-anti-flash-white, 0.9);
+    }
+  }
+}
+
+.errors {
+  width: 100%;
+
+  .error {
+    @include font($font-size: $font-size-sm);
+    @include border-radius(5px, 5px, 5px, 5px);
+    display: inline-flex;
+    width: 100%;
+    color: $color-red;
+    border: 1px solid $color-red;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    background: rgba($color-red, 0.1);
+
+    &:last-child {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.form {
+
+  .errors {
+    width: 100%;
+  }
+
+  .form-header {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .form-footer {
+    width: 100%;
+    margin-top: 10px;
+
+    .button {
+      width: 100%;
+    }
+  }
+
+  .form-content {
+    width: 100%;
+    flex-wrap: wrap;
+
+    .form-group {
+      display: inline-flex;
+      padding: 0;
+      margin: 0;
+
+      .form-item {
+        display: inline-flex;
+        width: 100%;
+        padding: 0;
+
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+
+        label {
+          @include font($font-size: $font-size-sm);
+          margin: 0;
+          color: rgba($color-black, 0.9);
+        }
+
+        input[type='checkbox'] {
+          margin-right: 5px;
+        }
+
+        input:not([type='submit'], [type='checkbox']), textarea, select {
+          outline: none;
+          padding: 5px 7px;
+          width: 100%;
+          border: 1px solid $color-anti-flash-white !important;
+          color: rgba($color-black, 0.9);
+          @include border-radius(5px, 5px, 5px, 5px);
+          @include font($font-size: $font-size-sm, $line-height: $line-height-sm);
+        }
+      }
+    }
+  }
+}
+
+.sign-in-container, .sign-up-container {
+  height: 100vh;
+}
+
+.sign-in-form, .sign-up-form {
+  padding: 20px;
+  border-radius: 5px;
+  background: white;
+  max-width: 500px;
+  width: 100%;
+
+  &.sign-in-form {
+
+    .sign-up-redirect {
+      max-width: 200px;
+    }
+  }
+
+  .sign-up-redirect, .sign-in-redirect {
+    @include font($font-size: $font-size-sm);
+
+    a {
+      color: $color-ut-orange;
+      border-bottom: 1px dashed $color-ut-orange;
+    }
+  }
+}
+
+.chat-page-container {
+  position: relative;
+  height: calc(100vh - 57px);
+
+  .events {
+    position: relative;
+    max-width: 320px;
+    width: 100%;
+    height: 100%;
+    background: $color-white;
+    border-right: 1px solid rgba($color-black, 0.1);
+    overflow-y: scroll;
+
+    .event {
+      padding: 10px 10px 5px 15px;
+      transition: 0.3s ease;
+      cursor: pointer;
+      border-bottom: 1px solid rgba($color-black, 0.1);
+
+      .last-message {
+        @include font($font-size: $font-size-sm);
+        color: rgba($color-black, 0.5);
+
+        > div {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          line-clamp: 1;
+          -webkit-box-orient: vertical;
+        }
+
+        > time {
+          @include font($font-size: $font-size-xs);
+        }
+      }
+      
+      &:hover {
+        background: $color-anti-flash-white;
+      }
+    }
+  }
+
+  .chat {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .chat-header, .chat-container, .chat-footer {
+      width: 100%;
+      flex: 0 1 auto;
+    }
+
+    .chat-container {
+      height: calc(100% - 112px);
+    }
+
+    .chat-header {
+      padding: 15px 20px;
+      box-shadow: 0 3px 5px -5px black;
+
+      h2 {
+        @include font($font-size: $font-size-xl, $font-weight: 600);
+        margin: 0;
+      }
+    }
+
+    .chat-footer {
+      padding: 10px 20px;
+      box-shadow: 0 -3px 5px -5px black;
+
+      #send-message-form {
+
+        input[type='text'] {
+          @include font();
+          margin-right: 10px;
+          padding: 6px 10px;
+        }
+      }
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column-reverse;
+      overflow-y: scroll;
+      padding: 10px 20px;
+      height: 100%;
+
+      .message-container.my-message + .message-container:not(.my-message), .message-container:not(.my-message) + .message-container.my-message {
+        padding-bottom: 10px;
+      }
+
+      .message-container {
+        display: flex;
+        align-items: flex-end;
+        padding-block: 1px;
+
+        .profile-image {
+          width: 32px;
+          height: 32px;
+          margin-right: 10px;
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .message {
+          padding: 5px 10px;
+          max-width: 500px;
+          background: $color-white;
+          position: relative;
+          @include border-radius(5px, 5px, 5px, 0);
+
+          .sender {
+            @include font($font-size: $font-size-xs, $font-weight: 600);
+            color: $color-ut-orange;
+            text-decoration: none !important;
+          }
+
+          .content {
+            @include font($font-size: $font-size-sm);
+
+            .time-space {
+              display: inline-flex;
+              width: 35px;
+            }
+          }
+
+          .time {
+            @include font($font-size: $font-size-xs);
+            position: relative;
+            width: 100%;
+            color: rgba($color-black, 0.5);
+            margin-top: -22px;
+            text-align: right;
+          }
+        }
+
+        &.my-message {
+          justify-content: flex-start;
+          flex-direction: row-reverse;
+
+          .profile-image img {
+            margin-left: 10px;
+            margin-right: 0;
+          }
+
+          .message {
+            background: $color-cornflower-blue;
+            color: $color-white;
+            @include border-radius(5px, 5px, 0, 5px);
+
+            .time {
+              color: rgba($color-white, 0.7);
+            }
+          }
+        }
+      }
+    }
+  }
+}

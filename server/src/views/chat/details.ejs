@@ -1,82 +1,102 @@
+<%- include(`${partials}/root-layout-header`) %>
+<%- include(`${partials}/navbar`) %>
+<div class="fluid-container d-flex chat-page-container">
+    <aside class="events">
+        <%
+        events.forEach(event => {
+            const lastMessage = event.chat.messages.pop()
+        %>
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title><%=title%></title>
-    <style>
-    .message{
-        color: #00529B;
-        background-color: #BDE5F8;
-        border: 1px solid;
-        margin: 10px 0px;
-        padding:15px 10px 15px 50px;
-        background-repeat: no-repeat;
-        background-position: 10px center;
-        border-radius: 10px;
-    }
-
-    </style>
-</head>
-<body>
-<h1>Chat
-</h1>
-<form id="form" method="post" >
-    <input class="" type="text" placeholder="Message" id="message_input">
-    <button id="send_message">
-        Send
-    </button>
-</form>
-<div id="messageArea">
-    <%chat.messages.forEach(msg =>{%>
-    <div class="message"><%=msg.message %></div>
-    <%})%>
+        <div class="event" data-url="chats/event/<%= event._id %>">
+            <header class="title">
+                <h6><%= event.title %></h6>
+            </header>
+            <div class="last-message d-flex align-items-end">
+                <% if (lastMessage) { %>
+                    <div class="w-100">
+                        <span class="sender"><%= lastMessage.sender.firstName %> <%= lastMessage.sender.lastName %>: </span>
+                        <span class="message"><%= lastMessage.message %></span>
+                    </div>
+                    <time class="time">
+                        <%=
+                            new Date(lastMessage.createdAt).toLocaleTimeString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })
+                        %>
+                    </time>
+                <% } else { %>
+                    <span>Повідомлення поки що відсутні</span>
+                <% } %>
+            </div>
+        </div>
+        <% }) %>
+    </aside>
+    <main class="chat">
+        <header class="chat-header">
+            <h2><%= title %></h2>
+        </header>
+        <div class="chat-container">
+            <div class="messages">
+                <%
+                event.chat.messages.reverse().forEach((message, index) => {
+                    let profileImagePath;
+                    if (message.sender.profilePicture !== 'default-user-image.jpg')
+                        profileImagePath = `/uploads/images/users/${message.sender.profilePicture}`
+                    else
+                        profileImagePath = `/images/${message.sender.profilePicture}`
+                %>
+                    <div class="message-container<%= message.sender._id.toString() === authenticatedUser._id.toString() ? ' my-message' : '' %>">
+                        <div class="profile-image">
+                            <% if ((index > 0 && message.sender._id.toString() !== event.chat.messages[index - 1].sender._id.toString()) || index === 0) { %>
+                                <a href="/users/<%= message.sender._id %>">
+                                    <img src="<%= profileImagePath %>" alt="User profile photo">
+                                </a>
+                            <% } %>
+                        </div>
+                        <div class="message">
+                            <% if ((index < event.chat.messages.length - 1 && message.sender._id.toString() !== event.chat.messages[index + 1].sender._id.toString()) || index === event.chat.messages.length - 1) { %>
+                                <header>
+                                    <span class="sender">
+                                        <%= message.sender.firstName %> <%= message.sender.lastName %>
+                                    </span>
+                                </header>
+                            <% } %>
+                            <div class="content">
+                                <%= `${message.message}` %>
+                                <span class="time-space"></span>
+                            </div>
+                            <footer>
+                                <div class="time">
+                                    <time>
+                                        <%=
+                                            message.createdAt.toLocaleTimeString(undefined, {
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })
+                                        %>
+                                    </time>
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+        <footer class="chat-footer">
+            <div class="send-message-form-container">
+                <form id="send-message-form" class="form w-100">
+                    <div class="form-content">
+                        <div class="form-group col-12">
+                            <div class="form-item col-12">
+                                <input type="text" placeholder="Повідомлення" name="message">
+                                <input type="submit" class="button button-persian-indigo" value="Надіслати">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </footer>
+    </main>
 </div>
-
-<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
-<script>
-    const createMessage = (message) => {
-        const messageArea =  document.getElementById('messageArea');
-        const message_block = document.createElement('div');
-        message_block.classList.add('message');
-        message_block.insertAdjacentText('afterbegin',message);
-        messageArea.appendChild(message_block);
-    };
-
-    const socket = io('http://localhost:3000');
-    const room = window.location.pathname.split('/')[2];
-    socket.emit('room-connect',room);
-    const button = document.getElementById('send_message');
-    const input = document.getElementById('message_input');
-    const sendMessageForm = document.getElementById('form');
-    if (sendMessageForm) { // шоб перевірить чи є форма на сторінці
-        sendMessageForm.onsubmit = async event => {
-            event.preventDefault() // шоб не відправляти форму одразу
-            const message = input.value;
-            const response = await fetch(`${window.location}/send-message`, {
-            method: 'POST',
-                headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: message
-            })
-        })
-        if (response.status === 200) {
-            socket.emit('send-message',message,room);
-            createMessage(message);
-            input.value='';
-        }
-    }
-        socket.on('receive-message',(message) => {
-            createMessage(message);
-        });
-
-
-   }
-</script>
-
-
-
-</body>
-</html>
+<%- include(`${partials}/root-layout-footer`) %>

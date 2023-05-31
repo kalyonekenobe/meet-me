@@ -1,15 +1,14 @@
 const pathResolver = require("../tools/path-resolver");
 const Event = require("../models/event.model");
-const io = require('../tools/socket');
-
 const {notFound} = require("../tools/not-found");
 
 const chats = async (req, res) => {
   try {
-    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).select('chat')
+    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } })
     const payload = {
       title: `Chats`,
-      chats: events.map(event => event.chat)
+      events: events,
+      authenticatedUser: req.user,
     }
 
     return res.render(pathResolver.views('chat/list'), payload)
@@ -23,12 +22,15 @@ const details = async (req, res) => {
 
   try {
     const { id } = req.params
-    const event = await Event.findOne({ _id: id, participants: { $elemMatch: { $eq: req.user } } })
-   // const event = await Event.findOne({ _id: id }) у мене працювало лише так
+    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).populate('chat.messages.sender')
+    const event = await Event.findOne({ _id: id, participants: { $elemMatch: { $eq: req.user } } }).populate('chat.messages.sender')
+
     if (event) {
       const payload = {
         title: `Chat: ${event.title}`,
-        chat: event.chat
+        events: events,
+        event: event,
+        authenticatedUser: req.user
       }
 
       return res.render(pathResolver.views('chat/details'), payload)
@@ -45,25 +47,31 @@ const sendMessage = async (req, res) => {
     const { id } = req.params
     const requiredFieldsAreNotEmpty = req.user && req.body.message && req.body.message.trim() !== ''
 
-  if (!requiredFieldsAreNotEmpty) {
+    if (!requiredFieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Cannot send empty message!' })
-   }
+    }
 
     const message = {
       sender: req.user,
       message: req.body.message,
     }
-    console.log(message);
 
-    const sentMessage = await Event.updateOne({ _id: id }, {
+    const updatedEvent = await Event.findOneAndUpdate({ _id: id }, {
       $push: {
         'chat.messages': message
       }
-    }, { new: true })
+    }, { new: true }).populate('chat.messages.sender')
 
-    if (sentMessage) {
-      return res.status(200).json({ _id:id })
-
+    if (updatedEvent) {
+      const sentMessageIndex = updatedEvent.chat.messages.findLastIndex(message => message.sender._id.toString() === req.user._id.toString())
+      if (sentMessageIndex) {
+        const sentMessage = updatedEvent.chat.messages[sentMessageIndex]
+        return res.status(200).json({
+          message: 'Message was successfully sent.',
+          sentMessage: sentMessage,
+          sameSenderBefore: !((sentMessageIndex > 0 && sentMessage.sender._id.toString() !== updatedEvent.chat.messages[sentMessageIndex - 1].sender._id.toString()) || sentMessageIndex === 0)
+        })
+      }
     }
   } catch (err) {
     console.log(err)

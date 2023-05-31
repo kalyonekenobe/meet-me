@@ -7,6 +7,10 @@ const crypto = require("crypto");
 const fs = require("fs");
 
 const signIn = async (req, res) => {
+  if (req.user) {
+    return res.redirect('/')
+  }
+
   const payload = {
     title: "Sign In",
   }
@@ -15,6 +19,10 @@ const signIn = async (req, res) => {
 }
 
 const signUp = async (req, res) => {
+  if (req.user) {
+    return res.redirect('/')
+  }
+
   const payload = {
     title: "Sign Up",
   }
@@ -24,7 +32,7 @@ const signUp = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { email, password, rememberMe } = req.body
     const fieldsAreNotEmpty = email && password
 
     if (!fieldsAreNotEmpty) {
@@ -42,7 +50,7 @@ const login = async (req, res) => {
       }
 
       const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-        expiresIn: '30 days',
+        expiresIn: rememberMe ? '30 days' : '1 day',
         issuer: req.headers.host,
       })
 
