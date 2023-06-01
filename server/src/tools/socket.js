@@ -15,13 +15,13 @@ class Socket {
         io.on('connection', socket => {
             console.log(`User connected at ${new Date().toLocaleString()}`)
 
-            socket.on('join-chat', chat => {
-                console.log(`User joined chat ${chat}`)
-                socket.join(chat);
+            socket.on('join-chat', chats => {
+                console.log(`User joined ${chats}`)
+                socket.join(chats);
             });
 
-            socket.on('send-message', (message, chat) =>{
-                io.in(chat).emit('receive-message', message);
+            socket.on('send-message', (payload, chat) =>{
+                io.in(chat).emit('receive-message', { ...payload, chatId: chat });
             });
 
             socket.on('disconnect', () => {

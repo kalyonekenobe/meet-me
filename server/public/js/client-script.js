@@ -54,7 +54,7 @@ const createChatMessageHtml = payload => {
         <div class="time">
           <time>
             ${
-              new Date(message.createdAt).toLocaleTimeString(undefined, {
+              new Date(message.createdAt).toLocaleTimeString('uk', {
                 hour: '2-digit',
                 minute: '2-digit'
               })
@@ -160,46 +160,75 @@ const handleLogout = () => {
   }
 }
 
-const connectToChat = (socket, chat) => {
-  socket.emit('join-chat', chat);
-}
-
 const handleMessageReceive = socket => {
   socket.on('receive-message', payload => {
-    const { message, token, sameSenderBefore, isNewMessageDate, isNextMessageNewDate } = payload
-    const chatContainer = document.querySelector('.chat-container .messages')
-    const messageClassList = [ 'message-container' ]
+    const { chatId, message, token, sameSenderBefore, isNewMessageDate } = payload
+    const chatList = document.querySelectorAll('.chat-page-container .event')
 
-    if (token === getCookieByName('X-Access-Token')) {
-      messageClassList.push('my-message')
+    if (chatList) {
+      chatList.forEach(chat => {
+        const { url } = chat.dataset
+
+        if (url !== chatId)
+          return
+
+        const lastMessage = chat.querySelector('.last-message')
+
+        if (lastMessage) {
+          lastMessage.innerHTML = `
+          <div class="w-100">
+              <span class="sender">${message.sender.firstName} ${message.sender.lastName}: </span>
+              <span class="message">${message.message}</span>
+          </div>
+          <time class="time">
+            ${
+            new Date(message.createdAt).toLocaleTimeString('uk', {
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          }
+          </time>
+        `
+        }
+      })
     }
 
-    const messageContainer = createElement('div', createChatMessageHtml(payload), messageClassList)
+    console.log(window.location.pathname, chatId)
+    if (window.location.pathname.includes(chatId)) {
+      const chatContainer = document.querySelector('.chat-container .messages')
+      const messageClassList = [ 'message-container' ]
 
-    if (sameSenderBefore && !isNewMessageDate && chatContainer.firstChild) {
-      const lastMessage = chatContainer.querySelector('.message-container')
-      const image = lastMessage.querySelector('.profile-image img')
-      if (image) {
-        image.remove()
+      if (token === getCookieByName('X-Access-Token')) {
+        messageClassList.push('my-message')
       }
+
+      const messageContainer = createElement('div', createChatMessageHtml(payload), messageClassList)
+
+      if (sameSenderBefore && !isNewMessageDate && chatContainer.firstChild) {
+        const lastMessage = chatContainer.querySelector('.message-container')
+        const image = lastMessage.querySelector('.profile-image img')
+        if (image) {
+          image.remove()
+        }
+      }
+
+      const currentMessageDate = new Date(`${new Date(message.createdAt)} UTC`)
+      let dateFormatterOptions = { weekday: 'long', month: 'long', day: 'numeric' }
+
+      if (currentMessageDate.getFullYear() !== new Date().getFullYear()) {
+        dateFormatterOptions = { ...dateFormatterOptions, year: 'numeric' }
+      }
+
+      const dateFormatter = new Intl.DateTimeFormat('uk', dateFormatterOptions)
+
+      if (isNewMessageDate) {
+        const messagesDateDelimiterHtml = `<span>${dateFormatter.format(currentMessageDate)}</span>`
+        const messagesDateDelimiter = createElement('div', messagesDateDelimiterHtml, [ 'date-delimiter' ])
+        chatContainer.insertBefore(messagesDateDelimiter, chatContainer.firstChild)
+      }
+
+      chatContainer.insertBefore(messageContainer, chatContainer.firstChild)
     }
-
-    const currentMessageDate = new Date(`${new Date(message.createdAt)} UTC`)
-    let dateFormatterOptions = { weekday: 'long', month: 'long', day: 'numeric' }
-
-    if (currentMessageDate.getFullYear() !== new Date().getFullYear()) {
-      dateFormatterOptions = { ...dateFormatterOptions, year: 'numeric' }
-    }
-
-    const dateFormatter = new Intl.DateTimeFormat('uk', dateFormatterOptions)
-
-    if (isNewMessageDate) {
-      const messagesDateDelimiterHtml = `<span>${dateFormatter.format(currentMessageDate)}</span>`
-      const messagesDateDelimiter = createElement('div', messagesDateDelimiterHtml, [ 'date-delimiter' ])
-      chatContainer.insertBefore(messagesDateDelimiter, chatContainer.firstChild)
-    }
-
-    chatContainer.insertBefore(messageContainer, chatContainer.firstChild)
   })
 }
 
@@ -234,28 +263,30 @@ const handleSendMessageForm = (socket, chat) => {
   }
 }
 
-const handleChat = () => {
-  if (window.location.pathname.match(new RegExp('chats/event/[\d\s]*'))) {
-    const socket = io(`http://localhost:3000`);
-    const chat = window.location.pathname;
-
-    if (socket && chat) {
-      connectToChat(socket, chat)
-      handleMessageReceive(socket)
-      handleSendMessageForm(socket, chat)
-    }
-  }
-}
-
 const handleChatList = () => {
   const chats = document.querySelectorAll('.chat-page-container .event')
-  if (chats) {
+  const socket = io(`http://localhost:3000`);
+  const chatUrls = []
+
+  if (chats && socket) {
     chats.forEach(chat => {
+      const { url } = chat.dataset
+
+      if (url.match(new RegExp('/chats/event/[\d\s]*'))) {
+        chatUrls.push(url)
+      }
+
       chat.onclick = () => {
-        const { url } = chat.dataset
         redirect(url)
       }
     })
+
+    handleMessageReceive(socket)
+    socket.emit('join-chat', chatUrls)
+
+    if (window.location.pathname.match(new RegExp('/chats/event/[\d\s]*'))) {
+      handleSendMessageForm(socket, window.location.pathname)
+    }
   }
 }
 
@@ -265,7 +296,6 @@ document.onreadystatechange = () => {
     handleSignInForm()
     handleSignUpForm()
     handleLogout()
-    handleChat()
     handleChatList()
   }
 }

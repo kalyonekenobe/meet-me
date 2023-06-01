@@ -7,7 +7,7 @@
             const lastMessage = event.chat.messages.pop()
         %>
 
-        <div class="event" data-url="chats/event/<%= event._id %>">
+        <div class="event" data-url="/chats/event/<%= event._id %>">
             <header class="title">
                 <h6><%= event.title %></h6>
             </header>
@@ -19,7 +19,7 @@
                     </div>
                     <time class="time">
                         <%=
-                            new Date(lastMessage.createdAt).toLocaleTimeString(undefined, {
+                            new Date(lastMessage.createdAt).toLocaleTimeString('uk', {
                                 hour: '2-digit',
                                 minute: '2-digit'
                             })
