@@ -227,4 +227,18 @@ const join = async (req, res) => {
   return res.status(400).json({ error: 'Join request error!' })
 }
 
-module.exports = { events, details, create, edit, add, update, remove, join }
+const list = async (req, res) => {
+  try {
+    const events = await Event.find()
+      .select('id title description image date location organizer participants createdAt updatedAt')
+      .populate('organizer')
+
+    return res.status(200).json({ message: 'Event list was successfully fetched!', events: events })
+  } catch (err) {
+    console.log(err)
+  }
+
+  return res.status(400).json({ error: 'Bad request!' })
+}
+
+module.exports = { events, details, create, edit, add, update, remove, join, list }

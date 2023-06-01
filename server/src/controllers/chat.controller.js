@@ -68,8 +68,8 @@ const sendMessage = async (req, res) => {
         const sentMessage = updatedEvent.chat.messages[sentMessageIndex]
 
         const currentMessageDate = sentMessage.createdAt
-        const previousMessageDate = sentMessageIndex > 0 ? updatedEvent.chat.messages[sentMessageIndex - 1].createdAt : currentMessageDate
-        const nextMessageDate = sentMessageIndex < updatedEvent.chat.messages.length - 1 ? updatedEvent.chat.messages[sentMessageIndex + 1].createdAt : currentMessageDate
+        const previousMessageDate = sentMessageIndex > 0 ? updatedEvent.chat.messages[sentMessageIndex - 1].createdAt : new Date(1970, 1, 1)
+        const nextMessageDate = sentMessageIndex < updatedEvent.chat.messages.length - 1 ? updatedEvent.chat.messages[sentMessageIndex + 1].createdAt : new Date(1970, 1, 1)
 
         const sameMessageBefore = !((sentMessageIndex > 0 && sentMessage.sender._id.toString() !== updatedEvent.chat.messages[sentMessageIndex - 1].sender._id.toString()) || sentMessageIndex === 0)
 
