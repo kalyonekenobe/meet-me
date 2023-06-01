@@ -66,17 +66,44 @@ const createChatMessageHtml = payload => {
   `
 }
 
+const handleWindowOnclick = () => {
+  const dropdowns = document.querySelectorAll('.dropdown')
+
+  window.onclick = event => {
+    if (dropdowns) {
+      dropdowns.forEach(dropdown => {
+        if (!dropdown.contains(event.target) && !dropdown.classList.contains('hidden')) {
+          dropdown.classList.toggle('hidden')
+        }
+      })
+    }
+  }
+}
+
 const handleNavbar = () => {
   const navbar = document.querySelector('.navbar')
+
   if (navbar) {
     const navbarButtons = navbar.querySelectorAll('.navigation > .link')
     navbarButtons.forEach(button => {
       if (window.location.pathname.trim() !== '/' || (window.location.pathname.trim() === '/' && button.href === `${window.location.origin}/events`)) {
-        if (`${window.location.origin}${window.location.pathname}`.includes(button.href)) {
+        if (`${window.location.origin}${window.location.pathname}`.includes(button.href) || (window.location.pathname.trim() === '/' && button.href === `${window.location.origin}/events`)) {
           button.classList.add('active')
         }
       }
     })
+
+    const profileContainer = navbar.querySelector('.profile-container')
+    const profileDropdown = navbar.querySelector('.profile-dropdown')
+
+    if (profileContainer && profileDropdown) {
+      profileContainer.onclick = () => {
+        const timeout = setTimeout(() => {
+          profileDropdown.classList.toggle('hidden')
+          clearTimeout(timeout)
+        }, 10)
+      }
+    }
   }
 }
 
@@ -147,7 +174,7 @@ const handleSignUpForm = () => {
 }
 
 const handleLogout = () => {
-  const logoutButton = document.querySelector('.logout-button')
+  const logoutButton = document.querySelector('.navbar .logout')
   if (logoutButton) {
     logoutButton.onclick = async event => {
       const response = await fetch('http://localhost:8000/logout', {
@@ -193,7 +220,6 @@ const handleMessageReceive = socket => {
       })
     }
 
-    console.log(window.location.pathname, chatId)
     if (window.location.pathname.includes(chatId)) {
       const chatContainer = document.querySelector('.chat-container .messages')
       const messageClassList = [ 'message-container' ]
@@ -292,6 +318,7 @@ const handleChatList = () => {
 
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {
+    handleWindowOnclick()
     handleNavbar()
     handleSignInForm()
     handleSignUpForm()

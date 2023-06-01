@@ -23,9 +23,32 @@
         </a>
     </nav>
     <div class="profile-container">
-        <a class="link" href="/profile">
-            <img src="/images/default-user-image.jpg" alt="User profile" width="26" height="26">
+        <a class="link username">
+            <%
+                let profilePicturePath = ''
+                if (authenticatedUser.profilePicture === 'default-user-image.jpg')
+                    profilePicturePath = `/images/${authenticatedUser.profilePicture}`
+                else
+                    profilePicturePath = `/uploads/images/users/${authenticatedUser.profilePicture}`
+            %>
+            <img src="<%= profilePicturePath %>" alt="User profile" width="26" height="26">
             <span><%= `${authenticatedUser.firstName} ${authenticatedUser.lastName}` %></span>
         </a>
+        <div class="dropdown profile-dropdown hidden">
+            <ul>
+                <li>
+                    <a class="profile link" href="/profile">Профіль</a>
+                </li>
+                <li>
+                    <a class="my-events link" href="/profile/events">Мої події</a>
+                </li>
+                <li>
+                    <a class="my-events link" href="/profile/join-requests/income">Мої запити на приєднання</a>
+                </li>
+                <li>
+                    <a class="logout link">Вихід</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

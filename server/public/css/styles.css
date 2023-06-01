@@ -22,13 +22,55 @@ body {
 .link {
   color: #F1F2F6;
   text-decoration: none !important;
+  cursor: pointer;
 }
 .link.active, .link:hover {
-  color: #FF8600;
+  color: #FF8600 !important;
 }
 .link svg {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.dropdown {
+  position: absolute !important;
+  width: 100%;
+  box-shadow: 0 0 10px -5px #000000;
+  z-index: 9;
+  right: 0;
+  top: calc(100% + 10px);
+  background: #FFFFFF;
+  padding: 5px;
+  border-radius: 5px;
+}
+.dropdown.hidden {
+  display: none;
+}
+.dropdown::before {
+  content: "";
+  position: absolute;
+  background: #FFFFFF;
+  border-radius: inherit;
+  display: block;
+  z-index: -1;
+  width: 32px;
+  height: 32px;
+  transform: rotate(45deg) translateY(calc(-50% + 10px));
+  right: 20px;
+  top: 0;
+}
+.dropdown ul {
+  margin: 0;
+}
+.dropdown .link {
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: #000000;
+  cursor: pointer;
+  background: #FFFFFF;
+}
+.dropdown .link:hover {
+  background: #F1F2F6;
 }
 
 .navbar {
@@ -88,10 +130,16 @@ body {
 .navbar .profile-container {
   display: inline-flex;
   align-items: center;
+  position: relative;
+  user-select: none;
+}
+.navbar .profile-container .profile-dropdown {
+  width: 230px;
 }
 .navbar .profile-container .link {
   display: inline-flex !important;
   align-items: center;
+  width: 100%;
 }
 .navbar .profile-container .link span {
   margin-bottom: 0 !important;

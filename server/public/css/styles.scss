@@ -18,14 +18,61 @@ body {
 .link {
   color: $color-anti-flash-white;
   text-decoration: none !important;
+  cursor: pointer;
 
   &.active, &:hover {
-    color: $color-ut-orange;
+    color: $color-ut-orange !important;
   }
 
   svg {
     width: $font-size-2xl;
     height: $font-size-2xl;
+  }
+}
+
+.dropdown {
+  position: absolute !important;
+  width: 100%;
+  box-shadow: 0 0 10px -5px $color-black;
+  z-index: 9;
+  right: 0;
+  top: calc(100% + 10px);
+  background: $color-white;
+  padding: 5px;
+  border-radius: 5px;
+
+  &.hidden {
+    display: none;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    background: $color-white;
+    border-radius: inherit;
+    display: block;
+    z-index: -1;
+    width: 32px;
+    height: 32px;
+    transform: rotate(45deg) translateY(calc(-50% + 10px));
+    right: 20px;
+    top: 0;
+  }
+
+  ul {
+    margin: 0;
+  }
+
+  .link {
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: $color-black;
+    cursor: pointer;
+    background: $color-white;
+
+    &:hover {
+      background: $color-anti-flash-white;
+    }
   }
 }
 
@@ -87,10 +134,17 @@ body {
   .profile-container {
     display: inline-flex;
     align-items: center;
+    position: relative;
+    user-select: none;
+
+    .profile-dropdown {
+      width: 230px;
+    }
 
     .link {
       display: inline-flex !important;
       align-items: center;
+      width: 100%;
 
       span {
         margin-bottom: 0 !important;
