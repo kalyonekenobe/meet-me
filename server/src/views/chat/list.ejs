@@ -1,8 +1,39 @@
 <%- include(`${partials}/root-layout-header`) %>
-<div class="fluid-container">
-    <%- include(`${partials}/navbar`) %>
-    <% events.forEach(event => { %>
-        <%= event %>
-    <% }) %>
+<%- include(`${partials}/navbar`) %>
+<div class="fluid-container d-flex chat-page-container">
+    <aside class="events">
+        <%
+        events.forEach(event => {
+            const lastMessage = event.chat.messages.pop()
+        %>
+
+        <div class="event" data-url="chats/event/<%= event._id %>">
+            <header class="title">
+                <h6><%= event.title %></h6>
+            </header>
+            <div class="last-message d-flex align-items-end">
+                <% if (lastMessage) { %>
+                    <div class="w-100">
+                        <span class="sender"><%= lastMessage.sender.firstName %> <%= lastMessage.sender.lastName %>: </span>
+                        <span class="message"><%= lastMessage.message %></span>
+                    </div>
+                    <time class="time">
+                        <%=
+                            new Date(lastMessage.createdAt).toLocaleTimeString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })
+                        %>
+                    </time>
+                <% } else { %>
+                    <span>Повідомлення поки що відсутні</span>
+                <% } %>
+            </div>
+        </div>
+        <% }) %>
+    </aside>
+    <main class="chat choose-chat">
+        <h4 class="choose-chat-heading">Оберіть чат, щоб почати спілкування</h4>
+    </main>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

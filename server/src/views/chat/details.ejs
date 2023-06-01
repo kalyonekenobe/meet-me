@@ -45,17 +45,40 @@
                         profileImagePath = `/uploads/images/users/${message.sender.profilePicture}`
                     else
                         profileImagePath = `/images/${message.sender.profilePicture}`
+
+                    const currentMessageDate = new Date(`${message.createdAt} UTC`)
+                    const previousMessageDate = index < event.chat.messages.length - 1 ? new Date(`${event.chat.messages[index + 1].createdAt} UTC`) : new Date(1970, 1, 1)
+                    const nextMessageDate = index > 0 ? new Date(`${event.chat.messages[index - 1].createdAt} UTC`) : new Date(1970, 1, 1)
+
+                    const sameSenderBefore = !((index > 0 && message.sender._id.toString() !== event.chat.messages[index - 1].sender._id.toString()) || index === 0)
+                    const sameSenderAfter = !((index < event.chat.messages.length - 1 && message.sender._id.toString() !== event.chat.messages[index + 1].sender._id.toString()) || index === event.chat.messages.length - 1)
+
+                    let dateFormatterOptions = { weekday: 'long', month: 'long', day: 'numeric' }
+
+                    if (currentMessageDate.getFullYear() !== new Date().getFullYear()) {
+                        dateFormatterOptions = { ...dateFormatterOptions, year: 'numeric' }
+                    }
+
+                    const dateFormatter = new Intl.DateTimeFormat('uk', dateFormatterOptions)
+
+                    const isNewMessageDate = currentMessageDate.getDate() !== previousMessageDate.getDate()
+                        || currentMessageDate.getMonth() !== previousMessageDate.getMonth()
+                        || currentMessageDate.getFullYear() !== previousMessageDate.getFullYear()
+
+                    const isNextMessageNewDate = currentMessageDate.getDate() !== nextMessageDate.getDate()
+                        || nextMessageDate.getMonth() !== nextMessageDate.getMonth()
+                        || nextMessageDate.getFullYear() !== nextMessageDate.getFullYear()
                 %>
                     <div class="message-container<%= message.sender._id.toString() === authenticatedUser._id.toString() ? ' my-message' : '' %>">
                         <div class="profile-image">
-                            <% if ((index > 0 && message.sender._id.toString() !== event.chat.messages[index - 1].sender._id.toString()) || index === 0) { %>
+                            <% if (!sameSenderBefore || isNextMessageNewDate) { %>
                                 <a href="/users/<%= message.sender._id %>">
                                     <img src="<%= profileImagePath %>" alt="User profile photo">
                                 </a>
                             <% } %>
                         </div>
                         <div class="message">
-                            <% if ((index < event.chat.messages.length - 1 && message.sender._id.toString() !== event.chat.messages[index + 1].sender._id.toString()) || index === event.chat.messages.length - 1) { %>
+                            <% if (!sameSenderAfter || isNewMessageDate) { %>
                                 <header>
                                     <span class="sender">
                                         <%= message.sender.firstName %> <%= message.sender.lastName %>
@@ -80,6 +103,11 @@
                             </footer>
                         </div>
                     </div>
+                    <% if (isNewMessageDate) { %>
+                        <div class="date-delimiter">
+                            <span><%= dateFormatter.format(currentMessageDate) %></span>
+                        </div>
+                    <% } %>
                 <% }) %>
             </div>
         </div>
@@ -89,7 +117,9 @@
                     <div class="form-content">
                         <div class="form-group col-12">
                             <div class="form-item col-12">
-                                <input type="text" placeholder="Повідомлення" name="message">
+                                <label class="w-100">
+                                    <input type="text" placeholder="Повідомлення" name="message" id="message">
+                                </label>
                                 <input type="submit" class="button button-persian-indigo" value="Надіслати">
                             </div>
                         </div>

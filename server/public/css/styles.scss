@@ -28,6 +28,10 @@ body {
   top: 0;
   z-index: 10;
 
+  & + div {
+    margin-top: 57px;
+  }
+
   h1 {
     @include font($font-family: $font-family-nunito, $font-size: $font-size-2xl, $font-weight: 700);
     margin: 0;
@@ -63,6 +67,7 @@ body {
       padding: 15px;
       margin-inline: 10px;
       font-size: $font-size-xl;
+      border-bottom: 3px solid $color-persian-indigo;
 
       &.active {
         border-bottom: 3px solid $color-ut-orange;
@@ -309,9 +314,23 @@ body {
     display: flex;
     flex-direction: column;
 
+    &.choose-chat {
+      align-items: center;
+      justify-content: center;
+
+      .choose-chat-heading {
+        @include font($font-size: $font-size-base, $font-weight: 600);
+        background: rgba($color-black, 0.02);
+        box-shadow: 0 0 5px -5px black;
+        padding: 5px 10px;
+        border-radius: 15px;
+      }
+    }
+
     .chat-header, .chat-container, .chat-footer {
       width: 100%;
       flex: 0 1 auto;
+      position: relative;
     }
 
     .chat-container {
@@ -321,6 +340,7 @@ body {
     .chat-header {
       padding: 15px 20px;
       box-shadow: 0 3px 5px -5px black;
+      z-index: 3;
 
       h2 {
         @include font($font-size: $font-size-xl, $font-weight: 600);
@@ -331,14 +351,44 @@ body {
     .chat-footer {
       padding: 10px 20px;
       box-shadow: 0 -3px 5px -5px black;
+      z-index: 3;
 
       #send-message-form {
+
+        label {
+          margin-right: 10px;
+        }
 
         input[type='text'] {
           @include font();
           margin-right: 10px;
           padding: 6px 10px;
         }
+      }
+    }
+
+    .date-delimiter {
+      @include font($font-size: $font-size-sm);
+      color: rgba($color-black, 0.5);
+      padding: 20px 10px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+
+      span {
+        background: $color-anti-flash-white;
+        padding: 5px 10px;
+        position: relative;
+        z-index: 2;
+      }
+
+      &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        border-bottom: 1px dashed rgba($color-black, 0.2);
+        top: calc(50% + 1px);
+        position: absolute;
       }
     }
 

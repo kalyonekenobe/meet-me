@@ -30,6 +30,9 @@ body {
   top: 0;
   z-index: 10;
 }
+.navbar + div {
+  margin-top: 57px;
+}
 .navbar h1 {
   font-family: "Nunito", sans-serif;
   font-size: 1.5rem;
@@ -68,6 +71,7 @@ body {
   padding: 15px;
   margin-inline: 10px;
   font-size: 1.25rem;
+  border-bottom: 3px solid #27187E;
 }
 .navbar nav a.active {
   border-bottom: 3px solid #FF8600;
@@ -293,9 +297,25 @@ body {
   display: flex;
   flex-direction: column;
 }
+.chat-page-container .chat.choose-chat {
+  align-items: center;
+  justify-content: center;
+}
+.chat-page-container .chat.choose-chat .choose-chat-heading {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.5rem;
+  background: rgba(0, 0, 0, 0.02);
+  box-shadow: 0 0 5px -5px black;
+  padding: 5px 10px;
+  border-radius: 15px;
+}
 .chat-page-container .chat .chat-header, .chat-page-container .chat .chat-container, .chat-page-container .chat .chat-footer {
   width: 100%;
   flex: 0 1 auto;
+  position: relative;
 }
 .chat-page-container .chat .chat-container {
   height: calc(100% - 112px);
@@ -303,6 +323,7 @@ body {
 .chat-page-container .chat .chat-header {
   padding: 15px 20px;
   box-shadow: 0 3px 5px -5px black;
+  z-index: 3;
 }
 .chat-page-container .chat .chat-header h2 {
   font-family: "Inter", sans-serif;
@@ -315,6 +336,10 @@ body {
 .chat-page-container .chat .chat-footer {
   padding: 10px 20px;
   box-shadow: 0 -3px 5px -5px black;
+  z-index: 3;
+}
+.chat-page-container .chat .chat-footer #send-message-form label {
+  margin-right: 10px;
 }
 .chat-page-container .chat .chat-footer #send-message-form input[type=text] {
   font-family: "Inter", sans-serif;
@@ -324,6 +349,32 @@ body {
   line-height: 1.5rem;
   margin-right: 10px;
   padding: 6px 10px;
+}
+.chat-page-container .chat .date-delimiter {
+  font-family: "Inter", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5rem;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 20px 10px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+.chat-page-container .chat .date-delimiter span {
+  background: #F1F2F6;
+  padding: 5px 10px;
+  position: relative;
+  z-index: 2;
+}
+.chat-page-container .chat .date-delimiter::after {
+  content: "";
+  display: block;
+  width: 100%;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+  top: calc(50% + 1px);
+  position: absolute;
 }
 .chat-page-container .chat .messages {
   display: flex;

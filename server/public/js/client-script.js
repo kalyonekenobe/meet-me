@@ -22,7 +22,7 @@ const createElement = (tag, content, classList = [], id) => {
 }
 
 const createChatMessageHtml = payload => {
-  const { message, sameSenderBefore } = payload
+  const { message, sameSenderBefore, isNewMessageDate } = payload
   let profileImagePath;
   if (message.sender.profilePicture !== 'default-user-image.jpg')
     profileImagePath = `/uploads/images/users/${message.sender.profilePicture}`
@@ -36,7 +36,7 @@ const createChatMessageHtml = payload => {
     </div>
     <div class="message">
     ${
-      !sameSenderBefore ?
+      (!sameSenderBefore || isNewMessageDate) ?
         `
         <header>
           <span class="sender">
@@ -69,7 +69,6 @@ const createChatMessageHtml = payload => {
 const handleNavbar = () => {
   const navbar = document.querySelector('.navbar')
   if (navbar) {
-    document.body.style.paddingTop = `${navbar.clientHeight}px`
     const navbarButtons = navbar.querySelectorAll('.navigation > .link')
     navbarButtons.forEach(button => {
       if (window.location.pathname.trim() !== '/' || (window.location.pathname.trim() === '/' && button.href === `${window.location.origin}/events`)) {
@@ -167,20 +166,39 @@ const connectToChat = (socket, chat) => {
 
 const handleMessageReceive = socket => {
   socket.on('receive-message', payload => {
-    const { message, token, sameSenderBefore } = payload
+    const { message, token, sameSenderBefore, isNewMessageDate, isNextMessageNewDate } = payload
     const chatContainer = document.querySelector('.chat-container .messages')
     const messageClassList = [ 'message-container' ]
+
     if (token === getCookieByName('X-Access-Token')) {
       messageClassList.push('my-message')
     }
-    const messageContainer = createElement('div', createChatMessageHtml({ message, sameSenderBefore}), messageClassList)
-    if (sameSenderBefore && chatContainer.firstChild) {
+
+    const messageContainer = createElement('div', createChatMessageHtml(payload), messageClassList)
+
+    if (sameSenderBefore && !isNewMessageDate && chatContainer.firstChild) {
       const lastMessage = chatContainer.querySelector('.message-container')
       const image = lastMessage.querySelector('.profile-image img')
       if (image) {
         image.remove()
       }
     }
+
+    const currentMessageDate = new Date(`${new Date(message.createdAt)} UTC`)
+    let dateFormatterOptions = { weekday: 'long', month: 'long', day: 'numeric' }
+
+    if (currentMessageDate.getFullYear() !== new Date().getFullYear()) {
+      dateFormatterOptions = { ...dateFormatterOptions, year: 'numeric' }
+    }
+
+    const dateFormatter = new Intl.DateTimeFormat('uk', dateFormatterOptions)
+
+    if (isNewMessageDate) {
+      const messagesDateDelimiterHtml = `<span>${dateFormatter.format(currentMessageDate)}</span>`
+      const messagesDateDelimiter = createElement('div', messagesDateDelimiterHtml, [ 'date-delimiter' ])
+      chatContainer.insertBefore(messagesDateDelimiter, chatContainer.firstChild)
+    }
+
     chatContainer.insertBefore(messageContainer, chatContainer.firstChild)
   })
 }
@@ -202,11 +220,12 @@ const handleSendMessageForm = (socket, chat) => {
       })
 
       if (response.status === 200) {
-        const { sentMessage, sameSenderBefore } = await response.json()
+        const { sentMessage, sameSenderBefore, isNewMessageDate } = await response.json()
         const payload = {
           message: sentMessage,
           token: getCookieByName('X-Access-Token'),
-          sameSenderBefore: sameSenderBefore
+          sameSenderBefore: sameSenderBefore,
+          isNewMessageDate: isNewMessageDate
         }
         socket.emit('send-message', payload, chat);
         sendMessageForm.message.value = ''

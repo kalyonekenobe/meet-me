@@ -4,7 +4,7 @@ const {notFound} = require("../tools/not-found");
 
 const chats = async (req, res) => {
   try {
-    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } })
+    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).populate('chat.messages.sender')
     const payload = {
       title: `Chats`,
       events: events,
@@ -66,10 +66,27 @@ const sendMessage = async (req, res) => {
       const sentMessageIndex = updatedEvent.chat.messages.findLastIndex(message => message.sender._id.toString() === req.user._id.toString())
       if (sentMessageIndex) {
         const sentMessage = updatedEvent.chat.messages[sentMessageIndex]
+
+        const currentMessageDate = new Date(`${sentMessage.createdAt} UTC`)
+        const previousMessageDate = sentMessageIndex > 0 ? new Date(`${updatedEvent.chat.messages[sentMessageIndex - 1].createdAt} UTC`) : new Date(1970, 1, 1)
+        const nextMessageDate = sentMessageIndex < updatedEvent.chat.messages.length - 1 ? new Date(`${updatedEvent.chat.messages[sentMessageIndex + 1].createdAt} UTC`) : new Date(1970, 1, 1)
+
+        const sameMessageBefore = !((sentMessageIndex > 0 && sentMessage.sender._id.toString() !== updatedEvent.chat.messages[sentMessageIndex - 1].sender._id.toString()) || sentMessageIndex === 0)
+
+        const isNewMessageDate = currentMessageDate.getDate() !== previousMessageDate.getDate()
+          || currentMessageDate.getMonth() !== previousMessageDate.getMonth()
+          || currentMessageDate.getFullYear() !== previousMessageDate.getFullYear()
+
+        const isNextMessageNewDate = currentMessageDate.getDate() !== nextMessageDate.getDate()
+          || nextMessageDate.getMonth() !== nextMessageDate.getMonth()
+          || nextMessageDate.getFullYear() !== nextMessageDate.getFullYear()
+
         return res.status(200).json({
           message: 'Message was successfully sent.',
           sentMessage: sentMessage,
-          sameSenderBefore: !((sentMessageIndex > 0 && sentMessage.sender._id.toString() !== updatedEvent.chat.messages[sentMessageIndex - 1].sender._id.toString()) || sentMessageIndex === 0)
+          sameSenderBefore: sameMessageBefore,
+          isNewMessageDate: isNewMessageDate,
+          isNextMessageNewDate: isNextMessageNewDate
         })
       }
     }
