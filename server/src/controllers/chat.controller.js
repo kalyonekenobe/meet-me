@@ -67,9 +67,9 @@ const sendMessage = async (req, res) => {
       if (sentMessageIndex) {
         const sentMessage = updatedEvent.chat.messages[sentMessageIndex]
 
-        const currentMessageDate = new Date(`${sentMessage.createdAt} UTC`)
-        const previousMessageDate = sentMessageIndex > 0 ? new Date(`${updatedEvent.chat.messages[sentMessageIndex - 1].createdAt} UTC`) : new Date(1970, 1, 1)
-        const nextMessageDate = sentMessageIndex < updatedEvent.chat.messages.length - 1 ? new Date(`${updatedEvent.chat.messages[sentMessageIndex + 1].createdAt} UTC`) : new Date(1970, 1, 1)
+        const currentMessageDate = sentMessage.createdAt
+        const previousMessageDate = sentMessageIndex > 0 ? updatedEvent.chat.messages[sentMessageIndex - 1].createdAt : currentMessageDate
+        const nextMessageDate = sentMessageIndex < updatedEvent.chat.messages.length - 1 ? updatedEvent.chat.messages[sentMessageIndex + 1].createdAt : currentMessageDate
 
         const sameMessageBefore = !((sentMessageIndex > 0 && sentMessage.sender._id.toString() !== updatedEvent.chat.messages[sentMessageIndex - 1].sender._id.toString()) || sentMessageIndex === 0)
 
@@ -78,8 +78,8 @@ const sendMessage = async (req, res) => {
           || currentMessageDate.getFullYear() !== previousMessageDate.getFullYear()
 
         const isNextMessageNewDate = currentMessageDate.getDate() !== nextMessageDate.getDate()
-          || nextMessageDate.getMonth() !== nextMessageDate.getMonth()
-          || nextMessageDate.getFullYear() !== nextMessageDate.getFullYear()
+          || currentMessageDate.getMonth() !== nextMessageDate.getMonth()
+          || currentMessageDate.getFullYear() !== nextMessageDate.getFullYear()
 
         return res.status(200).json({
           message: 'Message was successfully sent.',

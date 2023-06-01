@@ -46,9 +46,9 @@
                     else
                         profileImagePath = `/images/${message.sender.profilePicture}`
 
-                    const currentMessageDate = new Date(`${message.createdAt} UTC`)
-                    const previousMessageDate = index < event.chat.messages.length - 1 ? new Date(`${event.chat.messages[index + 1].createdAt} UTC`) : new Date(1970, 1, 1)
-                    const nextMessageDate = index > 0 ? new Date(`${event.chat.messages[index - 1].createdAt} UTC`) : new Date(1970, 1, 1)
+                    const currentMessageDate = message.createdAt
+                    const previousMessageDate = index < event.chat.messages.length - 1 ? event.chat.messages[index + 1].createdAt : currentMessageDate
+                    const nextMessageDate = index > 0 ? event.chat.messages[index - 1].createdAt : currentMessageDate
 
                     const sameSenderBefore = !((index > 0 && message.sender._id.toString() !== event.chat.messages[index - 1].sender._id.toString()) || index === 0)
                     const sameSenderAfter = !((index < event.chat.messages.length - 1 && message.sender._id.toString() !== event.chat.messages[index + 1].sender._id.toString()) || index === event.chat.messages.length - 1)
@@ -66,8 +66,8 @@
                         || currentMessageDate.getFullYear() !== previousMessageDate.getFullYear()
 
                     const isNextMessageNewDate = currentMessageDate.getDate() !== nextMessageDate.getDate()
-                        || nextMessageDate.getMonth() !== nextMessageDate.getMonth()
-                        || nextMessageDate.getFullYear() !== nextMessageDate.getFullYear()
+                        || currentMessageDate.getMonth() !== nextMessageDate.getMonth()
+                        || currentMessageDate.getFullYear() !== nextMessageDate.getFullYear()
                 %>
                     <div class="message-container<%= message.sender._id.toString() === authenticatedUser._id.toString() ? ' my-message' : '' %>">
                         <div class="profile-image">
@@ -93,7 +93,7 @@
                                 <div class="time">
                                     <time>
                                         <%=
-                                            message.createdAt.toLocaleTimeString(undefined, {
+                                            message.createdAt.toLocaleTimeString('uk', {
                                                 hour: '2-digit',
                                                 minute: '2-digit'
                                             })
