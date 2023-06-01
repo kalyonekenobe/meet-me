@@ -4,10 +4,10 @@ const {notFound} = require("../tools/not-found");
 
 const chats = async (req, res) => {
   try {
-    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).select('chat')
+    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).populate('chat.messages.sender')
     const payload = {
       title: `Chats`,
-      chats: events.map(event => event.chat),
+      events: events,
       authenticatedUser: req.user,
     }
 
@@ -19,14 +19,17 @@ const chats = async (req, res) => {
 }
 
 const details = async (req, res) => {
+
   try {
     const { id } = req.params
-    const event = await Event.findOne({ _id: id, participants: { $elemMatch: { $eq: req.user } } })
+    const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).populate('chat.messages.sender')
+    const event = await Event.findOne({ _id: id, participants: { $elemMatch: { $eq: req.user } } }).populate('chat.messages.sender')
 
     if (event) {
       const payload = {
         title: `Chat: ${event.title}`,
-        chat: event.chat,
+        events: events,
+        event: event,
         authenticatedUser: req.user
       }
 
@@ -51,17 +54,41 @@ const sendMessage = async (req, res) => {
     const message = {
       sender: req.user,
       message: req.body.message,
-      authenticatedUser: req.user,
     }
 
-    const sentMessage = await Event.updateOne({ _id: id }, {
+    const updatedEvent = await Event.findOneAndUpdate({ _id: id }, {
       $push: {
         'chat.messages': message
       }
-    }, { new: true })
+    }, { new: true }).populate('chat.messages.sender')
 
-    if (sentMessage) {
-      return res.status(200).json({ message: 'Message was successfully sent.' })
+    if (updatedEvent) {
+      const sentMessageIndex = updatedEvent.chat.messages.findLastIndex(message => message.sender._id.toString() === req.user._id.toString())
+      if (sentMessageIndex) {
+        const sentMessage = updatedEvent.chat.messages[sentMessageIndex]
+
+        const currentMessageDate = new Date(`${sentMessage.createdAt} UTC`)
+        const previousMessageDate = sentMessageIndex > 0 ? new Date(`${updatedEvent.chat.messages[sentMessageIndex - 1].createdAt} UTC`) : new Date(1970, 1, 1)
+        const nextMessageDate = sentMessageIndex < updatedEvent.chat.messages.length - 1 ? new Date(`${updatedEvent.chat.messages[sentMessageIndex + 1].createdAt} UTC`) : new Date(1970, 1, 1)
+
+        const sameMessageBefore = !((sentMessageIndex > 0 && sentMessage.sender._id.toString() !== updatedEvent.chat.messages[sentMessageIndex - 1].sender._id.toString()) || sentMessageIndex === 0)
+
+        const isNewMessageDate = currentMessageDate.getDate() !== previousMessageDate.getDate()
+          || currentMessageDate.getMonth() !== previousMessageDate.getMonth()
+          || currentMessageDate.getFullYear() !== previousMessageDate.getFullYear()
+
+        const isNextMessageNewDate = currentMessageDate.getDate() !== nextMessageDate.getDate()
+          || nextMessageDate.getMonth() !== nextMessageDate.getMonth()
+          || nextMessageDate.getFullYear() !== nextMessageDate.getFullYear()
+
+        return res.status(200).json({
+          message: 'Message was successfully sent.',
+          sentMessage: sentMessage,
+          sameSenderBefore: sameMessageBefore,
+          isNewMessageDate: isNewMessageDate,
+          isNextMessageNewDate: isNextMessageNewDate
+        })
+      }
     }
   } catch (err) {
     console.log(err)

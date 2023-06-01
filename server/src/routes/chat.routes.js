@@ -4,7 +4,7 @@ const {chats, details, sendMessage} = require("../controllers/chat.controller");
 const router = express.Router()
 
 router.get('/chats', requiresAuth(), chats)
-router.get('/events/:id/chat', requiresAuth(), details)
-router.post('/events/:id/chat/send-message', requiresAuth(), sendMessage)
+router.get('/chats/event/:id', requiresAuth(), details)
+router.post('/chats/event/:id/send-message', requiresAuth(), sendMessage)
 
 module.exports = router
