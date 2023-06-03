@@ -302,6 +302,10 @@ const handleChatList = () => {
         chatUrls.push(url)
       }
 
+      if (window.location.pathname.includes(url)) {
+        chat.classList.add('active')
+      }
+
       chat.onclick = () => {
         redirect(url)
       }
@@ -316,6 +320,64 @@ const handleChatList = () => {
   }
 }
 
+const handleJoinRequestSelect = () => {
+  const joinRequestSelect = document.querySelector('.join-requests-type')
+
+  if (joinRequestSelect) {
+    joinRequestSelect.onchange = event => {
+      redirect(`/profile/join-requests/${event.target.value}`)
+    }
+  }
+}
+
+const handleJoinRequestsButtons = () => {
+  const joinRequestsButtons = document.querySelectorAll('.join-request-action')
+
+  if (joinRequestsButtons) {
+    joinRequestsButtons.forEach(button => {
+      button.onclick = async () => {
+        const { id, action } = button.dataset
+
+        const response = await fetch(`${window.location.origin}/profile/join-requests/${id}/${action}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (response.status === 200) {
+          const actionsCell = button.closest('.actions')
+          const buttonRow = button.closest('.join-request')
+
+
+          if (actionsCell) {
+            actionsCell.innerHTML = `<span class="no-actions">Не передбачено</span>`
+
+            if (buttonRow) {
+              const statusCell = buttonRow.querySelector('.status')
+
+              if (statusCell) {
+
+                switch (action) {
+                  case 'accept':
+                    statusCell.innerHTML = `<span class="accepted">Прийнято</span>`
+                    break
+                  case 'reject':
+                    statusCell.innerHTML = `<span class="rejected">Відхилено</span>`
+                    break
+                  default:
+                    statusCell.innerHTML = `<span class="pending">На розгляді</span>`
+                    break
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+}
+
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
@@ -324,5 +386,7 @@ document.onreadystatechange = () => {
     handleSignUpForm()
     handleLogout()
     handleChatList()
+    handleJoinRequestSelect()
+    handleJoinRequestsButtons()
   }
 }

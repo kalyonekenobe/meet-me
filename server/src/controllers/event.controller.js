@@ -205,7 +205,7 @@ const join = async (req, res) => {
     }
 
     const updatedEvent = await Event.findOneAndUpdate(
-      { _id: id,
+      { _id: id, organizer: { $ne: joinRequest.candidate },
               $or: [
                 { 'joinRequests.candidate': { $ne: req.user._id } },
                 { 'joinRequests.candidate': { $eq: req.user._id }, 'joinRequests.status': { $nin: [ 'accepted', 'pending' ] } }
