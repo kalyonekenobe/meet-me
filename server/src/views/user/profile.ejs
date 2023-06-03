@@ -1,6 +1,91 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<div class="fluid-container">
-    <%= authenticatedUser %>
+<!-- main -->
+
+<!-- sidebar -->
+<div class="sidebar-user">
+
+    <div class="user-container">
+        <div class="user-picture"><img src="/images/<%=authenticatedUser.profilePicture%>" alt="profile picture"></div>
+        <div class="user-info">
+            <p class="user-name"><%=`${authenticatedUser.firstName} ${authenticatedUser.lastName}`%></p>
+            <p><%=authenticatedUser.email%></p>
+            <p><% const date = new Date(authenticatedUser.dateOfBirth)%>
+                <% const day = date.getDate()<10?`0${date.getDate()}`:date.getDate()%>
+                <% const month = date.getMonth()+1<10?`0${date.getMonth()+1}`:date.getMonth()+1%>
+                <%=`${day}.${month}.${date.getFullYear()}`%>
+            </p>
+            <p><%=authenticatedUser.bio%></p>
+        </div>
+        <br>
+        <div class="user-buttons">
+            <i class="fa-solid fa-user-pen fa-xl edit-user"></i>
+            <i class="fa-solid fa-user-xmark fa-xl delete-user"></i>
+        </div>
+    </div>
+
 </div>
+
+<div class="user-events">
+    <h2>Події користувача</h2>
+
+    <%events.forEach(e =>{%>
+    <div class="user-activity">
+        <div class="row justify-content-between user-activity-name-row">
+            <h4 class="user-activity-name col-6"><%=e.title%></h4>
+            <div class="col-6 user-activity-edit-delete-icons">
+                <i class="fa-solid fa-pen-to-square fa-lg edit-user-activity"></i>
+                <i class="fa-solid fa-trash fa-lg delete-user-activity"></i>
+            </div>
+        </div>
+
+        <div class="row justify-content-around">
+            <div class="col-3 user-activity-img"><img src="/images/<%=e.image%>" alt="event photo"></div>
+
+            <div class="col-8">
+                <div class="row justify-content-around user-activity-row">
+                    <div class="col-2">
+                        <i class="fa-regular fa-clock fa-2xl"></i>
+                        <%
+                            const date = new Date(e.date);
+                            const monthAndDayOptions = {
+                                month: 'long',
+                                day: 'numeric',
+                            };
+                            const hourAndMinuteOptions = {
+                                hour: 'numeric',
+                                minute: 'numeric',
+                            };
+                            const monthAndDay = date.toLocaleString('en', monthAndDayOptions);
+                            const hourAndMinute= date.toLocaleString('ua', hourAndMinuteOptions);
+                        %>
+                        <p><%=monthAndDay%></p>
+                        <p><%=hourAndMinute%></p>
+                        <p></p>
+                    </div>
+
+                    <div class="col-3">
+                        <i class="fa-solid fa-earth-americas fa-2xl"></i>
+                        <p><%=e.location%></p>
+
+                    </div>
+
+                    <div class="col-2">
+                        <i class="fa-solid fa-people-group fa-2xl"></i>
+                        <p><%=e.participants.length%></p>
+                    </div>
+                </div>
+
+                <div class="user-activity-text">
+                    <%=e.description%>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <%})%>
+
+</div>
+
 <%- include(`${partials}/root-layout-footer`) %>

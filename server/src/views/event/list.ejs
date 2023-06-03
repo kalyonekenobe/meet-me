@@ -1,8 +1,87 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<div class="fluid-container">
-    <% events.forEach(event => { %>
-        <%= event %>
-    <% }) %>
+
+
+<!-- sidebar -->
+<div class="sidebar-activities">
+
+    <form  method="POST" action="/">
+        <div><i class="fa-solid fa-gear fa-2xl"></i></div>
+
+        <div>
+            <label for="activityType" class="form-label"><i class="fa-solid fa-icons fa-xl"></i></label>
+            <select class="form-select" id="activityType" name="activityType">
+                <option selected>Тип активності</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="date" class="form-label"><i class="fa-solid fa-calendar fa-xl"></i></label>
+            <input type="date" class="form-control" id="date" name="date">
+        </div>
+
+        <div>
+            <label for="time" class="form-label"><i class="fa-solid fa-clock fa-xl"></i></label>
+            <input type="time" class="form-control" id="time" name="time">
+        </div>
+
+        <div>
+            <label for="city" class="form-label"><i class="fa-solid fa-location-dot fa-xl"></i></label>
+            <input type="text" class="form-control" id="city" name="city" placeholder="Назва міста">
+        </div>
+
+        <br>
+        <button class="btn btn-outline-light btn-submit btn-search-activities" type="submit">Пошук</button>
+    </form>
+
+</div>
+
+<!-- main -->
+<div class="main-activities">
+    <div class="row align-items-center justify-content-around">
+        <div class="col-1 button-col btn-heart"><i id="join-request" class="fa-solid fa-heart fa-2xl event-button"></i></div>
+
+        <div class="activity">
+
+            <h2 id="title" style="font-family: 'Ubuntu';"></h2>
+
+            <div class="row activity-icons-row">
+
+                <div class="col-3">
+                    <i class="fa-regular fa-clock fa-2xl"></i>
+                    <p id="event-day"></p>
+                    <p id="event-hours"></p>
+                </div>
+
+                <div class="col-6">
+                    <i class="fa-solid fa-earth-americas fa-2xl"></i>
+                    <p id="location"></p>
+                </div>
+
+                <div class="col-3">
+                    <i class="fa-solid fa-people-group fa-2xl"></i>
+                    <p id="members-number"></p>
+                </div>
+
+            </div>
+
+            <div class="row justify-content-around ">
+
+                <div class="col-4 activity-img"><img id="event-img" src="" alt="event picture"></div>
+                <div id="description" class="col-6 activity-text">
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="col-1 button-col btn-x"><i id="skip" class="fa-solid fa-circle-xmark fa-2xl event-button"></i></div>
+
+    </div>
+
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

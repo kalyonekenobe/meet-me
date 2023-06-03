@@ -10,9 +10,9 @@ const Calendar = require("../models/calendar.model");
 const profile = async (req, res) => {
   const payload = {
     title: `Profile`,
-    authenticatedUser: req.user
+    authenticatedUser: req.user,
+     events : await Event.find({organizer:req.user._id})
   }
-
   if (payload.authenticatedUser) {
     return res.render(pathResolver.views('user/profile'), payload)
   }
@@ -20,6 +20,8 @@ const profile = async (req, res) => {
   console.log('Cannot show profile page because req.user is undefined!')
   return notFound(req, res)
 }
+
+
 
 const details = async (req, res) => {
   try {

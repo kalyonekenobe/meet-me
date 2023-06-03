@@ -315,6 +315,84 @@ const handleChatList = () => {
     }
   }
 }
+const handleEventsPage = async () => {
+  const pathname = window.location.pathname
+
+  let eventsList;
+  if (pathname === '/' || pathname === '/events') {
+    const response = await fetch(`${window.location.origin}/events`, {
+    method: 'POST',
+        headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  if (response.status === 200) {
+    const {events} = await response.json()
+    eventsList = structuredClone(events);
+    //перевірка на наявність івентів, для прикладу
+    if(events.length === 0)
+      return;
+
+    let currentEvent = deleteAndReturnRandomElement(eventsList);
+    showEventBlock(currentEvent);
+
+    const eventButtons = document.querySelectorAll('.event-button');
+    eventButtons.forEach(btn => {
+      btn.addEventListener('click',async e => {
+        if(btn.getAttribute('id') === 'join-request'){
+          const response = await fetch(`/events/join/${currentEvent._id}`, {
+            method: 'Post',
+          })
+          if(response.status === 200)
+            alert('Запит на приєднання надіслано успішно!');//це можна убрать
+          else
+            alert('ой,помилка');//це можна убрать
+        }
+          if(eventsList.length === 0)
+            eventsList = events.filter(e => e._id !== currentEvent._id);
+          currentEvent = deleteAndReturnRandomElement(eventsList);
+          showEventBlock(currentEvent);
+        })
+    });
+  }
+}
+}
+ const  showEventBlock = (event) =>{
+  const title = document.getElementById('title');
+  const location = document.getElementById('location');
+  const eventDay = document.getElementById('event-day');
+  const eventHours = document.getElementById('event-hours');
+  const membersNumber = document.getElementById('members-number');
+  const description = document.getElementById('description');
+  const image = document.getElementById('event-img');
+  image.setAttribute('src',`/images/${event.image}`)
+  title.innerText = event.title;
+
+  const date = new Date(event.date);
+  const monthAndDayOptions = {
+    month: 'long',
+    day: 'numeric',
+  };
+  const hourAndMinuteOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+  };
+  eventDay.innerText = date.toLocaleString('en', monthAndDayOptions);//можна зробити щоб дати були українською окремою функцією
+  eventHours.innerText = date.toLocaleString('ua', hourAndMinuteOptions);
+  membersNumber.innerText = event.participants.length;
+  description.innerText = event.description;
+  location.innerText = event.location;
+
+}
+
+//функція що повертає рандомне число і видаляє з масива
+const  deleteAndReturnRandomElement = (array) => {
+  const index = Math.floor(Math.random() * array.length);
+  const res = array[index];
+  array = array.filter(e => e._id !== res._id);
+  return res;
+}
+
 
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {
@@ -324,5 +402,6 @@ document.onreadystatechange = () => {
     handleSignUpForm()
     handleLogout()
     handleChatList()
+    handleEventsPage()
   }
 }

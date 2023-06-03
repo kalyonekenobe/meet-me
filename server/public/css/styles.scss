@@ -553,3 +553,737 @@ body {
     }
   }
 }
+
+/*стилі для сторінки івентів*/
+
+
+.user-avatar:hover{
+  color: #27187E;
+}
+
+/* ----------------- sidebar ------------------------*/
+.sidebar-activities{
+  height: 100%;
+  width: 320px;
+  position: fixed;
+  z-index: 1;
+  top: 50px;
+  left: 0;
+  background-color: #AEB8FE;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidebar-activities form{
+  text-align: center;
+  margin: auto;
+  width: 225px;
+}
+
+.sidebar-activities div{
+  margin-bottom: 25px;
+}
+
+.sidebar-activities .fa-solid{
+  color: #27187E;
+  margin-bottom: 5px;
+}
+
+.fa-gear{
+  margin: 40px 0 40px 0 !important;
+}
+
+.btn-search-activities{
+  border: 2px solid #27187E;
+  color: #27187E;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/*----------------------- main activities ------------------- */
+.main-activities{
+  display: block;
+  margin-left: 320px;
+  padding: 0px 10px;
+  height: 100vh;
+  margin-top: 80px;
+}
+
+.activity{
+  width: 700px;
+  height: 500px;
+  background-color: white;
+  border-radius: 50px;
+  box-shadow: 5px 10px 18px #AEB8FE;
+  margin: auto;
+  padding: 40px;
+  text-align: center;
+}
+
+.button-col{
+  margin: auto;
+  font-size: 22px;
+}
+
+.btn-heart{
+  text-align: end;
+  color: #FF8600;
+}
+
+.btn-heart:hover{
+  color: #E07800;
+}
+
+.btn-x{
+  text-align: start;
+  color: #27187E;
+}
+
+.btn-x:hover{
+  color: #1B1155;
+}
+
+.activity-icons-row{
+  margin-top: 45px;
+  margin-bottom: 40px;
+  padding: 0 20px 0 20px;
+}
+
+.activity-icons-row i{
+  color: #FF8600;
+  margin-bottom: 22px;
+}
+
+.activity-icons-row p{
+  margin-bottom: 0;
+}
+
+.activity-img{
+  width: 300px;
+  height: 215px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px;
+  margin-left: 10px;
+}
+.activity-img img{
+  object-fit: cover;
+  border-radius: 15px;
+
+}
+
+.activity-text{
+  text-align: center;
+}
+
+/*-------------------- main calendar --------------------*/
+.cal-modal-container {
+  background: #E9EBED;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin-top: -30px;
+}
+.cal-modal {
+  background: #758BFD;
+  color: #fff;
+  padding: 40px 60px;
+  text-align: center;
+  border-radius: 15px;
+}
+.cal-modal h3 {
+  font-size: 37px;
+  font-weight: 900;
+  margin: 0 0 1rem;
+}
+#calendar {
+  display: inline-block;
+}
+#calendar .placeholder {
+  display: none;
+  width: 300px;
+}
+#calendar .flatpickr-calendar {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff;
+  top: 0;
+}
+/* це добавив Вова,бо сайдбар мав відступ зверху*/
+.sidebar-activities {
+  margin-top: 0px;
+}
+/* це добавив Вова,бо  сайдбар мав відступ зверху*/
+.navbar + .sidebar-activities{
+  margin-top: 0px;
+}
+#calendar .flatpickr-calendar .flatpickr-innerContainer {
+  overflow: visible;
+}
+#calendar .flatpickr-calendar .flatpickr-innerContainer .flatpickr-weekdays {
+  overflow: visible;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-month {
+  color: inherit;
+  margin-bottom: 10px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-month .flatpickr-current-month {
+  font-size: 16px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-month .flatpickr-current-month .numInputWrapper {
+  display: none;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month, #calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month {
+  top: calc(50% - 23px);
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month svg, #calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month svg {
+  height: 46px;
+  width: 46px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month svg path, #calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month svg path {
+  fill: #27187E;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month {
+  left: -60px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month {
+  right: -60px;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer {
+  max-width: 307.875px;
+  padding: 0 10px;
+  position: relative;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer::after {
+  content: '';
+  background: #343f48;
+  position: absolute;
+  top: -32px;
+  bottom: -230px;
+  right: 0;
+  width: 1px;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer:last-child::after {
+  content: none;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer .flatpickr-weekday {
+  color: #fff;
+  font-weight: 700;
+}
+#calendar .flatpickr-calendar .dayContainer {
+  box-shadow: none;
+  padding: 0 10px;
+  position: static;
+}
+#calendar .flatpickr-calendar .dayContainer:last-child::after {
+  content: none;
+}
+#calendar .flatpickr-calendar .flatpickr-day {
+  background: #fff;
+  border: 0;
+  color: #1d252c;
+  font-weight: 500;
+  transition: color 0.1s, background 0.1s;
+}
+#calendar .flatpickr-calendar .flatpickr-day:hover {
+  background: #27187E;
+  color: #fff;
+}
+#calendar .flatpickr-calendar .flatpickr-day.flatpickr-disabled, #calendar .flatpickr-calendar .flatpickr-day.flatpickr-disabled:hover {
+  background: none;
+  color: #fff;
+  cursor: default;
+}
+#calendar .flatpickr-calendar .flatpickr-day.selected:not(.hidden), #calendar .flatpickr-calendar .flatpickr-day.selected:not(.hidden):hover, #calendar .flatpickr-calendar .flatpickr-day.selected:not(.hidden):focus {
+  background: #27187E;
+  color: #fff;
+}
+#calendar .flatpickr-calendar .flatpickr-day.nextMonthDay, #calendar .flatpickr-calendar .flatpickr-day.prevMonthDay {
+  background: none;
+  color: rgba(207, 210, 211, .1) !important;
+  cursor: default;
+  visibility: visible;
+}
+#calendar .calendar-events {
+  display: block;
+  justify-content: space-around;
+  margin-top: 30px;
+  min-height: 36px;
+}
+@media screen and (min-width: 992px) {
+  #calendar .calendar-events {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+#calendar .calendar-events .event {
+  font-size: 29px;
+}
+#calendar .calendar-events .event .date {
+  color: #fff;
+  font-weight: 600;
+}
+#calendar .calendar-events .event .location {
+  color: #27187E;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+/*cтилі для профілю  користувача*/
+
+html, body{
+  font-family: 'Montserrat';
+  overflow: hidden;
+  background-color: #E9EBED;
+  height: 100%;
+}
+
+/*---------------------- navbar -----------------------*/
+.navbar{
+  background-color: #27187E;
+  color: white;
+}
+
+.nav-link, .navbar-brand{
+  color: white;
+}
+
+.navbar-brand{
+  font-weight: 600;
+  font-family: 'Ubuntu';
+}
+
+.nav-link:hover, .navbar-brand:hover{
+  color: #AEB8FE;
+}
+
+.user-avatar{
+  height: 33px;
+  width: 33px;
+  background-color: #AEB8FE;
+  border-radius: 20px;
+  text-align: center;
+  padding-top: 5px;
+}
+
+.user-avatar:hover{
+  color: #27187E;
+}
+
+/* ----------------- sidebar ------------------------*/
+.sidebar-activities{
+  height: 100%;
+  width: 320px;
+  position: fixed;
+  z-index: 1;
+  top: 50;
+  left: 0;
+  background-color: #AEB8FE;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidebar-activities form{
+  text-align: center;
+  margin: auto;
+  width: 225px;
+}
+
+.sidebar-activities div{
+  margin-bottom: 25px;
+}
+
+.sidebar-activities .fa-solid{
+  color: #27187E;
+  margin-bottom: 5px;
+}
+
+.fa-gear{
+  margin: 40px 0 40px 0 !important;
+}
+
+.btn-search-activities{
+  border: 2px solid #27187E;
+  color: #27187E;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/*----------------------- main activities ------------------- */
+.main-activities{
+  display: block;
+  margin-left: 320px;
+  padding: 0px 10px;
+  height: 100vh;
+  margin-top: 80px;
+}
+
+.activity{
+  width: 700px;
+  height: 500px;
+  background-color: white;
+  border-radius: 50px;
+  box-shadow: 5px 10px 18px #AEB8FE;
+  margin: auto;
+  padding: 40px;
+  text-align: center;
+}
+
+.button-col{
+  margin: auto;
+  font-size: 22px;
+}
+
+.btn-heart{
+  text-align: end;
+  color: #FF8600;
+}
+
+.btn-heart:hover{
+  color: #E07800;
+}
+
+.btn-x{
+  text-align: start;
+  color: #27187E;
+}
+
+.btn-x:hover{
+  color: #1B1155;
+}
+
+.activity-icons-row{
+  margin-top: 45px;
+  margin-bottom: 40px;
+  padding: 0 20px 0 20px;
+}
+
+.activity-icons-row i{
+  color: #FF8600;
+  margin-bottom: 22px;
+}
+
+.activity-icons-row p{
+  margin-bottom: 0;
+}
+
+.activity-img{
+  width: 300px;
+  height: 215px;
+  border-radius: 15px;
+  margin-left: 10px;
+}
+.activity-img img{
+  object-fit: cover;
+  width: 100%;
+  height:100%;
+  border-radius: 15px;
+
+}
+
+.activity-text{
+  text-align: center;
+}
+
+/*-------------------- main calendar --------------------*/
+.cal-modal-container {
+  background: #E9EBED;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin-top: -30px;
+}
+.cal-modal {
+  background: #758BFD;
+  color: #fff;
+  padding: 40px 60px;
+  text-align: center;
+  border-radius: 15px;
+}
+.cal-modal h3 {
+  font-size: 37px;
+  font-weight: 900;
+  margin: 0 0 1rem;
+}
+#calendar {
+  display: inline-block;
+}
+#calendar .placeholder {
+  display: none;
+  width: 300px;
+}
+#calendar .flatpickr-calendar {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff;
+  top: 0;
+}
+#calendar .flatpickr-calendar .flatpickr-innerContainer {
+  overflow: visible;
+}
+#calendar .flatpickr-calendar .flatpickr-innerContainer .flatpickr-weekdays {
+  overflow: visible;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-month {
+  color: inherit;
+  margin-bottom: 10px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-month .flatpickr-current-month {
+  font-size: 16px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-month .flatpickr-current-month .numInputWrapper {
+  display: none;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month, #calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month {
+  top: calc(50% - 23px);
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month svg, #calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month svg {
+  height: 46px;
+  width: 46px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month svg path, #calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month svg path {
+  fill: #27187E;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-prev-month {
+  left: -60px;
+}
+#calendar .flatpickr-calendar .flatpickr-months .flatpickr-next-month {
+  right: -60px;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer {
+  max-width: 307.875px;
+  padding: 0 10px;
+  position: relative;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer::after {
+  content: '';
+  background: #343f48;
+  position: absolute;
+  top: -32px;
+  bottom: -230px;
+  right: 0;
+  width: 1px;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer:last-child::after {
+  content: none;
+}
+#calendar .flatpickr-calendar .flatpickr-weekdays .flatpickr-weekdaycontainer .flatpickr-weekday {
+  color: #fff;
+  font-weight: 700;
+}
+#calendar .flatpickr-calendar .dayContainer {
+  box-shadow: none;
+  padding: 0 10px;
+  position: static;
+}
+#calendar .flatpickr-calendar .dayContainer:last-child::after {
+  content: none;
+}
+#calendar .flatpickr-calendar .flatpickr-day {
+  background: #fff;
+  border: 0;
+  color: #1d252c;
+  font-weight: 500;
+  transition: color 0.1s, background 0.1s;
+}
+#calendar .flatpickr-calendar .flatpickr-day:hover {
+  background: #27187E;
+  color: #fff;
+}
+#calendar .flatpickr-calendar .flatpickr-day.flatpickr-disabled, #calendar .flatpickr-calendar .flatpickr-day.flatpickr-disabled:hover {
+  background: none;
+  color: #fff;
+  cursor: default;
+}
+#calendar .flatpickr-calendar .flatpickr-day.selected:not(.hidden), #calendar .flatpickr-calendar .flatpickr-day.selected:not(.hidden):hover, #calendar .flatpickr-calendar .flatpickr-day.selected:not(.hidden):focus {
+  background: #27187E;
+  color: #fff;
+}
+#calendar .flatpickr-calendar .flatpickr-day.nextMonthDay, #calendar .flatpickr-calendar .flatpickr-day.prevMonthDay {
+  background: none;
+  color: rgba(207, 210, 211, .1) !important;
+  cursor: default;
+  visibility: visible;
+}
+#calendar .calendar-events {
+  display: block;
+  justify-content: space-around;
+  margin-top: 30px;
+  min-height: 36px;
+}
+@media screen and (min-width: 992px) {
+  #calendar .calendar-events {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+#calendar .calendar-events .event {
+  font-size: 29px;
+}
+#calendar .calendar-events .event .date {
+  color: #fff;
+  font-weight: 600;
+}
+#calendar .calendar-events .event .location {
+  color: #27187E;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+/*--------------- user page -----------------*/
+
+.sidebar-user{
+  height: 100vh;
+  width: 450px;
+  position: fixed;
+  z-index: 1;
+  top: 50px;
+  left: 0;
+  background-color: #AEB8FE;
+  overflow-x: hidden;
+  padding: 10px 30px 0 30px;
+}
+
+.user-events{
+  margin-left: 450px;
+  text-align: center;
+  height: inherit;
+  overflow-y: auto;
+  padding-bottom: 40px;
+  padding-top: 100px;
+}
+
+.user-picture{
+  width: 175px;
+  height: 175px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 100px;
+  margin: auto;
+  margin-bottom: 20px;
+}
+.user-picture img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 100px;
+
+}
+
+.user-container{
+  text-align: center;
+  margin-top: 20px;
+  color: white;
+}
+
+.user-name{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.edit-user{
+  margin-right: 25px;
+}
+
+.edit-user:hover, .delete-user:hover{
+  cursor: pointer;
+  color: #27187E;
+}
+
+.user-activity{
+  width: 1000px;
+  height: 320px;
+  background-color: white;
+  border-radius: 50px;
+  box-shadow: 5px 10px 18px #AEB8FE;
+  margin: 50px auto 50px auto;
+  padding: 20px;
+  text-align: center;
+  clear: both;
+}
+
+.user-activity-row{
+  margin-bottom: 15px;
+  padding: 10px 20px 0 10px;
+}
+
+.user-activity-row i{
+  color: #FF8600;
+  margin-bottom: 22px;
+}
+
+.user-activity-row p{
+  margin-bottom: 0;
+}
+
+.user-activity-img{
+  width: 300px;
+  height: 215px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px;
+  margin-left: 10px;
+}
+.user-activity-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+
+}
+
+.user-activity-name-row{
+  text-align: left;
+  margin: 0px 5px 15px 5px;
+}
+.navbar + .sidebar-user {
+  margin-top: 0px;
+}
+.edit-user-activity{
+  margin-right: 20px;
+}
+
+.user-activity-name{
+  font-weight: 500;
+  color: #27187E;
+}
+
+.user-activity-edit-delete-icons{
+  color: #758BFD;
+  text-align: end;
+  padding-right: 35px;
+}
+
+.edit-user-activity:hover, .delete-user-activity:hover{
+  color: #27187E;
+  cursor: pointer;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #758BFD;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #27187E;
+}
