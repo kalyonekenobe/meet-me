@@ -3,6 +3,14 @@ const redirect = path => {
   location.replace(url)
 }
 
+const isIterable = object => object != null && typeof object[Symbol.iterator] === 'function'
+
+const fetchFile = async (filepath, filename) => {
+  const image = await fetch(filepath)
+  const blob = await image.blob()
+  return new File([blob], filename, blob)
+}
+
 const getCookieByName = name => {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   if (match)
@@ -311,8 +319,11 @@ const handleChatList = () => {
       }
     })
 
-    handleMessageReceive(socket)
-    socket.emit('join-chat', chatUrls)
+
+    if (chatUrls.length > 0) {
+      handleMessageReceive(socket)
+      socket.emit('join-chat', chatUrls)
+    }
 
     if (window.location.pathname.match(new RegExp('/chats/event/[\d\s]*'))) {
       handleSendMessageForm(socket, window.location.pathname)
@@ -476,12 +487,12 @@ const handleAppendAdditionalImageInput = (input, container) => {
 }
 
 const handleAdditionalImagesContainer = () => {
-  const lastAdditionalImageInput = document.querySelector('#additional-images .additional-image:last-child')
+  const firstAdditionalImageInput = document.querySelector('#additional-images .additional-image:first-child')
 
-  if (lastAdditionalImageInput) {
-    const lastAdditionalImageInputContainer = lastAdditionalImageInput.closest('#additional-images')
+  if (firstAdditionalImageInput) {
+    const lastAdditionalImageInputContainer = firstAdditionalImageInput.closest('#additional-images')
     if (lastAdditionalImageInputContainer) {
-      handleAppendAdditionalImageInput(lastAdditionalImageInput, lastAdditionalImageInputContainer)
+      handleAppendAdditionalImageInput(firstAdditionalImageInput, lastAdditionalImageInputContainer)
     }
   }
 }
@@ -540,7 +551,121 @@ const handleCreateEventForm = () => {
   }
 }
 
-document.onreadystatechange = () => {
+const handleEditEventForm = () => {
+  const editEventForm = document.querySelector('.edit-event-form')
+
+  if (editEventForm) {
+
+    const deleteSelectedImagesButtons = editEventForm.querySelectorAll('.delete-selected-image')
+    if (deleteSelectedImagesButtons) {
+      deleteSelectedImagesButtons.forEach(button => {
+        button.onclick = () => {
+          const formItem = button.closest('.form-item')
+          const selectedImage = button.closest('.selected-image')
+
+          if (selectedImage && formItem) {
+            selectedImage.remove()
+
+            if (formItem.children.length === 0) {
+              formItem.remove()
+            }
+          }
+        }
+      })
+    }
+
+    if (editEventForm.image) {
+      editEventForm.image.onchange = event => {
+        if (event.target.files[0] && event.target.files[0].size > 0 && event.target.files[0].name.trim() !== '') {
+          const container = editEventForm.image.closest('.form-item')
+          if (container) {
+            const selectedImage = container.querySelector('.selected-image')
+
+            if (selectedImage) {
+              selectedImage.remove()
+            }
+          }
+        }
+      }
+    }
+
+    editEventForm.onsubmit = async event => {
+      event.preventDefault()
+      let formData = new FormData(editEventForm)
+
+      if (formData.get('image').size === 0 || formData.get('image').name.trim() === '') {
+        formData.set('image', undefined)
+      }
+
+      formData.delete('additionalImages')
+      formData.delete('city')
+      formData.delete('country')
+      formData.set('location', `${editEventForm.country.value}, ${editEventForm.city.value}`)
+
+      if (!editEventForm.image.files[0] || editEventForm.image.files[0].size === 0 || editEventForm.image.files[0].name.trim() === '') {
+        const selectedImage = editEventForm.querySelector('.selected-image.main-selected-image')
+
+        if (selectedImage) {
+          const { name } = selectedImage.dataset
+          const image = await fetchFile(`/uploads/images/events/${name}`, name)
+          formData.set('image', image)
+        }
+      }
+
+      if (isIterable(editEventForm.additionalImages)) {
+        editEventForm.additionalImages.forEach(image => {
+          const file = image.files[0]
+
+          if (file && (file.size > 0 || file.name.trim() !== '')){
+            formData.append('additionalImages', file)
+          }
+        })
+      } else {
+        if (editEventForm.additionalImages.files && editEventForm.additionalImages.files.length > 0) {
+          const file = editEventForm.additionalImages.files[0]
+
+          if (file && (file.size > 0 || file.name.trim() !== '')){
+            formData.append('additionalImages', file)
+          }
+        }
+      }
+
+      const selectedAdditionalImages = editEventForm.querySelectorAll('#additional-images .additional-image.selected')
+
+      if (selectedAdditionalImages) {
+        for (let i = 0; i < selectedAdditionalImages.length; i++) {
+          const image = selectedAdditionalImages[i]
+          const { name } = image.dataset
+          const file = await fetchFile(`/uploads/images/events/${name}`, name)
+
+          if (file && file.size > 0 && file.name.trim() !== '') {
+            formData.append('additionalImages', file)
+          }
+        }
+      }
+
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (response.status === 200) {
+        redirect('/events')
+      } else {
+        const { error } = await response.json()
+        const errorsContainer = editEventForm.querySelector('.errors')
+        errorsContainer.append(createElement('span', error, [ 'error' ]))
+      }
+    }
+
+    editEventForm.onchange = () => {
+      const errorsContainer = editEventForm.querySelector('.errors')
+      errorsContainer.innerHTML = ''
+    }
+  }
+}
+
+document.onreadystatechange = async () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
     handleNavbar()
@@ -548,10 +673,11 @@ document.onreadystatechange = () => {
     handleSignUpForm()
     handleLogout()
     handleChatList()
-    handleEventsPage()
     handleJoinRequestSelect()
     handleJoinRequestsButtons()
     handleAdditionalImagesContainer()
     handleCreateEventForm()
+    handleEditEventForm()
+    await handleEventsPage()
   }
 }
