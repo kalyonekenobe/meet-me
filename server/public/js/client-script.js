@@ -302,6 +302,10 @@ const handleChatList = () => {
         chatUrls.push(url)
       }
 
+      if (window.location.pathname.includes(url)) {
+        chat.classList.add('active')
+      }
+
       chat.onclick = () => {
         redirect(url)
       }
@@ -321,43 +325,47 @@ const handleEventsPage = async () => {
   let eventsList;
   if (pathname === '/' || pathname === '/events') {
     const response = await fetch(`${window.location.origin}/events`, {
-    method: 'POST',
-        headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-  if (response.status === 200) {
-    const {events} = await response.json()
-    eventsList = structuredClone(events);
-    //перевірка на наявність івентів, для прикладу
-    if(events.length === 0)
-      return;
-
-    let currentEvent = deleteAndReturnRandomElement(eventsList);
-    showEventBlock(currentEvent);
-
-    const eventButtons = document.querySelectorAll('.event-button');
-    eventButtons.forEach(btn => {
-      btn.addEventListener('click',async e => {
-        if(btn.getAttribute('id') === 'join-request'){
-          const response = await fetch(`/events/join/${currentEvent._id}`, {
-            method: 'Post',
-          })
-          if(response.status === 200)
-            alert('Запит на приєднання надіслано успішно!');//це можна убрать
-          else
-            alert('ой,помилка');//це можна убрать
-        }
-          if(eventsList.length === 0)
-            eventsList = events.filter(e => e._id !== currentEvent._id);
-          currentEvent = deleteAndReturnRandomElement(eventsList);
-          showEventBlock(currentEvent);
-        })
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
+
+    if (response.status === 200) {
+      const { events } = await response.json()
+      eventsList = structuredClone(events);
+
+      if (events.length === 0)
+        return;
+
+      let currentEvent = deleteAndReturnRandomElement(eventsList);
+      showEventBlock(currentEvent);
+
+      const eventButtons = document.querySelectorAll('.event-button');
+      eventButtons.forEach(button => {
+        button.onclick = async event => {
+          if(button.getAttribute('id') === 'join-request'){
+            const response = await fetch(`/events/join/${currentEvent._id}`, {
+              method: 'POST',
+            })
+
+            if(response.status === 200)
+              alert('Запит на приєднання надіслано успішно!');
+            else
+              alert('ой,помилка');
+
+            if(eventsList.length === 0)
+              eventsList = events.filter(e => e._id !== currentEvent._id);
+
+            currentEvent = deleteAndReturnRandomElement(eventsList);
+            showEventBlock(currentEvent);
+          }
+        }
+      });
+    }
   }
 }
-}
- const  showEventBlock = (event) =>{
+const showEventBlock = (event) =>{
   const title = document.getElementById('title');
   const location = document.getElementById('location');
   const eventDay = document.getElementById('event-day');
@@ -365,34 +373,172 @@ const handleEventsPage = async () => {
   const membersNumber = document.getElementById('members-number');
   const description = document.getElementById('description');
   const image = document.getElementById('event-img');
+
   image.setAttribute('src',`/images/${event.image}`)
   title.innerText = event.title;
 
   const date = new Date(event.date);
+
   const monthAndDayOptions = {
     month: 'long',
     day: 'numeric',
   };
+
   const hourAndMinuteOptions = {
     hour: 'numeric',
     minute: 'numeric',
   };
-  eventDay.innerText = date.toLocaleString('en', monthAndDayOptions);//можна зробити щоб дати були українською окремою функцією
-  eventHours.innerText = date.toLocaleString('ua', hourAndMinuteOptions);
-  membersNumber.innerText = event.participants.length;
+
+  eventDay.innerText = date.toLocaleString('uk', monthAndDayOptions);
+  eventHours.innerText = date.toLocaleString('uk', hourAndMinuteOptions);
+  membersNumber.innerText = event.participants.length.toString();
   description.innerText = event.description;
   location.innerText = event.location;
-
 }
 
-//функція що повертає рандомне число і видаляє з масива
-const  deleteAndReturnRandomElement = (array) => {
+
+const  deleteAndReturnRandomElement = array => {
   const index = Math.floor(Math.random() * array.length);
   const res = array[index];
   array = array.filter(e => e._id !== res._id);
   return res;
 }
 
+
+const handleJoinRequestSelect = () => {
+  const joinRequestSelect = document.querySelector('.join-requests-type')
+
+  if (joinRequestSelect) {
+    joinRequestSelect.onchange = event => {
+      redirect(`/profile/join-requests/${event.target.value}`)
+    }
+  }
+}
+
+const handleJoinRequestsButtons = () => {
+  const joinRequestsButtons = document.querySelectorAll('.join-request-action')
+
+  if (joinRequestsButtons) {
+    joinRequestsButtons.forEach(button => {
+      button.onclick = async () => {
+        const { id, action } = button.dataset
+
+        const response = await fetch(`${window.location.origin}/profile/join-requests/${id}/${action}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (response.status === 200) {
+          const actionsCell = button.closest('.actions')
+          const buttonRow = button.closest('.join-request')
+
+
+          if (actionsCell) {
+            actionsCell.innerHTML = `<span class="no-actions">Не передбачено</span>`
+
+            if (buttonRow) {
+              const statusCell = buttonRow.querySelector('.status')
+
+              if (statusCell) {
+
+                switch (action) {
+                  case 'accept':
+                    statusCell.innerHTML = `<span class="accepted">Прийнято</span>`
+                    break
+                  case 'reject':
+                    statusCell.innerHTML = `<span class="rejected">Відхилено</span>`
+                    break
+                  default:
+                    statusCell.innerHTML = `<span class="pending">На розгляді</span>`
+                    break
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+}
+
+const handleAppendAdditionalImageInput = (input, container) => {
+  if (input && container) {
+    input.onchange = () => {
+      input.onchange = undefined
+      const html =`<input type="file" class="w-100" name="additionalImages">`
+      const newInput = createElement('label', html, [ 'form-item', 'col-12', 'col-sm-6', 'additional-image' ])
+      container.insertBefore(newInput, container.firstChild)
+      handleAppendAdditionalImageInput(newInput, container)
+    }
+  }
+}
+
+const handleAdditionalImagesContainer = () => {
+  const lastAdditionalImageInput = document.querySelector('#additional-images .additional-image:last-child')
+
+  if (lastAdditionalImageInput) {
+    const lastAdditionalImageInputContainer = lastAdditionalImageInput.closest('#additional-images')
+    if (lastAdditionalImageInputContainer) {
+      handleAppendAdditionalImageInput(lastAdditionalImageInput, lastAdditionalImageInputContainer)
+    }
+  }
+}
+
+const handleCreateEventForm = () => {
+  const createEventForm = document.querySelector('.create-event-form')
+
+  if (createEventForm) {
+    createEventForm.onsubmit = async event => {
+      event.preventDefault()
+      let formData = new FormData(createEventForm)
+
+      if (formData.get('image').size === 0 || formData.get('image').name.trim() === '') {
+        formData.set('image', undefined)
+      }
+
+      formData.delete('additionalImages')
+      formData.delete('city')
+      formData.delete('country')
+      formData.set('location', `${createEventForm.country.value}, ${createEventForm.city.value}`)
+
+      if (Array.isArray(createEventForm.additionalImages)) {
+          createEventForm.additionalImages.forEach(image => {
+            const file = image.files[0]
+
+            if (file && (file.size > 0 || file.name.trim() !== '')){
+              formData.append('additionalImages', file)
+            }
+          })
+      } else {
+        const file = createEventForm.additionalImages.files[0]
+
+        if (file && (file.size > 0 || file.name.trim() !== '')){
+          formData.append('additionalImages', file)
+        }
+      }
+
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (response.status === 200) {
+        redirect('/events')
+      } else {
+        const { error } = await response.json()
+        const errorsContainer = createEventForm.querySelector('.errors')
+        errorsContainer.append(createElement('span', error, [ 'error' ]))
+      }
+    }
+
+    createEventForm.onchange = () => {
+      const errorsContainer = createEventForm.querySelector('.errors')
+      errorsContainer.innerHTML = ''
+    }
+  }
+}
 
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {
@@ -403,5 +549,9 @@ document.onreadystatechange = () => {
     handleLogout()
     handleChatList()
     handleEventsPage()
+    handleJoinRequestSelect()
+    handleJoinRequestsButtons()
+    handleAdditionalImagesContainer()
+    handleCreateEventForm()
   }
 }

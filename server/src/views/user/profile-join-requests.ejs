@@ -1,8 +1,85 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<div class="fluid-container">
-    <% joinRequests.forEach(request => { %>
-        <%= request %>
-    <% }) %>
+<div class="container join-requests-page">
+    <header class="header">
+        <h2>Запити на доєднання до подій</h2>
+        <label>
+            <select class="join-requests-type default-user-control">
+                <option value="income" <%= type === 'income' ? 'selected' : '' %>>Вхідні</option>
+                <option value="outcome" <%= type === 'outcome' ? 'selected' : '' %>>Вихідні</option>
+            </select>
+        </label>
+    </header>
+    <main>
+        <table class="join-requests-list">
+            <thead class="header">
+                <tr>
+                    <th class="event">Назва події</th>
+                    <% if (type === 'income') { %>
+                        <th class="candidate">Кандидат</th>
+                    <% } %>
+                    <th class="status">Статус</th>
+                    <th class="created-at">Дата створення</th>
+                    <% if (type === 'income') { %>
+                        <th class="actions">Дії</th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+            <% joinRequests.forEach(request => { %>
+                <tr class="join-request">
+                    <td class="event">
+                        <a href="/events/<%= request.event._id %>" class="link"><%= request.event.title %></a>
+                    </td>
+                    <% if (type === 'income') { %>
+                        <td class="candidate">
+                            <a href="/users/<%= request.candidate._id %>" class="link"><%= request.candidate.firstName %> <%= request.candidate.lastName %></a>
+                        </td>
+                    <% } %>
+                    <td class="status">
+                        <%
+                            let status
+                            switch (request.status) {
+                                case 'accepted':
+                                    status = 'Прийнято'
+                                    break;
+                                case 'pending':
+                                    status = 'На розгляді'
+                                    break;
+                                case 'rejected':
+                                    status = 'Відхилено'
+                                    break;
+                            }
+                        %>
+                        <span class="<%= request.status %>"><%= status %></span>
+                    </td>
+                    <td class="created-at">
+                        <time>
+                            <%=
+                                new Date(request.createdAt).toLocaleString('uk', {
+                                    day: 'numeric',
+                                    month: 'numeric',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })
+                            %>
+                        </time>
+                    </td>
+                    <% if (type === 'income') { %>
+                        <td class="actions">
+                            <% if (request.status === 'pending') { %>
+                                <a class="button button-cornflower-blue join-request-action" data-id="<%= request._id %>" data-action="accept">Прийняти</a>
+                                <a class="button button-ut-orange join-request-action" data-id="<%= request._id %>" data-action="reject">Відхилити</a>
+                            <% } else { %>
+                                <span class="no-actions">Не передбачено</span>
+                            <% } %>
+                        </td>
+                    <% } %>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </main>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

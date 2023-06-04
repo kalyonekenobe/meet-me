@@ -98,17 +98,61 @@ const updateProfile = async (req, res) => {
 }
 
 const joinRequests = async (req, res) => {
-  const payload = {
-    title: `My join requests`,
-    joinRequests: await Event.find({ organizer: req.user._id }).select('title joinRequests').populate('joinRequests'),
-    authenticatedUser: req.user
+
+  try {
+    const { type } = req.params
+
+    let events;
+    switch (type) {
+      case 'income':
+        events = await Event.find({ organizer: req.user._id }).select('title _id joinRequests').populate('joinRequests joinRequests.candidate')
+        break;
+      case 'outcome':
+        events = await Event.find({
+          'joinRequests.candidate': {
+            $in: [ req.user ]
+          },
+        }).select('title _id joinRequests').populate('joinRequests joinRequests.candidate')
+        events.forEach(event => {
+          event.joinRequests = event.joinRequests.filter(request => request.candidate._id.toString() === req.user._id.toString())
+        })
+        break;
+    }
+
+    let joinRequests = []
+
+    events.forEach(event => {
+      event.joinRequests.forEach(request => {
+        joinRequests.push({
+          event: {
+            _id: event._id,
+            title: event.title
+          },
+          ...request._doc
+        })
+      })
+    })
+
+    joinRequests.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt)
+    })
+
+    const payload = {
+      title: `My join requests`,
+      joinRequests: joinRequests,
+      type: type,
+      authenticatedUser: req.user
+    }
+
+    if (req.user) {
+      return res.render(pathResolver.views('user/profile-join-requests'), payload)
+    }
+
+    console.log('Cannot show profile page because req.user is undefined!')
+  } catch (err) {
+    console.log(err)
   }
 
-  if (req.user) {
-    return res.render(pathResolver.views('user/profile-join-requests'), payload)
-  }
-
-  console.log('Cannot show profile page because req.user is undefined!')
   return notFound(req, res)
 }
 
@@ -129,6 +173,9 @@ const processJoinRequest = async (req, res) => {
             status: 'pending'
           }
         },
+        organizer: {
+          $eq: req.user
+        }
       },
       {
         $set: {
@@ -161,4 +208,15 @@ const processJoinRequest = async (req, res) => {
   return res.status(400).json({ error: 'Cannot process join request!' })
 }
 
-module.exports = { profile, details, editProfile, updateProfile, joinRequests, processJoinRequest }
+const myEvents = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.user })
+    return res.status(200).json({ message: 'User events were successfully fetched!', events: events })
+  } catch (err) {
+    console.log(err)
+  }
+
+  return res.status(400).json({ error: 'Bad request!' })
+}
+
+module.exports = { profile, details, editProfile, updateProfile, joinRequests, processJoinRequest, myEvents }
