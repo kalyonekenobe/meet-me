@@ -1205,13 +1205,13 @@ body {
   }
 
   .join-requests-list {
-    width: calc(100% - 5px);
-    margin-left: 5px;
-    margin-top: 5px;
+    width: 100%;
     background: $color-white;
-    border-radius: 1px;
-    box-shadow: 0 0 12px -6px $color-black;
-    outline: 5px solid $color-white;
+    border-radius: 5px;
+    box-shadow: 0 0 7px -5px $color-black;
+    border-spacing: 0 5px;
+    border-collapse: separate;
+    padding-inline: 5px;
 
     .header {
 
@@ -1248,10 +1248,6 @@ body {
         &:last-child {
           @include border-radius(0, 5px, 5px, 0);
         }
-      }
-
-      &:not(:last-child) {
-        margin-bottom: 5px;
       }
 
       > div {

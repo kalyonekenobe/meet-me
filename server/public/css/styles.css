@@ -1088,13 +1088,13 @@ body {
   font-size: 0.875rem;
 }
 .join-requests-page .join-requests-list {
-  width: calc(100% - 5px);
-  margin-left: 5px;
-  margin-top: 5px;
+  width: 100%;
   background: #FFFFFF;
-  border-radius: 1px;
-  box-shadow: 0 0 12px -6px #000000;
-  outline: 5px solid #FFFFFF;
+  border-radius: 5px;
+  box-shadow: 0 0 7px -5px #000000;
+  border-spacing: 0 5px;
+  border-collapse: separate;
+  padding-inline: 5px;
 }
 .join-requests-page .join-requests-list .header th {
   padding: 10px;
@@ -1122,9 +1122,6 @@ body {
 }
 .join-requests-page .join-requests-list .join-request td:last-child {
   border-radius: 0 5px 5px 0;
-}
-.join-requests-page .join-requests-list .join-request:not(:last-child) {
-  margin-bottom: 5px;
 }
 .join-requests-page .join-requests-list .join-request > div {
   width: 100%;
