@@ -455,6 +455,85 @@ const handleCreateEventForm = () => {
   }
 }
 
+const handleCalendar = async () => {
+  var eventDates = {}
+  var keyDates = [];
+
+  const events = await fetch(`${window.location.origin}/profile/my-events`, {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      }
+  })
+  .then((response) => response.json())
+  .then((respjson) => {
+      return respjson.events;
+  });
+
+console.log(events);
+
+  events.forEach ((event) => {
+      let dayStart = new Date(event.startsOn);
+      let dayEnd = new Date(event.endsOn);
+
+      for(let day = dayStart; day <= dayEnd; day.setDate(day.getDate() + 1)){
+            let formatDay = formatDate(day);
+            if (eventDates[formatDay]) {
+            eventDates[formatDay].push([event.title, event.location, event._id]);
+            } else {
+            eventDates[formatDay] = [[event.title, event.location, event._id]];
+            }
+      }
+  });
+
+  // set maxDates
+  var maxDate = {
+      1: new Date(new Date().setMonth(new Date().getMonth() + 11)),
+      2: new Date(new Date().setMonth(new Date().getMonth() + 10)),
+      3: new Date(new Date().setMonth(new Date().getMonth() + 9))
+  }
+
+  document.getElementById("placeholder").flatpickr({
+      inline: true,
+      minDate: 'today',
+      maxDate: maxDate[3]
+  ,
+      showMonths: 3,
+      enable: Object.keys(eventDates),
+      disableMobile: "true",
+      onChange: function(date, str, inst) {
+      var contents = '';
+      if(date.length) {
+          for(i=0; i < eventDates[str].length; i++) {
+          contents += '<div class="event col-4"><a class="date" href="/events/'+ eventDates[str][i][2] + '">' + eventDates[str][i][0] + '</a><div class="location">' + eventDates[str][i][1] + '</div></div>';
+          }
+      }
+      document.querySelector(".calendar-events").innerHTML = contents;
+      },
+      locale: {
+      weekdays: {
+          shorthand: ["S", "M", "T", "W", "T", "F", "S"],
+          longhand: [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          ]
+      }
+      }
+  })
+
+  function formatDate(date) {
+      let d = date.getDate();
+      let m = date.getMonth() + 1; 
+      let y = date.getFullYear();
+      return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+  }
+}
+
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
@@ -467,5 +546,6 @@ document.onreadystatechange = () => {
     handleJoinRequestsButtons()
     handleAdditionalImagesContainer()
     handleCreateEventForm()
+    handleCalendar()
   }
 }
