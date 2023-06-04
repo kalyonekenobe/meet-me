@@ -378,6 +378,69 @@ const handleJoinRequestsButtons = () => {
   }
 }
 
+const handleAppendAdditionalImageInput = (input, container) => {
+  if (input && container) {
+    input.onchange = () => {
+      input.onchange = undefined
+      const html =`<input type="file" class="w-100" name="additionalImages">`
+      const newInput = createElement('label', html, [ 'form-item', 'col-12', 'col-sm-6', 'additional-image' ])
+      container.insertBefore(newInput, container.firstChild)
+      handleAppendAdditionalImageInput(newInput, container)
+    }
+  }
+}
+
+const handleAdditionalImagesContainer = () => {
+  const lastAdditionalImageInput = document.querySelector('#additional-images .additional-image:last-child')
+
+  if (lastAdditionalImageInput) {
+    const lastAdditionalImageInputContainer = lastAdditionalImageInput.closest('#additional-images')
+    if (lastAdditionalImageInputContainer) {
+      handleAppendAdditionalImageInput(lastAdditionalImageInput, lastAdditionalImageInputContainer)
+    }
+  }
+}
+
+const handleCreateEventForm = () => {
+  const createEventForm = document.querySelector('.create-event-form')
+
+  if (createEventForm) {
+    createEventForm.onsubmit = async event => {
+      event.preventDefault()
+      let formData = new FormData(createEventForm)
+
+      if (formData.get('image').size === 0 || formData.get('image').name.trim() === '') {
+        formData.set('image', undefined)
+      }
+
+      formData.delete('additionalImages')
+      formData.delete('city')
+      formData.delete('country')
+      formData.set('location', `${createEventForm.country.value}, ${createEventForm.city.value}`)
+
+      createEventForm.additionalImages.forEach(image => {
+        const file = image.files[0]
+
+        if (file && (file.size > 0 || file.name.trim() !== '')){
+          formData.append('additionalImages', file)
+        }
+      })
+
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (response.status === 200) {
+        redirect('/events')
+      } else {
+        const { error } = await response.json()
+        console.log(error)
+      }
+    }
+  }
+}
+
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
@@ -388,5 +451,7 @@ document.onreadystatechange = () => {
     handleChatList()
     handleJoinRequestSelect()
     handleJoinRequestsButtons()
+    handleAdditionalImagesContainer()
+    handleCreateEventForm()
   }
 }

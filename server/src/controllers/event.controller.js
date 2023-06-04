@@ -43,6 +43,7 @@ const details = async (req, res) => {
 
 const create = async (req, res) => {
   try {
+
     const payload = {
       title: `Create new event`,
       authenticatedUser: req.user,
@@ -58,6 +59,7 @@ const create = async (req, res) => {
 
 const edit = async (req, res) => {
   try {
+
     const { id } = req.params
     const payload = {
       title: `Edit event`,
@@ -79,14 +81,18 @@ const add = async (req, res) => {
   try {
     const event = { ...req.body, organizer: req.user, participants: [ req.user ] }
     const imageUploads = []
-    const requiredFieldsAreNotEmpty = event.title && event.description && event.date && event.location && event.organizer
+    const requiredFieldsAreNotEmpty = event.title && event.description && event.startsOn && event.endsOn && event.location && event.organizer
 
     if (!requiredFieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
-    if (new Date(event.date).getTime() < Date.now()) {
-      return res.status(422).json({ error: 'Cannot set event date in the past!' })
+    if (new Date(event.startsOn).getTime() < Date.now()) {
+      return res.status(422).json({ error: 'Cannot set event startsOn in the past!' })
+    }
+
+    if (new Date(event.startsOn).getTime() > new Date(event.endsOn).getTime()) {
+      return res.status(422).json({ error: 'Cannot set event startsOn later than endsOn!' })
     }
 
     if (req.files?.image) {
@@ -128,14 +134,18 @@ const update = async (req, res) => {
     const { id } = req.params
     const event = { ...req.body, organizer: req.user }
     const imageUploads = []
-    const requiredFieldsAreNotEmpty = event.title && event.description && event.date && event.location && event.organizer
+    const requiredFieldsAreNotEmpty = event.title && event.description && event.startsOn && event.endsOn && event.location && event.organizer
 
     if (!requiredFieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
-    if (new Date(event.date).getTime() < Date.now()) {
-      return res.status(422).json({ error: 'Cannot set event date in the past!' })
+    if (new Date(event.startsOn).getTime() < Date.now()) {
+      return res.status(422).json({ error: 'Cannot set event startsOn in the past!' })
+    }
+
+    if (new Date(event.startsOn).getTime() > new Date(event.endsOn).getTime()) {
+      return res.status(422).json({ error: 'Cannot set event startsOn later than endsOn!' })
     }
 
     if (req.files?.image) {
@@ -230,7 +240,7 @@ const join = async (req, res) => {
 const list = async (req, res) => {
   try {
     const events = await Event.find()
-      .select('id title description image date location organizer participants createdAt updatedAt')
+      .select('id title description image startsOn endsOn location organizer participants createdAt updatedAt')
       .populate('organizer')
 
     return res.status(200).json({ message: 'Event list was successfully fetched!', events: events })

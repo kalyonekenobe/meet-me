@@ -298,8 +298,14 @@ body {
   width: 100%;
 }
 .form .form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   margin-bottom: 20px;
+}
+.form .form-header .button {
+  display: inline-flex;
 }
 .form .form-footer {
   width: 100%;
@@ -321,9 +327,6 @@ body {
   display: inline-flex;
   width: 100%;
   padding: 0;
-}
-.form .form-content .form-group .form-item:not(:last-child) {
-  margin-bottom: 10px;
 }
 .form .form-content .form-group .form-item label {
   font-family: "Inter", sans-serif;
@@ -361,6 +364,15 @@ body {
   background: white;
   max-width: 500px;
   width: 100%;
+}
+.sign-in-form .form-header, .sign-up-form .form-header {
+  justify-content: center;
+}
+.sign-in-form .form-header h4, .sign-up-form .form-header h4 {
+  margin: 0;
+}
+.sign-in-form .form-group .form-item:not(:last-child), .sign-up-form .form-group .form-item:not(:last-child) {
+  margin-bottom: 10px;
 }
 .sign-in-form.sign-in-form .sign-up-redirect, .sign-up-form.sign-in-form .sign-up-redirect {
   max-width: 200px;
@@ -719,6 +731,57 @@ body {
 }
 .join-requests-page .join-requests-list .join-request .status .rejected {
   color: #FF3333;
+}
+
+.create-event-container {
+  padding-top: 20px;
+}
+.create-event-container .create-event-form {
+  background: #FFFFFF;
+  box-shadow: 0 0 7px -5px #000000;
+  border-radius: 5px;
+  padding: 10px;
+}
+.create-event-container .create-event-form .form-content .form-group {
+  position: relative;
+}
+.create-event-container .create-event-form .form-content .form-group:not(:last-child) {
+  margin-bottom: 20px;
+}
+.create-event-container .create-event-form .form-content .form-group .form-item {
+  padding-inline: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.create-event-container .create-event-form .form-content .form-group .form-item input[type=file] {
+  font-family: "Inter", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5rem;
+  padding: 1px;
+}
+.create-event-container .create-event-form #additional-images {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+.create-event-container .create-event-form #additional-images .additional-image:first-child input {
+  background: rgba(255, 134, 0, 0.1) !important;
+}
+.create-event-container .create-event-form .additional-image {
+  margin-block: 2px !important;
+}
+.create-event-container .create-event-form .form-header {
+  padding: 10px 10px 0 10px;
+}
+.create-event-container .create-event-form .form-footer {
+  padding: 0 10px 10px 10px;
+}
+.create-event-container .create-event-form textarea {
+  min-height: 120px;
 }
 
 /*# sourceMappingURL=styles.css.map */

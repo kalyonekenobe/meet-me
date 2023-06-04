@@ -15,7 +15,11 @@ const eventSchema = new Schema({
     type: String,
     default: 'default-event-image.jpg'
   },
-  date: {
+  startsOn: {
+    type: Date,
+    required: true,
+  },
+  endsOn: {
     type: Date,
     required: true,
   },
