@@ -63,8 +63,16 @@ const sendMessage = async (req, res) => {
     }, { new: true }).populate('chat.messages.sender')
 
     if (updatedEvent) {
-      const sentMessageIndex = updatedEvent.chat.messages.findLastIndex(message => message.sender._id.toString() === req.user._id.toString())
-      if (sentMessageIndex) {
+      let sentMessageIndex;
+      for (let i = updatedEvent.chat.messages.length - 1; i >= 0; i--) {
+        const message = updatedEvent.chat.messages[i]
+        if (message.sender._id.toString() === req.user._id.toString()) {
+          sentMessageIndex = i
+          break;
+        }
+      }
+
+      if (sentMessageIndex !== undefined) {
         const sentMessage = updatedEvent.chat.messages[sentMessageIndex]
 
         const currentMessageDate = sentMessage.createdAt
