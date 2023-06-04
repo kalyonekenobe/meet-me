@@ -206,4 +206,15 @@ const processJoinRequest = async (req, res) => {
   return res.status(400).json({ error: 'Cannot process join request!' })
 }
 
-module.exports = { profile, details, editProfile, updateProfile, joinRequests, processJoinRequest }
+const myEvents = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.user })
+    return res.status(200).json({ message: 'User events were successfully fetched!', events: events })
+  } catch (err) {
+    console.log(err)
+  }
+
+  return res.status(400).json({ error: 'Bad request!' })
+}
+
+module.exports = { profile, details, editProfile, updateProfile, joinRequests, processJoinRequest, myEvents }
