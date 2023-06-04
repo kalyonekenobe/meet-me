@@ -418,13 +418,21 @@ const handleCreateEventForm = () => {
       formData.delete('country')
       formData.set('location', `${createEventForm.country.value}, ${createEventForm.city.value}`)
 
-      createEventForm.additionalImages.forEach(image => {
-        const file = image.files[0]
+      if (Array.isArray(createEventForm.additionalImages)) {
+          createEventForm.additionalImages.forEach(image => {
+            const file = image.files[0]
+
+            if (file && (file.size > 0 || file.name.trim() !== '')){
+              formData.append('additionalImages', file)
+            }
+          })
+      } else {
+        const file = createEventForm.additionalImages.files[0]
 
         if (file && (file.size > 0 || file.name.trim() !== '')){
           formData.append('additionalImages', file)
         }
-      })
+      }
 
       const response = await fetch(window.location.pathname, {
         method: 'POST',
@@ -435,8 +443,14 @@ const handleCreateEventForm = () => {
         redirect('/events')
       } else {
         const { error } = await response.json()
-        console.log(error)
+        const errorsContainer = createEventForm.querySelector('.errors')
+        errorsContainer.append(createElement('span', error, [ 'error' ]))
       }
+    }
+
+    createEventForm.onchange = () => {
+      const errorsContainer = createEventForm.querySelector('.errors')
+      errorsContainer.innerHTML = ''
     }
   }
 }
