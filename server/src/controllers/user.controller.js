@@ -59,10 +59,10 @@ const editProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const { _id, email } = req.user
+    const { _id, email, password } = req.user
     const imageUploads = []
 
-    const user = { ...req.body, _id, email }
+    const user = { ...req.body, _id, email, password: req.body.password ? req.body.password : password}
     const requiredFieldsAreNotEmpty = user.firstName && user.lastName && user.email && user.password && user.dateOfBirth
 
     if (!requiredFieldsAreNotEmpty) {

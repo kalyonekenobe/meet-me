@@ -665,6 +665,89 @@ const handleEditEventForm = () => {
   }
 }
 
+const handleEditUserForm = () => {
+  const editUserForm = document.querySelector('.edit-user-form')
+
+  if (editUserForm) {
+
+    const deleteSelectedImagesButtons = editUserForm.querySelectorAll('.delete-selected-image')
+    if (deleteSelectedImagesButtons) {
+      deleteSelectedImagesButtons.forEach(button => {
+        button.onclick = () => {
+          const formItem = button.closest('.form-item')
+          const selectedImage = button.closest('.selected-image')
+
+          if (selectedImage && formItem) {
+            selectedImage.remove()
+
+            if (formItem.children.length === 0) {
+              formItem.remove()
+            }
+          }
+        }
+      })
+    }
+
+    if (editUserForm.profilePicture) {
+      editUserForm.profilePicture.onchange = event => {
+        if (event.target.files[0] && event.target.files[0].size > 0 && event.target.files[0].name.trim() !== '') {
+          const container= editUserForm.profilePicture.closest('.form-item')
+          if (container) {
+            const selectedImage = container.querySelector('.selected-image')
+
+            if (selectedImage) {
+              selectedImage.remove()
+            }
+          }
+        }
+      }
+    }
+
+    editUserForm.onsubmit = async event => {
+      event.preventDefault()
+      let formData = new FormData(editUserForm)
+
+      if (formData.get('profilePicture').size === 0 || formData.get('profilePicture').name.trim() === '') {
+        formData.set('profilePicture', undefined)
+      }
+
+      if (!formData.get('password') || formData.get('password').trim() === '') {
+        formData.set('password', undefined)
+      }
+
+      if (!editUserForm.profilePicture.files[0] || editUserForm.profilePicture.files[0].size === 0 || editUserForm.profilePicture.files[0].name.trim() === '') {
+        const selectedImage = editUserForm.querySelector('.selected-image.main-selected-image')
+
+        if (selectedImage) {
+          const { name } = selectedImage.dataset
+          if (name) {
+            const image = await fetchFile(`/uploads/images/users/${name}`, name)
+            formData.set('profilePicture', image)
+          }
+        }
+      }
+
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (response.status === 200) {
+        redirect('/profile')
+      } else {
+        const { error } = await response.json()
+        const errorsContainer = editUserForm.querySelector('.errors')
+        errorsContainer.append(createElement('span', error, [ 'error' ]))
+      }
+    }
+
+    editUserForm.onchange = () => {
+      const errorsContainer = editUserForm.querySelector('.errors')
+      errorsContainer.innerHTML = ''
+    }
+  }
+}
+
 document.onreadystatechange = async () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
@@ -678,6 +761,7 @@ document.onreadystatechange = async () => {
     handleAdditionalImagesContainer()
     handleCreateEventForm()
     handleEditEventForm()
+    handleEditUserForm()
     await handleEventsPage()
   }
 }

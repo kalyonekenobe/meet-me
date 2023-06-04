@@ -20,14 +20,14 @@
             </div>
             <div class="form-group col-12 flex-wrap">
                 <div class="form-item col-12 col-lg-4 flex-wrap">
-                    <label for="image">Головне ображення: </label>
+                    <label for="image">Головне зображення: </label>
                     <input type="file" id="image" name="image">
                     <div class="selected-image mt-2 main-selected-image" <%= event.image !== 'default-event-image.jpg' ? `data-name=${event.image}` : `` %>>
                         <div class="content">
                             <%
                                 let path
                                 if (event.image === 'default-event-image.jpg')
-                                    path = `/images/events/default-event-image.jpg`
+                                    path = `/images/default-event-image.jpg`
                                 else
                                     path = `/uploads/images/events/${event.image}`
                             %>

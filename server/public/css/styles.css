@@ -190,6 +190,9 @@ body {
   position: relative;
   user-select: none;
 }
+.navbar .profile-container img {
+  border-radius: 100%;
+}
 .navbar .profile-container .profile-dropdown {
   width: 200px;
   right: 0;
@@ -575,6 +578,8 @@ body {
 .chat-page-container .chat .messages .message-container .profile-image img {
   width: 100%;
   height: 100%;
+  border-radius: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
 }
 .chat-page-container .chat .messages .message-container .message {
   padding: 5px 10px;
@@ -1157,22 +1162,22 @@ body {
   color: #FF3333;
 }
 
-.create-event-container, .edit-event-container {
+.create-event-container, .edit-event-container, .edit-user-container {
   padding-top: 20px;
 }
-.create-event-container .create-event-form, .create-event-container .edit-event-form, .edit-event-container .create-event-form, .edit-event-container .edit-event-form {
+.create-event-container .create-event-form, .create-event-container .edit-event-form, .create-event-container .edit-user-form, .edit-event-container .create-event-form, .edit-event-container .edit-event-form, .edit-event-container .edit-user-form, .edit-user-container .create-event-form, .edit-user-container .edit-event-form, .edit-user-container .edit-user-form {
   background: #FFFFFF;
   box-shadow: 0 0 7px -5px #000000;
   border-radius: 5px;
   padding: 10px;
 }
-.create-event-container .create-event-form .form-content .form-group, .create-event-container .edit-event-form .form-content .form-group, .edit-event-container .create-event-form .form-content .form-group, .edit-event-container .edit-event-form .form-content .form-group {
+.create-event-container .create-event-form .form-content .form-group, .create-event-container .edit-event-form .form-content .form-group, .create-event-container .edit-user-form .form-content .form-group, .edit-event-container .create-event-form .form-content .form-group, .edit-event-container .edit-event-form .form-content .form-group, .edit-event-container .edit-user-form .form-content .form-group, .edit-user-container .create-event-form .form-content .form-group, .edit-user-container .edit-event-form .form-content .form-group, .edit-user-container .edit-user-form .form-content .form-group {
   position: relative;
 }
-.create-event-container .create-event-form .form-content .form-group:not(:last-child), .create-event-container .edit-event-form .form-content .form-group:not(:last-child), .edit-event-container .create-event-form .form-content .form-group:not(:last-child), .edit-event-container .edit-event-form .form-content .form-group:not(:last-child) {
+.create-event-container .create-event-form .form-content .form-group:not(:last-child), .create-event-container .edit-event-form .form-content .form-group:not(:last-child), .create-event-container .edit-user-form .form-content .form-group:not(:last-child), .edit-event-container .create-event-form .form-content .form-group:not(:last-child), .edit-event-container .edit-event-form .form-content .form-group:not(:last-child), .edit-event-container .edit-user-form .form-content .form-group:not(:last-child), .edit-user-container .create-event-form .form-content .form-group:not(:last-child), .edit-user-container .edit-event-form .form-content .form-group:not(:last-child), .edit-user-container .edit-user-form .form-content .form-group:not(:last-child) {
   margin-bottom: 20px;
 }
-.create-event-container .create-event-form .form-content .form-group .form-item, .create-event-container .edit-event-form .form-content .form-group .form-item, .edit-event-container .create-event-form .form-content .form-group .form-item, .edit-event-container .edit-event-form .form-content .form-group .form-item {
+.create-event-container .create-event-form .form-content .form-group .form-item, .create-event-container .edit-event-form .form-content .form-group .form-item, .create-event-container .edit-user-form .form-content .form-group .form-item, .edit-event-container .create-event-form .form-content .form-group .form-item, .edit-event-container .edit-event-form .form-content .form-group .form-item, .edit-event-container .edit-user-form .form-content .form-group .form-item, .edit-user-container .create-event-form .form-content .form-group .form-item, .edit-user-container .edit-event-form .form-content .form-group .form-item, .edit-user-container .edit-user-form .form-content .form-group .form-item {
   padding-inline: 10px;
   margin-bottom: 10px;
   position: relative;
@@ -1180,7 +1185,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
 }
-.create-event-container .create-event-form .form-content .form-group .form-item input[type=file], .create-event-container .edit-event-form .form-content .form-group .form-item input[type=file], .edit-event-container .create-event-form .form-content .form-group .form-item input[type=file], .edit-event-container .edit-event-form .form-content .form-group .form-item input[type=file] {
+.create-event-container .create-event-form .form-content .form-group .form-item input[type=file], .create-event-container .edit-event-form .form-content .form-group .form-item input[type=file], .create-event-container .edit-user-form .form-content .form-group .form-item input[type=file], .edit-event-container .create-event-form .form-content .form-group .form-item input[type=file], .edit-event-container .edit-event-form .form-content .form-group .form-item input[type=file], .edit-event-container .edit-user-form .form-content .form-group .form-item input[type=file], .edit-user-container .create-event-form .form-content .form-group .form-item input[type=file], .edit-user-container .edit-event-form .form-content .form-group .form-item input[type=file], .edit-user-container .edit-user-form .form-content .form-group .form-item input[type=file] {
   font-family: "Inter", sans-serif;
   font-size: 0.875rem;
   font-weight: 400;
@@ -1188,20 +1193,20 @@ body {
   line-height: 1.5rem;
   padding: 1px;
 }
-.create-event-container .create-event-form #additional-images, .create-event-container .edit-event-form #additional-images, .edit-event-container .create-event-form #additional-images, .edit-event-container .edit-event-form #additional-images {
+.create-event-container .create-event-form #additional-images, .create-event-container .edit-event-form #additional-images, .create-event-container .edit-user-form #additional-images, .edit-event-container .create-event-form #additional-images, .edit-event-container .edit-event-form #additional-images, .edit-event-container .edit-user-form #additional-images, .edit-user-container .create-event-form #additional-images, .edit-user-container .edit-event-form #additional-images, .edit-user-container .edit-user-form #additional-images {
   display: flex;
   flex-wrap: wrap;
   position: relative;
   margin: 0;
   padding: 0;
 }
-.create-event-container .create-event-form #additional-images .additional-image:first-child input, .create-event-container .edit-event-form #additional-images .additional-image:first-child input, .edit-event-container .create-event-form #additional-images .additional-image:first-child input, .edit-event-container .edit-event-form #additional-images .additional-image:first-child input {
+.create-event-container .create-event-form #additional-images .additional-image:first-child input, .create-event-container .edit-event-form #additional-images .additional-image:first-child input, .create-event-container .edit-user-form #additional-images .additional-image:first-child input, .edit-event-container .create-event-form #additional-images .additional-image:first-child input, .edit-event-container .edit-event-form #additional-images .additional-image:first-child input, .edit-event-container .edit-user-form #additional-images .additional-image:first-child input, .edit-user-container .create-event-form #additional-images .additional-image:first-child input, .edit-user-container .edit-event-form #additional-images .additional-image:first-child input, .edit-user-container .edit-user-form #additional-images .additional-image:first-child input {
   background: rgba(255, 134, 0, 0.1) !important;
 }
-.create-event-container .create-event-form .additional-image, .create-event-container .edit-event-form .additional-image, .edit-event-container .create-event-form .additional-image, .edit-event-container .edit-event-form .additional-image {
+.create-event-container .create-event-form .additional-image, .create-event-container .edit-event-form .additional-image, .create-event-container .edit-user-form .additional-image, .edit-event-container .create-event-form .additional-image, .edit-event-container .edit-event-form .additional-image, .edit-event-container .edit-user-form .additional-image, .edit-user-container .create-event-form .additional-image, .edit-user-container .edit-event-form .additional-image, .edit-user-container .edit-user-form .additional-image {
   margin-block: 2px !important;
 }
-.create-event-container .create-event-form .selected-image, .create-event-container .edit-event-form .selected-image, .edit-event-container .create-event-form .selected-image, .edit-event-container .edit-event-form .selected-image {
+.create-event-container .create-event-form .selected-image, .create-event-container .edit-event-form .selected-image, .create-event-container .edit-user-form .selected-image, .edit-event-container .create-event-form .selected-image, .edit-event-container .edit-event-form .selected-image, .edit-event-container .edit-user-form .selected-image, .edit-user-container .create-event-form .selected-image, .edit-user-container .edit-event-form .selected-image, .edit-user-container .edit-user-form .selected-image {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1210,27 +1215,20 @@ body {
   padding: 5px;
   width: 100%;
 }
-.create-event-container .create-event-form .selected-image .delete-selected-image, .create-event-container .edit-event-form .selected-image .delete-selected-image, .edit-event-container .create-event-form .selected-image .delete-selected-image, .edit-event-container .edit-event-form .selected-image .delete-selected-image {
+.create-event-container .create-event-form .selected-image .delete-selected-image, .create-event-container .edit-event-form .selected-image .delete-selected-image, .create-event-container .edit-user-form .selected-image .delete-selected-image, .edit-event-container .create-event-form .selected-image .delete-selected-image, .edit-event-container .edit-event-form .selected-image .delete-selected-image, .edit-event-container .edit-user-form .selected-image .delete-selected-image, .edit-user-container .create-event-form .selected-image .delete-selected-image, .edit-user-container .edit-event-form .selected-image .delete-selected-image, .edit-user-container .edit-user-form .selected-image .delete-selected-image {
   color: #FF8600;
   padding: 7px 10px;
   font-size: 1.25rem;
   border-radius: 100%;
 }
-.create-event-container .create-event-form .selected-image .delete-selected-image:hover, .create-event-container .edit-event-form .selected-image .delete-selected-image:hover, .edit-event-container .create-event-form .selected-image .delete-selected-image:hover, .edit-event-container .edit-event-form .selected-image .delete-selected-image:hover {
+.create-event-container .create-event-form .selected-image .delete-selected-image:hover, .create-event-container .edit-event-form .selected-image .delete-selected-image:hover, .create-event-container .edit-user-form .selected-image .delete-selected-image:hover, .edit-event-container .create-event-form .selected-image .delete-selected-image:hover, .edit-event-container .edit-event-form .selected-image .delete-selected-image:hover, .edit-event-container .edit-user-form .selected-image .delete-selected-image:hover, .edit-user-container .create-event-form .selected-image .delete-selected-image:hover, .edit-user-container .edit-event-form .selected-image .delete-selected-image:hover, .edit-user-container .edit-user-form .selected-image .delete-selected-image:hover {
   background: rgba(255, 134, 0, 0.1);
 }
-.create-event-container .create-event-form .selected-image .content, .create-event-container .edit-event-form .selected-image .content, .edit-event-container .create-event-form .selected-image .content, .edit-event-container .edit-event-form .selected-image .content {
+.create-event-container .create-event-form .selected-image .content, .create-event-container .edit-event-form .selected-image .content, .create-event-container .edit-user-form .selected-image .content, .edit-event-container .create-event-form .selected-image .content, .edit-event-container .edit-event-form .selected-image .content, .edit-event-container .edit-user-form .selected-image .content, .edit-user-container .create-event-form .selected-image .content, .edit-user-container .edit-event-form .selected-image .content, .edit-user-container .edit-user-form .selected-image .content {
   display: flex;
   align-items: center;
 }
-.create-event-container .create-event-form .selected-image .content img, .create-event-container .edit-event-form .selected-image .content img, .edit-event-container .create-event-form .selected-image .content img, .edit-event-container .edit-event-form .selected-image .content img {
-  border-radius: 5px;
-  width: 100px !important;
-  min-width: 100px !important;
-  height: 50px !important;
-  min-height: 50px !important;
-}
-.create-event-container .create-event-form .selected-image .content span, .create-event-container .edit-event-form .selected-image .content span, .edit-event-container .create-event-form .selected-image .content span, .edit-event-container .edit-event-form .selected-image .content span {
+.create-event-container .create-event-form .selected-image .content span, .create-event-container .edit-event-form .selected-image .content span, .create-event-container .edit-user-form .selected-image .content span, .edit-event-container .create-event-form .selected-image .content span, .edit-event-container .edit-event-form .selected-image .content span, .edit-event-container .edit-user-form .selected-image .content span, .edit-user-container .create-event-form .selected-image .content span, .edit-user-container .edit-event-form .selected-image .content span, .edit-user-container .edit-user-form .selected-image .content span {
   font-family: "Inter", sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
@@ -1245,17 +1243,34 @@ body {
   line-clamp: 1;
   -webkit-box-orient: vertical;
 }
-.create-event-container .create-event-form .selected-image:hover, .create-event-container .create-event-form .additional-image:not(:first-child) input:hover, .create-event-container .edit-event-form .selected-image:hover, .create-event-container .edit-event-form .additional-image:not(:first-child) input:hover, .edit-event-container .create-event-form .selected-image:hover, .edit-event-container .create-event-form .additional-image:not(:first-child) input:hover, .edit-event-container .edit-event-form .selected-image:hover, .edit-event-container .edit-event-form .additional-image:not(:first-child) input:hover {
+.create-event-container .create-event-form.edit-event-form .content img, .create-event-container .create-event-form.create-event-form .content img, .create-event-container .edit-event-form.edit-event-form .content img, .create-event-container .edit-event-form.create-event-form .content img, .create-event-container .edit-user-form.edit-event-form .content img, .create-event-container .edit-user-form.create-event-form .content img, .edit-event-container .create-event-form.edit-event-form .content img, .edit-event-container .create-event-form.create-event-form .content img, .edit-event-container .edit-event-form.edit-event-form .content img, .edit-event-container .edit-event-form.create-event-form .content img, .edit-event-container .edit-user-form.edit-event-form .content img, .edit-event-container .edit-user-form.create-event-form .content img, .edit-user-container .create-event-form.edit-event-form .content img, .edit-user-container .create-event-form.create-event-form .content img, .edit-user-container .edit-event-form.edit-event-form .content img, .edit-user-container .edit-event-form.create-event-form .content img, .edit-user-container .edit-user-form.edit-event-form .content img, .edit-user-container .edit-user-form.create-event-form .content img {
+  border-radius: 5px;
+  width: 100px !important;
+  min-width: 100px !important;
+  height: 50px !important;
+  min-height: 50px !important;
+}
+.create-event-container .create-event-form.edit-user-form .form-group, .create-event-container .edit-event-form.edit-user-form .form-group, .create-event-container .edit-user-form.edit-user-form .form-group, .edit-event-container .create-event-form.edit-user-form .form-group, .edit-event-container .edit-event-form.edit-user-form .form-group, .edit-event-container .edit-user-form.edit-user-form .form-group, .edit-user-container .create-event-form.edit-user-form .form-group, .edit-user-container .edit-event-form.edit-user-form .form-group, .edit-user-container .edit-user-form.edit-user-form .form-group {
+  align-items: flex-start;
+}
+.create-event-container .create-event-form.edit-user-form .content img, .create-event-container .edit-event-form.edit-user-form .content img, .create-event-container .edit-user-form.edit-user-form .content img, .edit-event-container .create-event-form.edit-user-form .content img, .edit-event-container .edit-event-form.edit-user-form .content img, .edit-event-container .edit-user-form.edit-user-form .content img, .edit-user-container .create-event-form.edit-user-form .content img, .edit-user-container .edit-event-form.edit-user-form .content img, .edit-user-container .edit-user-form.edit-user-form .content img {
+  border-radius: 5px;
+  width: 50px !important;
+  min-width: 50px !important;
+  height: 50px !important;
+  min-height: 50px !important;
+}
+.create-event-container .create-event-form .selected-image:hover, .create-event-container .create-event-form .additional-image:not(:first-child) input:hover, .create-event-container .edit-event-form .selected-image:hover, .create-event-container .edit-event-form .additional-image:not(:first-child) input:hover, .create-event-container .edit-user-form .selected-image:hover, .create-event-container .edit-user-form .additional-image:not(:first-child) input:hover, .edit-event-container .create-event-form .selected-image:hover, .edit-event-container .create-event-form .additional-image:not(:first-child) input:hover, .edit-event-container .edit-event-form .selected-image:hover, .edit-event-container .edit-event-form .additional-image:not(:first-child) input:hover, .edit-event-container .edit-user-form .selected-image:hover, .edit-event-container .edit-user-form .additional-image:not(:first-child) input:hover, .edit-user-container .create-event-form .selected-image:hover, .edit-user-container .create-event-form .additional-image:not(:first-child) input:hover, .edit-user-container .edit-event-form .selected-image:hover, .edit-user-container .edit-event-form .additional-image:not(:first-child) input:hover, .edit-user-container .edit-user-form .selected-image:hover, .edit-user-container .edit-user-form .additional-image:not(:first-child) input:hover {
   background: #F1F2F6;
   cursor: pointer;
 }
-.create-event-container .create-event-form .form-header, .create-event-container .edit-event-form .form-header, .edit-event-container .create-event-form .form-header, .edit-event-container .edit-event-form .form-header {
+.create-event-container .create-event-form .form-header, .create-event-container .edit-event-form .form-header, .create-event-container .edit-user-form .form-header, .edit-event-container .create-event-form .form-header, .edit-event-container .edit-event-form .form-header, .edit-event-container .edit-user-form .form-header, .edit-user-container .create-event-form .form-header, .edit-user-container .edit-event-form .form-header, .edit-user-container .edit-user-form .form-header {
   padding: 10px 10px 0 10px;
 }
-.create-event-container .create-event-form .form-footer, .create-event-container .edit-event-form .form-footer, .edit-event-container .create-event-form .form-footer, .edit-event-container .edit-event-form .form-footer {
+.create-event-container .create-event-form .form-footer, .create-event-container .edit-event-form .form-footer, .create-event-container .edit-user-form .form-footer, .edit-event-container .create-event-form .form-footer, .edit-event-container .edit-event-form .form-footer, .edit-event-container .edit-user-form .form-footer, .edit-user-container .create-event-form .form-footer, .edit-user-container .edit-event-form .form-footer, .edit-user-container .edit-user-form .form-footer {
   padding: 0 10px 10px 10px;
 }
-.create-event-container .create-event-form textarea, .create-event-container .edit-event-form textarea, .edit-event-container .create-event-form textarea, .edit-event-container .edit-event-form textarea {
+.create-event-container .create-event-form textarea, .create-event-container .edit-event-form textarea, .create-event-container .edit-user-form textarea, .edit-event-container .create-event-form textarea, .edit-event-container .edit-event-form textarea, .edit-event-container .edit-user-form textarea, .edit-user-container .create-event-form textarea, .edit-user-container .edit-event-form textarea, .edit-user-container .edit-user-form textarea {
   min-height: 120px;
 }
 

@@ -201,6 +201,10 @@ body {
     position: relative;
     user-select: none;
 
+    img {
+      border-radius: 100%;
+    }
+
     .profile-dropdown {
       width: 200px;
       right: 0;
@@ -621,6 +625,8 @@ body {
           img {
             width: 100%;
             height: 100%;
+            border-radius: 100%;
+            border: 1px solid rgba($color-black, 0.3);
           }
         }
 
@@ -1284,10 +1290,10 @@ body {
   }
 }
 
-.create-event-container, .edit-event-container {
+.create-event-container, .edit-event-container, .edit-user-container {
   padding-top: 20px;
 
-  .create-event-form, .edit-event-form {
+  .create-event-form, .edit-event-form, .edit-user-form {
     background: $color-white;
     box-shadow: 0 0 7px -5px $color-black;
     border-radius: 5px;
@@ -1358,14 +1364,6 @@ body {
         display: flex;
         align-items: center;
 
-        img {
-          border-radius: 5px;
-          width: 100px !important;
-          min-width: 100px !important;
-          height: 50px !important;
-          min-height: 50px !important;
-        }
-
         span {
           @include font($font-size: $font-size-sm, $font-weight: 500);
           margin-right: 10px;
@@ -1376,6 +1374,38 @@ body {
           -webkit-line-clamp: 1;
           line-clamp: 1;
           -webkit-box-orient: vertical;
+        }
+      }
+    }
+
+    &.edit-event-form, &.create-event-form {
+
+      .content {
+
+        img {
+          border-radius: 5px;
+          width: 100px !important;
+          min-width: 100px !important;
+          height: 50px !important;
+          min-height: 50px !important;
+        }
+      }
+    }
+
+    &.edit-user-form {
+
+      .form-group {
+        align-items: flex-start;
+      }
+
+      .content {
+
+        img {
+          border-radius: 5px;
+          width: 50px !important;
+          min-width: 50px !important;
+          height: 50px !important;
+          min-height: 50px !important;
         }
       }
     }
