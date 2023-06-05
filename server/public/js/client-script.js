@@ -349,13 +349,15 @@ const handleEventsPage = async () => {
       if (events.length === 0)
         return;
 
-      let currentEvent = deleteAndReturnRandomElement(eventsList);
+      let currentEvent = returnRandomElement(eventsList);
+      eventsList = eventsList.filter(e => e._id !== currentEvent._id);
       showEventBlock(currentEvent);
 
       const eventButtons = document.querySelectorAll('.event-button');
       eventButtons.forEach(button => {
         button.onclick = async event => {
-          if(button.getAttribute('id') === 'join-request'){
+          if(button.getAttribute('id') === 'join-request')
+          {
             const response = await fetch(`/events/join/${currentEvent._id}`, {
               method: 'POST',
             })
@@ -363,14 +365,14 @@ const handleEventsPage = async () => {
             if(response.status === 200)
               alert('Запит на приєднання надіслано успішно!');
             else
-              alert('ой,помилка');
-
+              alert('Ви вже надіслали запит,чекайте на відповідь!');
+          }
+            currentEvent = returnRandomElement(eventsList);
+            eventsList = eventsList.filter(e => e._id !== currentEvent._id);
             if(eventsList.length === 0)
               eventsList = events.filter(e => e._id !== currentEvent._id);
-
-            currentEvent = deleteAndReturnRandomElement(eventsList);
             showEventBlock(currentEvent);
-          }
+
         }
       });
     }
@@ -384,11 +386,14 @@ const showEventBlock = (event) =>{
   const membersNumber = document.getElementById('members-number');
   const description = document.getElementById('description');
   const image = document.getElementById('event-img');
+  if(event.image === 'default-event-image.jpg')
+    image.setAttribute('src',`/images/${event.image}`)
+  else
+    image.setAttribute('src',`/uploads/images/events/${event.image}`)
 
-  image.setAttribute('src',`/images/${event.image}`)
   title.innerText = event.title;
 
-  const date = new Date(event.date);
+  const date = new Date(event.startsOn);
 
   const monthAndDayOptions = {
     month: 'long',
@@ -408,11 +413,9 @@ const showEventBlock = (event) =>{
 }
 
 
-const  deleteAndReturnRandomElement = array => {
+const  returnRandomElement = array => {
   const index = Math.floor(Math.random() * array.length);
-  const res = array[index];
-  array = array.filter(e => e._id !== res._id);
-  return res;
+  return array[index];
 }
 
 
