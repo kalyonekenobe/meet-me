@@ -977,119 +977,148 @@ body {
   color: #27187E;
 }*/
 /*--------------- user page -----------------*/
-.sidebar-user {
-  height: 100vh;
-  width: 450px;
-  position: fixed;
-  z-index: 1;
-  top: 50px;
-  left: 0;
-  background-color: #AEB8FE;
-  overflow-x: hidden;
-  padding: 10px 30px 0 30px;
+.user-profile-page {
+  display: flex;
+  flex-direction: column;
+}
+.user-profile-page .user-profile-container {
+  background-color: #FFFFFF;
+  padding: 10px 30px;
+  margin: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 7px -5px #000000;
+}
+.user-profile-page .user-profile-container .user-container {
+  display: flex;
+}
+.user-profile-page .user-profile-container .user-picture {
+  padding-block: 20px;
+}
+.user-profile-page .user-profile-container .user-picture img {
+  width: 175px;
+  height: 175px;
+  border-radius: 100%;
+  object-fit: cover;
+  border: 2px solid #27187E;
+}
+.user-profile-page .user-profile-container .user-info {
+  color: rgba(0, 0, 0, 0.5);
+  margin: 15px 0 15px 30px;
+  width: 100%;
+}
+.user-profile-page .user-profile-container .user-info .profile-items {
+  display: flex;
+  flex-wrap: wrap;
+}
+.user-profile-page .user-profile-container .user-info .profile-items .profile-item {
+  padding: 0;
+}
+.user-profile-page .user-profile-container .user-info .profile-items .profile-item .label {
+  font-weight: bold;
+  width: 100%;
+  display: inline-flex;
+}
+.user-profile-page .user-profile-container .user-info .profile-items .profile-item .value {
+  width: 100%;
+  display: inline-flex;
+}
+.user-profile-page .user-profile-container .user-info .user-name {
+  font-size: 1.875rem;
+  font-weight: bold;
+}
+.user-profile-page .user-profile-container .user-buttons {
+  width: 100%;
+}
+.user-profile-page .user-profile-container .user-buttons > div {
+  padding: 0;
+}
+.user-profile-page .user-profile-container .user-buttons > div:first-child {
+  padding-right: 5px;
+}
+.user-profile-page .user-profile-container .user-buttons > div:last-child {
+  padding-left: 5px;
+}
+.user-profile-page .user-profile-container .user-buttons .button {
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
 
 .user-events {
-  margin-left: 450px;
-  text-align: center;
-  height: inherit;
-  overflow-y: auto;
-  padding-bottom: 40px;
-  padding-top: 100px;
+  margin: 0 10px;
+  padding: 0 20px;
 }
-
-.user-picture {
-  width: 175px;
-  height: 175px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  border-radius: 100px;
-  margin: auto auto 20px auto;
+.user-events h2 {
+  font-size: 1.5rem;
 }
-.user-picture img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 100px;
+.user-events [class*=col-] {
+  padding: 5px;
 }
-
-.user-container {
-  text-align: center;
-  margin-top: 20px;
-  color: white;
-}
-
-.user-name {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.edit-user {
-  margin-right: 25px;
-}
-
-.edit-user:hover, .delete-user:hover {
-  cursor: pointer;
-  color: #27187E;
-}
-
-.user-activity {
-  width: 1000px;
-  height: 320px;
+.user-events .user-activity {
   background-color: #FFFFFF;
-  border-radius: 50px;
-  box-shadow: 5px 10px 18px #AEB8FE;
-  margin: 50px auto 50px auto;
+  border-radius: 5px;
+  box-shadow: 0 0 7px -5px #000000;
   padding: 20px;
-  text-align: center;
-  clear: both;
 }
-
-.user-activity-row {
-  margin-bottom: 15px;
-  padding: 10px 20px 0 10px;
-}
-.user-activity-row i {
-  color: #FF8600;
-  margin-bottom: 22px;
-}
-.user-activity-row p {
-  margin-bottom: 0;
-}
-
-.user-activity-img {
-  width: 300px;
-  height: 215px;
+.user-events .user-activity .user-activity-img {
+  width: 100%;
+  aspect-ratio: 2/1;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  border-radius: 15px;
-  margin-left: 10px;
+  border-radius: 5px;
 }
-.user-activity-img img {
+.user-events .user-activity .user-activity-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 15px;
+  border-radius: 5px;
 }
-
-.user-activity-name-row {
-  text-align: left;
-  margin: 0 5px 15px 5px;
+.user-events .user-activity .user-activity-name-row {
+  padding: 5px;
 }
-
-.navbar + .sidebar-user {
-  margin-top: 0;
+.user-events .user-activity .user-activity-name-row .user-activity-name {
+  font-size: 1.125rem;
+  margin-bottom: 2px;
 }
-
-.edit-user-activity {
-  margin-right: 20px;
+.user-events .user-activity .user-activity-name-row .date-range {
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.4);
+  margin: 0;
 }
-
-.user-activity-name {
-  font-weight: 500;
-  color: #27187E;
+.user-events .user-activity .user-activity-row {
+  padding: 5px;
+  display: flex;
+  justify-content: space-around;
+}
+.user-events .user-activity .user-activity-row > div {
+  text-align: center;
+  color: #FF8600;
+}
+.user-events .user-activity .user-activity-row > div i {
+  font-size: 1.25rem;
+}
+.user-events .user-activity .user-activity-row > div p {
+  margin-block: 5px;
+  font-size: 0.875rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.user-events .user-activity .buttons {
+  padding: 5px;
+}
+.user-events .user-activity .buttons > div {
+  padding: 2px;
+}
+.user-events .user-activity .buttons .button {
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
 
 .user-activity-edit-delete-icons {

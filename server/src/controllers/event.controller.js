@@ -139,10 +139,6 @@ const update = async (req, res) => {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
-    if (new Date(event.startsOn).getTime() < Date.now()) {
-      return res.status(422).json({ error: 'Cannot set event startsOn in the past!' })
-    }
-
     if (new Date(event.startsOn).getTime() > new Date(event.endsOn).getTime()) {
       return res.status(422).json({ error: 'Cannot set event startsOn later than endsOn!' })
     }

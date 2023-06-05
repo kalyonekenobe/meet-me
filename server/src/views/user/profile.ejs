@@ -1,91 +1,139 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<!-- main -->
 
-<!-- sidebar -->
-<div class="sidebar-user">
-
-    <div class="user-container">
-        <div class="user-picture"><img src="/images/<%=authenticatedUser.profilePicture%>" alt="profile picture"></div>
-        <div class="user-info">
-            <p class="user-name"><%=`${authenticatedUser.firstName} ${authenticatedUser.lastName}`%></p>
-            <p><%=authenticatedUser.email%></p>
-            <p><% const date = new Date(authenticatedUser.dateOfBirth)%>
-                <% const day = date.getDate()<10?`0${date.getDate()}`:date.getDate()%>
-                <% const month = date.getMonth()+1<10?`0${date.getMonth()+1}`:date.getMonth()+1%>
-                <%=`${day}.${month}.${date.getFullYear()}`%>
-            </p>
-            <p><%=authenticatedUser.bio%></p>
-        </div>
-        <br>
-        <div class="user-buttons">
-            <i class="fa-solid fa-user-pen fa-xl edit-user"></i>
-            <i class="fa-solid fa-user-xmark fa-xl delete-user"></i>
-        </div>
-    </div>
-
-</div>
-
-<div class="user-events">
-    <h2>Події користувача</h2>
-
-    <%events.forEach(e =>{%>
-    <div class="user-activity">
-        <div class="row justify-content-between user-activity-name-row">
-            <h4 class="user-activity-name col-6"><%=e.title%></h4>
-            <div class="col-6 user-activity-edit-delete-icons">
-                <i class="fa-solid fa-pen-to-square fa-lg edit-user-activity"></i>
-                <i class="fa-solid fa-trash fa-lg delete-user-activity"></i>
+<div class="container user-profile-page">
+    <div class="user-profile-container">
+        <div class="user-container">
+            <div class="user-picture">
+                <img src="/uploads/images/users/<%= authenticatedUser.profilePicture %>" alt="profile picture" onerror="this.src='/images/default-user-image.jpg'; this.onerror='';">
+            </div>
+            <div class="user-info">
+                <p class="user-name"><%= `${authenticatedUser.firstName} ${authenticatedUser.lastName}` %></p>
+                <div class="profile-items">
+                    <p class="profile-item col-12 col-md-6 col-lg-4">
+                        <span class="label">Електронна пошта:</span>
+                        <span class="value"><%= authenticatedUser.email %></span>
+                    </p>
+                    <p class="profile-item col-12 col-md-6 col-lg-4">
+                        <span class="label">Дата народження:</span>
+                        <span class="value"><%= new Date(authenticatedUser.dateOfBirth).toLocaleDateString() %></span>
+                    </p>
+                    <p class="profile-item col-12 col-md-6 col-lg-4">
+                        <span class="label">Місце проживання:</span>
+                        <span class="value">
+                            <%
+                            let location
+                            if (authenticatedUser.location && authenticatedUser.location.trim() !== '')
+                                location = authenticatedUser.location
+                            else
+                                location = 'Не вказано'
+                            %>
+                            <%= location %>
+                        </span>
+                    </p>
+                    <p class="profile-item col-12">
+                        <span class="label">Біографія:</span>
+                        <span class="value">
+                            <%
+                                let bio
+                                if (authenticatedUser.bio && authenticatedUser.bio.trim() !== '')
+                                    bio = authenticatedUser.bio.slice(0, 256)
+                                else
+                                    bio = 'Не вказано'
+                            %>
+                            <%= bio %>
+                        </span>
+                    </p>
+                    <div class="profile-item user-buttons col-12 d-flex flex-wrap">
+                        <div class="col-6">
+                            <a class="button button-persian-indigo edit-user" href="/profile/edit">Редагувати профіль</a>
+                        </div>
+                        <div class="col-6">
+                            <a class="button button-periwinkle edit-user" href="/events/create">Створити подію</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="row justify-content-around">
-            <div class="col-3 user-activity-img"><img src="/images/<%=e.image%>" alt="event photo"></div>
-
-            <div class="col-8">
-                <div class="row justify-content-around user-activity-row">
-                    <div class="col-2">
-                        <i class="fa-regular fa-clock fa-2xl"></i>
+    </div>
+    <div class="user-events row">
+        <% events.forEach(event => { %>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="user-activity">
+                    <div class="col-12 user-activity-img">
+                        <img src="/uploads/images/events/<%= event.image %>" alt="Event image" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
+                    </div>
+                    <div class="user-activity-name-row">
+                        <h4 class="user-activity-name"><%= event.title %></h4>
                         <%
-                            const date = new Date(e.date);
-                            const monthAndDayOptions = {
-                                month: 'long',
+                            const startsOn = new Date(event.startsOn).toLocaleString('uk', {
                                 day: 'numeric',
-                            };
-                            const hourAndMinuteOptions = {
-                                hour: 'numeric',
-                                minute: 'numeric',
-                            };
-                            const monthAndDay = date.toLocaleString('en', monthAndDayOptions);
-                            const hourAndMinute= date.toLocaleString('ua', hourAndMinuteOptions);
+                                month: 'numeric',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })
+
+                            const endsOn = new Date(event.endsOn).toLocaleString('uk', {
+                                day: 'numeric',
+                                month: 'numeric',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })
                         %>
-                        <p><%=monthAndDay%></p>
-                        <p><%=hourAndMinute%></p>
-                        <p></p>
+                        <p class="date-range"><%= `${startsOn} - ${endsOn}` %></p>
                     </div>
-
-                    <div class="col-3">
-                        <i class="fa-solid fa-earth-americas fa-2xl"></i>
-                        <p><%=e.location%></p>
-
+                    <div class="user-activity-content">
+                        <div class="col-12 d-flex user-activity-row">
+                            <div class="col-4">
+                                <i class="fa-regular fa-clock fa-2xl"></i>
+                                <%
+                                    const timeDifference = Math.abs(new Date(event.startsOn).getTime() - new Date(event.endsOn).getTime())
+                                    let duration
+                                    if (timeDifference < 1000) {
+                                        duration = `${Math.ceil(timeDifference)} milliseconds`
+                                    } else if (timeDifference < 60 * 1000) {
+                                        duration = `${Math.ceil(timeDifference / 1000)} seconds`
+                                    } else if (timeDifference < 60 * 60 * 1000) {
+                                        duration = `${Math.ceil(timeDifference / (60 * 1000))} minutes`
+                                    } else if (timeDifference < 24 * 60 * 60 * 1000) {
+                                        duration = `${Math.ceil(timeDifference / (60 * 60 * 1000))} hours`
+                                    } else if (timeDifference < 7 * 24 * 60 * 60 * 1000) {
+                                        duration = `${Math.ceil(timeDifference / (24 * 60 * 60 * 1000))} days`
+                                    } else if (timeDifference < 365 * 24 * 60 * 60 * 1000) {
+                                        duration = `${Math.ceil(timeDifference / (7 * 24 * 60 * 60 * 1000))} weeks`
+                                    } else {
+                                        duration = `${Math.ceil(timeDifference / (365 * 24 * 60 * 60 * 1000))} years`
+                                    }
+                                %>
+                                <p>~<%= duration %></p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fa-solid fa-earth-americas fa-2xl"></i>
+                                <p><%= event.location %></p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fa-solid fa-people-group fa-2xl"></i>
+                                <p><%= event.participants.length %> joined</p>
+                            </div>
+                        </div>
+                        <div class="buttons col-12 d-flex flex-wrap">
+                            <div class="col-12">
+                                <a class="button button-periwinkle" href="/events/<%= event._id %>">Детальніше</a>
+                            </div>
+                            <div class="col-6">
+                                <a class="button button-persian-indigo" href="/events/edit/<%= event._id %>">Редагувати</a>
+                            </div>
+                            <div class="col-6">
+                                <a class="button button-ut-orange" data>Видалити</a>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="col-2">
-                        <i class="fa-solid fa-people-group fa-2xl"></i>
-                        <p><%=e.participants.length%></p>
-                    </div>
-                </div>
-
-                <div class="user-activity-text">
-                    <%=e.description%>
                 </div>
             </div>
-
-        </div>
+        <% }) %>
     </div>
-
-    <%})%>
-
 </div>
 
 <%- include(`${partials}/root-layout-footer`) %>
