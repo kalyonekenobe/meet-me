@@ -831,29 +831,46 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  margin-top: -30px;
+  height: calc(100vh - 57px);
 }
 
 .cal-modal {
+  user-select: none;
+  width: 100%;
   background: $color-cornflower-blue;
   color: $color-white;
   padding: 40px 60px;
   text-align: center;
   border-radius: 15px;
+  box-shadow: 0 0 10px -5px $color-black;
+  min-height: 550px;
 
   h3 {
-    font-size: 37px;
+    font-size: $font-size-4xl;
     font-weight: 900;
-    margin: 0 0 1rem;
+    margin-bottom: 40px;
+  }
+
+  .loading {
+    margin-top: 25px;
+    width: 300px;
+    height: 300px;
+    padding: 120px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
 #calendar {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 927px;
 
   .placeholder {
-    display: none;
     width: 300px;
   }
 
@@ -864,6 +881,8 @@ body {
     box-shadow: none;
     color: $color-white;
     top: 0;
+    min-height: 325px;
+    user-select: none;
 
     .flatpickr-innerContainer {
       overflow: visible;
@@ -948,9 +967,11 @@ body {
     .flatpickr-day {
       background: $color-white;
       border: 0;
-      color: #1D252C;
+      color: $color-black;
       font-weight: 500;
-      transition: color 0.1s, background 0.1s;
+      transition: 0.5s ease;
+      display: inline-flex;
+      margin-bottom: 3px;
 
       &.flatpickr-disabled, &.flatpickr-disabled:hover {
         background: none;
@@ -959,12 +980,12 @@ body {
       }
 
       &.selected:not(.hidden), &.selected:not(.hidden):hover, &.selected:not(.hidden):focus {
-        background: $color-persian-indigo;
+        background: $color-ut-orange;
         color: $color-white;
       }
 
       &:hover {
-        background: $color-persian-indigo;
+        background: $color-ut-orange;
         color: $color-white;
       }
 
@@ -978,34 +999,60 @@ body {
   }
 
   .calendar-events {
-    display: block;
-    justify-content: space-around;
-    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
     min-height: 36px;
+    text-align: left;
+    width: 100%;
+    max-width: 927px !important;
 
-    .event {
-      font-size: 29px;
+    > [class*='col-'] {
+      padding: 5px;
+    }
+
+    h5 {
+      margin-top: 20px;
+      padding-inline: 5px;
+      font-size: $font-size-xl;
 
       .date {
+        font-size: $font-size-lg;
+      }
+    }
+
+    .event {
+      font-size: $font-size-base;
+      background: $color-periwinkle;
+      border-radius: 5px;
+      box-shadow: 0 0 7px -5px $color-black;
+      cursor: pointer;
+      transition: 0.3s ease;
+
+      &:hover {
+        background: rgba($color-periwinkle, 0.6);
+      }
+
+      a {
+        display: inline-flex;
+        flex-wrap: wrap;
+        padding: 10px;
+        text-decoration: none !important;
+      }
+
+      .title {
         color: $color-white;
         font-weight: 600;
+        width: 100%;
+        display: inline-flex;
       }
 
       .location {
         color: $color-persian-indigo;
         font-weight: 800;
         letter-spacing: -0.8px;
+        width: 100%;
+        display: inline-flex;
       }
-    }
-  }
-}
-
-@media screen and (min-width: 992px) {
-  #calendar {
-
-    .calendar-events {
-      display: flex;
-      justify-content: space-around;
     }
   }
 }

@@ -551,6 +551,93 @@ const handleCreateEventForm = () => {
   }
 }
 
+const handleCalendar = async () => {
+  const placeholder = document.getElementById('placeholder')
+
+  if (placeholder) {
+    const loading = createElement('div', `<img src="/images/loading.jpg" alt="loading">`, [ 'loading' ])
+    placeholder.append(loading)
+  }
+
+  const response = await fetch(`${window.location.origin}/profile/my-events`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (response.status === 200) {
+    const { events } = await response.json()
+
+    let eventDates = {}
+    events.forEach(event => {
+      let startsOn = new Date(event.startsOn);
+      let endsOn = new Date(event.endsOn);
+
+      for (let date = startsOn; date <= endsOn; date.setDate(date.getDate() + 1)) {
+        let formattedDate = date.toISOString().split('T')[0]
+        const calendarEvent = {
+          title: event.title,
+          location: event.location,
+          id: event._id
+        }
+
+        if (!eventDates[formattedDate]) {
+          eventDates[formattedDate] = []
+        }
+
+        eventDates[formattedDate].push(calendarEvent);
+      }
+    });
+
+    const flatpickrChange = (date, key)=> {
+      let contents = `<h5 class="w-100">Ваші події <span class="date">${new Date(date).toLocaleDateString()}</span>:</h5>`;
+      if (date.length) {
+        for (let i = 0; i < eventDates[key].length; i++) {
+          const { id, title, location } = eventDates[key][i]
+          contents += `<div class="col-4">
+                         <div class="event">
+                           <a href="/events/${id}">
+                             <span class="title">${title}</span>
+                             <span class="location">${location}</span>
+                           </a>
+                         </div>
+                       </div>`;
+        }
+      }
+
+      const calendarEvents = document.querySelector(".calendar-events")
+      if (calendarEvents) {
+        calendarEvents.innerHTML = contents;
+      }
+    }
+
+    if (placeholder) {
+
+      const loading = placeholder.querySelector('.loading')
+      if (loading) {
+        loading.remove()
+      }
+
+      placeholder.flatpickr({
+        inline: true,
+        minDate: 'today',
+        maxDate: new Date(new Date().setMonth(new Date().getMonth() + 9)),
+        showMonths: 3,
+        enable: Object.keys(eventDates),
+        disableMobile: "true",
+        onChange: flatpickrChange,
+        locale: {
+          weekdays: {
+            shorthand: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
+            longhand: [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
+          }
+        }
+      })
+    }
+  }
+}
+
 const handleEditEventForm = () => {
   const editEventForm = document.querySelector('.edit-event-form')
 
@@ -762,6 +849,7 @@ document.onreadystatechange = async () => {
     handleCreateEventForm()
     handleEditEventForm()
     handleEditUserForm()
+    await handleCalendar()
     await handleEventsPage()
   }
 }

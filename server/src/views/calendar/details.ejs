@@ -1,6 +1,13 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<div class="fluid-container">
-    <%= calendar %>
+<div class="container cal-modal-container">
+    <div class="cal-modal">
+        <h3>Календар Подій</h3>
+        <div id="calendar">
+            <div class="placeholder" id="placeholder"></div>
+            <div class="calendar-events row"></div>
+        </div>
+    </div>
 </div>
+
 <%- include(`${partials}/root-layout-footer`) %>
