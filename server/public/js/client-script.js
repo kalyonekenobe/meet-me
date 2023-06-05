@@ -552,6 +552,12 @@ const handleCreateEventForm = () => {
 }
 
 const handleCalendar = async () => {
+  const placeholder = document.getElementById('placeholder')
+
+  if (placeholder) {
+    const loading = createElement('div', `<img src="/images/loading.jpg" alt="loading">`, [ 'loading' ])
+    placeholder.append(loading)
+  }
 
   const response = await fetch(`${window.location.origin}/profile/my-events`, {
     method: 'POST',
@@ -584,20 +590,18 @@ const handleCalendar = async () => {
       }
     });
 
-    let maxDate = {
-      1: new Date(new Date().setMonth(new Date().getMonth() + 11)),
-      2: new Date(new Date().setMonth(new Date().getMonth() + 10)),
-      3: new Date(new Date().setMonth(new Date().getMonth() + 9))
-    }
-
     const flatpickrChange = (date, key)=> {
-      let contents = '';
+      let contents = `<h5 class="w-100">Ваші події <span class="date">${new Date(date).toLocaleDateString()}</span>:</h5>`;
       if (date.length) {
         for (let i = 0; i < eventDates[key].length; i++) {
           const { id, title, location } = eventDates[key][i]
-          contents += `<div class="event col-4">
-                         <a class="date" href="/events/${id}">${title}</a>
-                         <div class="location">${location}</div>
+          contents += `<div class="col-4">
+                         <div class="event">
+                           <a href="/events/${id}">
+                             <span class="title">${title}</span>
+                             <span class="location">${location}</span>
+                           </a>
+                         </div>
                        </div>`;
         }
       }
@@ -608,13 +612,17 @@ const handleCalendar = async () => {
       }
     }
 
-    const placeholder = document.getElementById('placeholder')
-
     if (placeholder) {
+
+      const loading = placeholder.querySelector('.loading')
+      if (loading) {
+        loading.remove()
+      }
+
       placeholder.flatpickr({
         inline: true,
         minDate: 'today',
-        maxDate: maxDate[3],
+        maxDate: new Date(new Date().setMonth(new Date().getMonth() + 9)),
         showMonths: 3,
         enable: Object.keys(eventDates),
         disableMobile: "true",
