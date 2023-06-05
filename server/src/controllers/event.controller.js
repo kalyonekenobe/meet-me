@@ -187,7 +187,7 @@ const remove = async (req, res) => {
   try {
     const { id } = req.params
 
-    const deletedEvent = await Event.findByIdAndDelete(id)
+    const deletedEvent = req.user.role !== 'admin' ? await Event.findOneAndDelete({ _id: id, organizer: req.user }) : await Event.findOneAndDelete({ _id: id })
 
     if (deletedEvent) {
       return res.status(200).json({ message: 'Event was successfully deleted.' })

@@ -68,28 +68,6 @@ const eventSchema = new Schema({
   }
 }, { timestamps: true })
 
-const onDeleteCascade = async next => {
-  const {_id} = this._conditions
-
-  try {
-    await Chat.deleteMany({event: _id})
-
-    await Calendar.updateMany(
-      {events: _id},
-      {$pull: {events: _id}}
-    )
-
-    next();
-  } catch (error) {
-    console.log(error)
-    next(error);
-  }
-}
-
-eventSchema.pre('findOneAndDelete', onDeleteCascade)
-eventSchema.pre('deleteMany', onDeleteCascade)
-eventSchema.pre('deleteOne', onDeleteCascade)
-
 const Event = mongoose.model('Event', eventSchema)
 
 module.exports = Event

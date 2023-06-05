@@ -536,7 +536,7 @@ const handleCreateEventForm = () => {
       })
 
       if (response.status === 200) {
-        redirect('/events')
+        redirect('/profile')
       } else {
         const { error } = await response.json()
         const errorsContainer = createEventForm.querySelector('.errors')
@@ -694,8 +694,11 @@ const handleEditEventForm = () => {
 
         if (selectedImage) {
           const { name } = selectedImage.dataset
-          const image = await fetchFile(`/uploads/images/events/${name}`, name)
-          formData.set('image', image)
+
+          if (name) {
+            const image = await fetchFile(`/uploads/images/events/${name}`, name)
+            formData.set('image', image)
+          }
         }
       }
 
@@ -723,10 +726,12 @@ const handleEditEventForm = () => {
         for (let i = 0; i < selectedAdditionalImages.length; i++) {
           const image = selectedAdditionalImages[i]
           const { name } = image.dataset
-          const file = await fetchFile(`/uploads/images/events/${name}`, name)
 
-          if (file && file.size > 0 && file.name.trim() !== '') {
-            formData.append('additionalImages', file)
+          if (name) {
+            const file = await fetchFile(`/uploads/images/events/${name}`, name)
+            if (file && file.size > 0 && file.name.trim() !== '') {
+              formData.append('additionalImages', file)
+            }
           }
         }
       }
@@ -737,7 +742,7 @@ const handleEditEventForm = () => {
       })
 
       if (response.status === 200) {
-        redirect('/events')
+        redirect('/profile')
       } else {
         const { error } = await response.json()
         const errorsContainer = editEventForm.querySelector('.errors')
@@ -835,6 +840,31 @@ const handleEditUserForm = () => {
   }
 }
 
+const handleDeleteEventsButtons = () => {
+  const deleteEventsButtons = document.querySelectorAll('.delete-event')
+
+  if (deleteEventsButtons) {
+    deleteEventsButtons.forEach(button => {
+      button.onclick = async () => {
+        const { id } = button.dataset
+
+        if (id) {
+          const response = await fetch(`/events/delete/${id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+
+          if (response.status === 200) {
+            redirect('/profile')
+          }
+        }
+      }
+    })
+  }
+}
+
 document.onreadystatechange = async () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
@@ -849,6 +879,7 @@ document.onreadystatechange = async () => {
     handleCreateEventForm()
     handleEditEventForm()
     handleEditUserForm()
+    handleDeleteEventsButtons()
     await handleCalendar()
     await handleEventsPage()
   }
