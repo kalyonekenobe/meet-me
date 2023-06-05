@@ -3,6 +3,14 @@ const redirect = path => {
   location.replace(url)
 }
 
+const isIterable = object => object != null && typeof object[Symbol.iterator] === 'function'
+
+const fetchFile = async (filepath, filename) => {
+  const image = await fetch(filepath)
+  const blob = await image.blob()
+  return new File([blob], filename, blob)
+}
+
 const getCookieByName = name => {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   if (match)
@@ -311,14 +319,102 @@ const handleChatList = () => {
       }
     })
 
-    handleMessageReceive(socket)
-    socket.emit('join-chat', chatUrls)
+
+    if (chatUrls.length > 0) {
+      handleMessageReceive(socket)
+      socket.emit('join-chat', chatUrls)
+    }
 
     if (window.location.pathname.match(new RegExp('/chats/event/[\d\s]*'))) {
       handleSendMessageForm(socket, window.location.pathname)
     }
   }
 }
+const handleEventsPage = async () => {
+  const pathname = window.location.pathname
+
+  let eventsList;
+  if (pathname === '/' || pathname === '/events') {
+    const response = await fetch(`${window.location.origin}/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 200) {
+      const { events } = await response.json()
+      eventsList = structuredClone(events);
+
+      if (events.length === 0)
+        return;
+
+      let currentEvent = deleteAndReturnRandomElement(eventsList);
+      showEventBlock(currentEvent);
+
+      const eventButtons = document.querySelectorAll('.event-button');
+      eventButtons.forEach(button => {
+        button.onclick = async event => {
+          if(button.getAttribute('id') === 'join-request'){
+            const response = await fetch(`/events/join/${currentEvent._id}`, {
+              method: 'POST',
+            })
+
+            if(response.status === 200)
+              alert('Запит на приєднання надіслано успішно!');
+            else
+              alert('ой,помилка');
+
+            if(eventsList.length === 0)
+              eventsList = events.filter(e => e._id !== currentEvent._id);
+
+            currentEvent = deleteAndReturnRandomElement(eventsList);
+            showEventBlock(currentEvent);
+          }
+        }
+      });
+    }
+  }
+}
+const showEventBlock = (event) =>{
+  const title = document.getElementById('title');
+  const location = document.getElementById('location');
+  const eventDay = document.getElementById('event-day');
+  const eventHours = document.getElementById('event-hours');
+  const membersNumber = document.getElementById('members-number');
+  const description = document.getElementById('description');
+  const image = document.getElementById('event-img');
+
+  image.setAttribute('src',`/images/${event.image}`)
+  title.innerText = event.title;
+
+  const date = new Date(event.date);
+
+  const monthAndDayOptions = {
+    month: 'long',
+    day: 'numeric',
+  };
+
+  const hourAndMinuteOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+  };
+
+  eventDay.innerText = date.toLocaleString('uk', monthAndDayOptions);
+  eventHours.innerText = date.toLocaleString('uk', hourAndMinuteOptions);
+  membersNumber.innerText = event.participants.length.toString();
+  description.innerText = event.description;
+  location.innerText = event.location;
+}
+
+
+const  deleteAndReturnRandomElement = array => {
+  const index = Math.floor(Math.random() * array.length);
+  const res = array[index];
+  array = array.filter(e => e._id !== res._id);
+  return res;
+}
+
 
 const handleJoinRequestSelect = () => {
   const joinRequestSelect = document.querySelector('.join-requests-type')
@@ -391,12 +487,12 @@ const handleAppendAdditionalImageInput = (input, container) => {
 }
 
 const handleAdditionalImagesContainer = () => {
-  const lastAdditionalImageInput = document.querySelector('#additional-images .additional-image:last-child')
+  const firstAdditionalImageInput = document.querySelector('#additional-images .additional-image:first-child')
 
-  if (lastAdditionalImageInput) {
-    const lastAdditionalImageInputContainer = lastAdditionalImageInput.closest('#additional-images')
+  if (firstAdditionalImageInput) {
+    const lastAdditionalImageInputContainer = firstAdditionalImageInput.closest('#additional-images')
     if (lastAdditionalImageInputContainer) {
-      handleAppendAdditionalImageInput(lastAdditionalImageInput, lastAdditionalImageInputContainer)
+      handleAppendAdditionalImageInput(firstAdditionalImageInput, lastAdditionalImageInputContainer)
     }
   }
 }
@@ -456,85 +552,282 @@ const handleCreateEventForm = () => {
 }
 
 const handleCalendar = async () => {
-  var eventDates = {}
-  var keyDates = [];
 
-  const events = await fetch(`${window.location.origin}/profile/my-events`, {
-      method: 'POST',
-      headers: {
+  const response = await fetch(`${window.location.origin}/profile/my-events`, {
+    method: 'POST',
+    headers: {
       'Content-Type': 'application/json'
-      }
+    }
   })
-  .then((response) => response.json())
-  .then((respjson) => {
-      return respjson.events;
-  });
 
-console.log(events);
+  if (response.status === 200) {
+    const { events } = await response.json()
 
-  events.forEach ((event) => {
-      let dayStart = new Date(event.startsOn);
-      let dayEnd = new Date(event.endsOn);
+    let eventDates = {}
+    events.forEach(event => {
+      let startsOn = new Date(event.startsOn);
+      let endsOn = new Date(event.endsOn);
 
-      for(let day = dayStart; day <= dayEnd; day.setDate(day.getDate() + 1)){
-            let formatDay = formatDate(day);
-            if (eventDates[formatDay]) {
-            eventDates[formatDay].push([event.title, event.location, event._id]);
-            } else {
-            eventDates[formatDay] = [[event.title, event.location, event._id]];
-            }
+      for (let date = startsOn; date <= endsOn; date.setDate(date.getDate() + 1)) {
+        let formattedDate = date.toISOString().split('T')[0]
+        const calendarEvent = {
+          title: event.title,
+          location: event.location,
+          id: event._id
+        }
+
+        if (!eventDates[formattedDate]) {
+          eventDates[formattedDate] = []
+        }
+
+        eventDates[formattedDate].push(calendarEvent);
       }
-  });
+    });
 
-  // set maxDates
-  var maxDate = {
+    let maxDate = {
       1: new Date(new Date().setMonth(new Date().getMonth() + 11)),
       2: new Date(new Date().setMonth(new Date().getMonth() + 10)),
       3: new Date(new Date().setMonth(new Date().getMonth() + 9))
-  }
+    }
 
-  document.getElementById("placeholder").flatpickr({
-      inline: true,
-      minDate: 'today',
-      maxDate: maxDate[3]
-  ,
-      showMonths: 3,
-      enable: Object.keys(eventDates),
-      disableMobile: "true",
-      onChange: function(date, str, inst) {
-      var contents = '';
-      if(date.length) {
-          for(i=0; i < eventDates[str].length; i++) {
-          contents += '<div class="event col-4"><a class="date" href="/events/'+ eventDates[str][i][2] + '">' + eventDates[str][i][0] + '</a><div class="location">' + eventDates[str][i][1] + '</div></div>';
+    const flatpickrChange = (date, key)=> {
+      let contents = '';
+      if (date.length) {
+        for (let i = 0; i < eventDates[key].length; i++) {
+          const { id, title, location } = eventDates[key][i]
+          contents += `<div class="event col-4">
+                         <a class="date" href="/events/${id}">${title}</a>
+                         <div class="location">${location}</div>
+                       </div>`;
+        }
+      }
+
+      const calendarEvents = document.querySelector(".calendar-events")
+      if (calendarEvents) {
+        calendarEvents.innerHTML = contents;
+      }
+    }
+
+    const placeholder = document.getElementById('placeholder')
+
+    if (placeholder) {
+      placeholder.flatpickr({
+        inline: true,
+        minDate: 'today',
+        maxDate: maxDate[3],
+        showMonths: 3,
+        enable: Object.keys(eventDates),
+        disableMobile: "true",
+        onChange: flatpickrChange,
+        locale: {
+          weekdays: {
+            shorthand: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
+            longhand: [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
           }
-      }
-      document.querySelector(".calendar-events").innerHTML = contents;
-      },
-      locale: {
-      weekdays: {
-          shorthand: ["S", "M", "T", "W", "T", "F", "S"],
-          longhand: [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          ]
-      }
-      }
-  })
-
-  function formatDate(date) {
-      let d = date.getDate();
-      let m = date.getMonth() + 1; 
-      let y = date.getFullYear();
-      return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+        }
+      })
+    }
   }
 }
 
-document.onreadystatechange = () => {
+const handleEditEventForm = () => {
+  const editEventForm = document.querySelector('.edit-event-form')
+
+  if (editEventForm) {
+
+    const deleteSelectedImagesButtons = editEventForm.querySelectorAll('.delete-selected-image')
+    if (deleteSelectedImagesButtons) {
+      deleteSelectedImagesButtons.forEach(button => {
+        button.onclick = () => {
+          const formItem = button.closest('.form-item')
+          const selectedImage = button.closest('.selected-image')
+
+          if (selectedImage && formItem) {
+            selectedImage.remove()
+
+            if (formItem.children.length === 0) {
+              formItem.remove()
+            }
+          }
+        }
+      })
+    }
+
+    if (editEventForm.image) {
+      editEventForm.image.onchange = event => {
+        if (event.target.files[0] && event.target.files[0].size > 0 && event.target.files[0].name.trim() !== '') {
+          const container = editEventForm.image.closest('.form-item')
+          if (container) {
+            const selectedImage = container.querySelector('.selected-image')
+
+            if (selectedImage) {
+              selectedImage.remove()
+            }
+          }
+        }
+      }
+    }
+
+    editEventForm.onsubmit = async event => {
+      event.preventDefault()
+      let formData = new FormData(editEventForm)
+
+      if (formData.get('image').size === 0 || formData.get('image').name.trim() === '') {
+        formData.set('image', undefined)
+      }
+
+      formData.delete('additionalImages')
+      formData.delete('city')
+      formData.delete('country')
+      formData.set('location', `${editEventForm.country.value}, ${editEventForm.city.value}`)
+
+      if (!editEventForm.image.files[0] || editEventForm.image.files[0].size === 0 || editEventForm.image.files[0].name.trim() === '') {
+        const selectedImage = editEventForm.querySelector('.selected-image.main-selected-image')
+
+        if (selectedImage) {
+          const { name } = selectedImage.dataset
+          const image = await fetchFile(`/uploads/images/events/${name}`, name)
+          formData.set('image', image)
+        }
+      }
+
+      if (isIterable(editEventForm.additionalImages)) {
+        editEventForm.additionalImages.forEach(image => {
+          const file = image.files[0]
+
+          if (file && (file.size > 0 || file.name.trim() !== '')){
+            formData.append('additionalImages', file)
+          }
+        })
+      } else {
+        if (editEventForm.additionalImages.files && editEventForm.additionalImages.files.length > 0) {
+          const file = editEventForm.additionalImages.files[0]
+
+          if (file && (file.size > 0 || file.name.trim() !== '')){
+            formData.append('additionalImages', file)
+          }
+        }
+      }
+
+      const selectedAdditionalImages = editEventForm.querySelectorAll('#additional-images .additional-image.selected')
+
+      if (selectedAdditionalImages) {
+        for (let i = 0; i < selectedAdditionalImages.length; i++) {
+          const image = selectedAdditionalImages[i]
+          const { name } = image.dataset
+          const file = await fetchFile(`/uploads/images/events/${name}`, name)
+
+          if (file && file.size > 0 && file.name.trim() !== '') {
+            formData.append('additionalImages', file)
+          }
+        }
+      }
+
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (response.status === 200) {
+        redirect('/events')
+      } else {
+        const { error } = await response.json()
+        const errorsContainer = editEventForm.querySelector('.errors')
+        errorsContainer.append(createElement('span', error, [ 'error' ]))
+      }
+    }
+
+    editEventForm.onchange = () => {
+      const errorsContainer = editEventForm.querySelector('.errors')
+      errorsContainer.innerHTML = ''
+    }
+  }
+}
+
+const handleEditUserForm = () => {
+  const editUserForm = document.querySelector('.edit-user-form')
+
+  if (editUserForm) {
+
+    const deleteSelectedImagesButtons = editUserForm.querySelectorAll('.delete-selected-image')
+    if (deleteSelectedImagesButtons) {
+      deleteSelectedImagesButtons.forEach(button => {
+        button.onclick = () => {
+          const formItem = button.closest('.form-item')
+          const selectedImage = button.closest('.selected-image')
+
+          if (selectedImage && formItem) {
+            selectedImage.remove()
+
+            if (formItem.children.length === 0) {
+              formItem.remove()
+            }
+          }
+        }
+      })
+    }
+
+    if (editUserForm.profilePicture) {
+      editUserForm.profilePicture.onchange = event => {
+        if (event.target.files[0] && event.target.files[0].size > 0 && event.target.files[0].name.trim() !== '') {
+          const container= editUserForm.profilePicture.closest('.form-item')
+          if (container) {
+            const selectedImage = container.querySelector('.selected-image')
+
+            if (selectedImage) {
+              selectedImage.remove()
+            }
+          }
+        }
+      }
+    }
+
+    editUserForm.onsubmit = async event => {
+      event.preventDefault()
+      let formData = new FormData(editUserForm)
+
+      if (formData.get('profilePicture').size === 0 || formData.get('profilePicture').name.trim() === '') {
+        formData.set('profilePicture', undefined)
+      }
+
+      if (!formData.get('password') || formData.get('password').trim() === '') {
+        formData.set('password', undefined)
+      }
+
+      if (!editUserForm.profilePicture.files[0] || editUserForm.profilePicture.files[0].size === 0 || editUserForm.profilePicture.files[0].name.trim() === '') {
+        const selectedImage = editUserForm.querySelector('.selected-image.main-selected-image')
+
+        if (selectedImage) {
+          const { name } = selectedImage.dataset
+          if (name) {
+            const image = await fetchFile(`/uploads/images/users/${name}`, name)
+            formData.set('profilePicture', image)
+          }
+        }
+      }
+
+      const response = await fetch(window.location.pathname, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (response.status === 200) {
+        redirect('/profile')
+      } else {
+        const { error } = await response.json()
+        const errorsContainer = editUserForm.querySelector('.errors')
+        errorsContainer.append(createElement('span', error, [ 'error' ]))
+      }
+    }
+
+    editUserForm.onchange = () => {
+      const errorsContainer = editUserForm.querySelector('.errors')
+      errorsContainer.innerHTML = ''
+    }
+  }
+}
+
+document.onreadystatechange = async () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
     handleNavbar()
@@ -546,6 +839,9 @@ document.onreadystatechange = () => {
     handleJoinRequestsButtons()
     handleAdditionalImagesContainer()
     handleCreateEventForm()
-    handleCalendar()
+    handleEditEventForm()
+    handleEditUserForm()
+    await handleCalendar()
+    await handleEventsPage()
   }
 }

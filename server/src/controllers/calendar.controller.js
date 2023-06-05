@@ -1,15 +1,16 @@
 const pathResolver = require("../tools/path-resolver");
 const Calendar = require("../models/calendar.model");
 const {notFound} = require("../tools/not-found");
+const Event = require("../models/event.model");
 
 const details = async (req, res) => {
   try {
     const payload = {
       title: `Events calendar`,
       calendar: await Calendar.findOne({ user: req.user }),
-      authenticatedUser: req.user
-    }
+      authenticatedUser: req.user,
 
+    }
     if (payload.calendar) {
       return res.render(pathResolver.views('calendar/details'), payload)
     }
@@ -19,5 +20,8 @@ const details = async (req, res) => {
 
   return notFound(req, res)
 }
+
+
+
 
 module.exports = { details }

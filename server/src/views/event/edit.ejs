@@ -1,6 +1,90 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<div class="fluid-container">
-    <%= event %>
+<div class="container edit-event-container">
+    <form class="form edit-event-form" enctype="multipart/form-data">
+        <div class="errors"></div>
+        <div class="form-header">
+            <h4>Редагування події</h4>
+            <a class="button button-persian-indigo" href="/events">Назад</a>
+        </div>
+        <div class="form-content">
+            <div class="form-group col-12 flex-wrap">
+                <div class="form-item col-12 flex-wrap">
+                    <label for="title">Назва: </label>
+                    <input type="text" id="title" name="title" value="<%= event.title %>" required>
+                </div>
+                <div class="form-item col-12 flex-wrap">
+                    <label for="description">Опис: </label>
+                    <textarea id="description" name="description" required><%= event.description %></textarea>
+                </div>
+            </div>
+            <div class="form-group col-12 flex-wrap">
+                <div class="form-item col-12 col-lg-4 flex-wrap">
+                    <label for="image">Головне зображення: </label>
+                    <input type="file" id="image" name="image">
+                    <div class="selected-image mt-2 main-selected-image" <%= event.image !== 'default-event-image.jpg' ? `data-name=${event.image}` : `` %>>
+                        <div class="content">
+                            <%
+                                let path
+                                if (event.image === 'default-event-image.jpg')
+                                    path = `/images/default-event-image.jpg`
+                                else
+                                    path = `/uploads/images/events/${event.image}`
+                            %>
+                            <img src="<%= path %>" alt="Image" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
+                            <span><%= event.image %></span>
+                        </div>
+                        <i class="fa fa-close delete-selected-image"></i>
+                    </div>
+                </div>
+                <div class="form-item col-12 col-lg-4 flex-wrap">
+                    <label for="country">Країна проведення: </label>
+                    <input type="text" id="country" name="country" value="<%= event.location.split(', ')[0] %>" required>
+                </div>
+                <div class="form-item col-12 col-lg-4 flex-wrap">
+                    <label for="city">Місто проведення: </label>
+                    <input type="text" id="city" name="city" value="<%= event.location.split(', ')[1] %>" required>
+                </div>
+                <div class="form-item col-6 flex-wrap">
+                    <label for="starts-on">Дата та час початку: </label>
+                    <%
+                    const startsOn = new Date(`${event.startsOn} UTC`).toISOString().slice(0, new Date(`${event.startsOn} UTC`).toISOString().length - 1)
+                    %>
+                    <input type="datetime-local" id="starts-on" name="startsOn" value="<%= startsOn %>" required>
+                </div>
+                <div class="form-item col-6 flex-wrap">
+                    <label for="ends-on">Дата та час закінчення: </label>
+                    <%
+                       const endsOn = new Date(`${event.endsOn} UTC`).toISOString().slice(0, new Date(`${event.endsOn} UTC`).toISOString().length - 1)
+                    %>
+                    <input type="datetime-local" id="ends-on" name="endsOn" value="<%= endsOn %>" required>
+                </div>
+            </div>
+            <div class="form-group col-12 flex-wrap">
+                <div class="form-item col-12 mb-1">
+                    <label for="additional-images" class="w-100">Додаткові зображення: </label>
+                </div>
+                <div id="additional-images" class="col-12 flex-wrap">
+                    <label class="form-item col-12 col-lg-6 additional-image">
+                        <input type="file" class="w-100" name="additionalImages">
+                    </label>
+                    <% event.additionalImages.forEach(image => { %>
+                        <div class="form-item col-12 col-lg-6 additional-image selected" data-name="<%= image %>">
+                            <div class="selected-image">
+                                <div class="content">
+                                    <img src="/uploads/images/events/<%= image %>" alt="Additional image" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
+                                    <span><%= image %></span>
+                                </div>
+                                <i class="fa fa-close delete-selected-image"></i>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+        <div class="form-footer">
+            <input type="submit" class="button button-persian-indigo" value="Зберегти зміни">
+        </div>
+    </form>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

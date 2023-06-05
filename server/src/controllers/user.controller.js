@@ -10,9 +10,9 @@ const Calendar = require("../models/calendar.model");
 const profile = async (req, res) => {
   const payload = {
     title: `Profile`,
-    authenticatedUser: req.user
+    authenticatedUser: req.user,
+     events : await Event.find({organizer:req.user._id})
   }
-
   if (payload.authenticatedUser) {
     return res.render(pathResolver.views('user/profile'), payload)
   }
@@ -20,6 +20,8 @@ const profile = async (req, res) => {
   console.log('Cannot show profile page because req.user is undefined!')
   return notFound(req, res)
 }
+
+
 
 const details = async (req, res) => {
   try {
@@ -57,10 +59,10 @@ const editProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const { _id, email } = req.user
+    const { _id, email, password } = req.user
     const imageUploads = []
 
-    const user = { ...req.body, _id, email }
+    const user = { ...req.body, _id, email, password: req.body.password ? req.body.password : password}
     const requiredFieldsAreNotEmpty = user.firstName && user.lastName && user.email && user.password && user.dateOfBirth
 
     if (!requiredFieldsAreNotEmpty) {

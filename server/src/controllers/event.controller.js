@@ -12,7 +12,6 @@ const events = async (req, res) => {
       events: await Event.find().populate('organizer'),
       authenticatedUser: req.user,
     }
-
     return res.render(pathResolver.views('event/list'), payload)
   } catch (err) {
     console.log(err)

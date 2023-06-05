@@ -1,6 +1,64 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<div class="fluid-container">
-    <%= authenticatedUser %>
+<div class="container edit-user-container">
+    <form class="form edit-user-form" enctype="multipart/form-data">
+        <div class="errors"></div>
+        <div class="form-header">
+            <h4>Редагування профілю користувача</h4>
+            <a class="button button-persian-indigo" href="/profile">Назад</a>
+        </div>
+        <div class="form-content">
+            <div class="form-group col-12 flex-wrap">
+                <div class="form-item col-12 col-lg-4 flex-wrap">
+                    <label for="profile-picture">Фото профілю: </label>
+                    <input type="file" id="profile-picture" name="profilePicture">
+                    <div class="selected-image mt-2 main-selected-image" <%= authenticatedUser.profilePicture !== 'default-user-image.jpg' ? `data-name=${authenticatedUser.profilePicture}` : `` %>>
+                        <div class="content">
+                            <%
+                            let path
+                            if (authenticatedUser.profilePicture === 'default-user-image.jpg')
+                                path = `/images/default-user-image.jpg`
+                            else
+                                path = `/uploads/images/users/${authenticatedUser.profilePicture}`
+                            %>
+                            <img src="<%= path %>" alt="Image" onerror="this.src='/images/default-user-image.jpg'; this.onerror='';">
+                            <span><%= authenticatedUser.profilePicture %></span>
+                        </div>
+                        <i class="fa fa-close delete-selected-image"></i>
+                    </div>
+                </div>
+                <div class="form-item col-12 col-lg-8 flex-wrap">
+                    <label for="password">Новий пароль: </label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <div class="form-item col-6 flex-wrap">
+                    <label for="first-name">Ім'я: </label>
+                    <input type="text" id="first-name" name="firstName" value="<%= authenticatedUser.firstName %>" required>
+                </div>
+                <div class="form-item col-6 flex-wrap">
+                    <label for="last-name">Прізвище: </label>
+                    <input type="text" id="last-name" name="lastName" value="<%= authenticatedUser.lastName %>" required>
+                </div>
+                <div class="form-item col-12 flex-wrap">
+                    <label for="bio">Біографія: </label>
+                    <textarea id="bio" name="bio"><%= authenticatedUser.bio %></textarea>
+                </div>
+                <div class="form-item col-12 col-lg-6 flex-wrap">
+                    <label for="date-of-birth">Дата народження: </label>
+                    <%
+                    const dateOfBirth = new Date(`${authenticatedUser.dateOfBirth} UTC`).toISOString().split('T')[0]
+                    %>
+                    <input type="date" id="date-of-birth" name="dateOfBirth" value="<%= dateOfBirth %>" required>
+                </div>
+                <div class="form-item col-12 col-lg-6 flex-wrap">
+                    <label for="location">Місце проживання: </label>
+                    <input type="text" id="location" name="location" value="<%= authenticatedUser.location %>" placeholder="Наприклад: Україна, Київ">
+                </div>
+            </div>
+        </div>
+        <div class="form-footer">
+            <input type="submit" class="button button-persian-indigo" value="Зберегти зміни">
+        </div>
+    </form>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

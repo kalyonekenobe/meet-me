@@ -34,9 +34,11 @@ const userSchema = new Schema({
   },
   bio: {
     type: String,
+    default: ''
   },
   location: {
     type: String,
+    default: ''
   },
 }, { timestamps: true })
 
