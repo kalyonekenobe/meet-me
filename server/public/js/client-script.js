@@ -680,7 +680,7 @@ const handleCalendar = async () => {
 
       placeholder.flatpickr({
         inline: true,
-        minDate: 'today',
+        minDate: new Date(new Date().setMonth(new Date().getMonth() - 9)),
         maxDate: new Date(new Date().setMonth(new Date().getMonth() + 9)),
         showMonths: 3,
         enable: Object.keys(eventDates),
