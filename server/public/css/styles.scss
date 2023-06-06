@@ -781,18 +781,26 @@ body {
   }
 }
 
-.activity {
+.event-details-page {
+  padding-top: 10px;
+}
+
+.activity, .details-activity {
   width: 100%;
-  max-height: 750px;
   background-color: $color-white;
   border-radius: 5px;
   box-shadow: 0 0 7px -5px $color-black;
   margin: auto;
   padding: 20px;
 
+  &.activity {
+    max-height: 780px;
+  }
+
   .activity-img {
 
     img {
+      max-width: 800px;
       width: 100%;
       border-radius: 5px;
       aspect-ratio: 2 / 1;
@@ -829,7 +837,7 @@ body {
       }
 
       p {
-        margin-block: 5px;
+        margin-block: 15px;
         font-size: $font-size-base;
         overflow: hidden;
         display: -webkit-box;
@@ -842,11 +850,35 @@ body {
 
   #description {
     font-size: $font-size-base;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    -webkit-box-orient: vertical;
+  }
+
+  &.activity {
+
+    #description {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
+  }
+
+  .additional-image {
+    padding: 5px;
+
+    img {
+      width: 100%;
+      border-radius: 5px;
+      box-shadow: 0 0 7px -5px $color-black;
+      aspect-ratio: 2 / 1;
+      object-fit: cover;
+      cursor: pointer;
+      transition: 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
   }
 }
 

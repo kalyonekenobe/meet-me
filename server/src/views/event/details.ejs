@@ -1,6 +1,90 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
-<div class="fluid-container">
-    <%= event %>
+<div class="container event-details-page">
+    <div class="details-activity">
+        <div class="col-12 p-0 justify-content-around">
+            <div class="activity-img">
+                <img id="event-img" src="/uploads/images/events/<%= event.image %>" alt="event picture" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
+            </div>
+        </div>
+        <div class="title">
+            <h2 id="title"><%= event.title %></h2>
+            <%
+            const startsOn = new Date(event.startsOn).toLocaleString('uk', {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+
+            const endsOn = new Date(event.endsOn).toLocaleString('uk', {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+            %>
+            <p class="date-range"><%= `${startsOn} - ${endsOn}` %></p>
+        </div>
+        <div class="col-12 p-0 description">
+            <p id="description"><%= event.description %></p>
+        </div>
+        <div class="col-12 d-flex activity-icons-row">
+            <div class="col-4">
+                <%
+                    const timeDifference = Math.abs(new Date(event.startsOn).getTime() - new Date(event.endsOn).getTime())
+                    let duration
+                    if (timeDifference < 1000) {
+                        duration = `${Math.ceil(timeDifference)} milliseconds`
+                    } else if (timeDifference < 60 * 1000) {
+                        duration = `${Math.ceil(timeDifference / 1000)} seconds`
+                    } else if (timeDifference < 60 * 60 * 1000) {
+                        duration = `${Math.ceil(timeDifference / (60 * 1000))} minutes`
+                    } else if (timeDifference < 24 * 60 * 60 * 1000) {
+                        duration = `${Math.ceil(timeDifference / (60 * 60 * 1000))} hours`
+                    } else if (timeDifference < 7 * 24 * 60 * 60 * 1000) {
+                        duration = `${Math.ceil(timeDifference / (24 * 60 * 60 * 1000))} days`
+                    } else if (timeDifference < 365 * 24 * 60 * 60 * 1000) {
+                        duration = `${Math.ceil(timeDifference / (7 * 24 * 60 * 60 * 1000))} weeks`
+                    } else {
+                        duration = `${Math.ceil(timeDifference / (365 * 24 * 60 * 60 * 1000))} years`
+                    }
+                %>
+                <i class="fa-regular fa-clock fa-2xl"></i>
+                <p id="duration">~<%= duration %></p>
+            </div>
+            <div class="col-4">
+                <i class="fa-solid fa-earth-americas fa-2xl"></i>
+                <p id="location"><%= event.location %></p>
+            </div>
+            <div class="col-4">
+                <i class="fa-solid fa-people-group fa-2xl"></i>
+                <p id="participants"><%= event.participants.length %> joined</p>
+            </div>
+        </div>
+        <div class="col-12 p-0 d-flex flex-wrap mb-3 additional-images">
+            <h5 class="w-100">Додаткові зображення:</h5>
+            <% event.additionalImages.forEach(image => { %>
+                <div class="col-12 col-sm-6 col-lg-4 additional-image">
+                    <img id="event-img" src="/uploads/images/events/<%= image %>" alt="event picture" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
+                </div>
+            <% }) %>
+        </div>
+        <div class="col-12 p-0 d-flex flex-wrap">
+            <a id="details-button" class="button button-periwinkle d-inline-flex w-100 justify-content-center send-join-request" data-id="<%= event._id %>">Надіслати запит</a>
+        </div>
+        <% if (event.organizer._id.toString() === authenticatedUser._id.toString()) { %>
+        <div class="col-12 p-0 d-flex flex-wrap mt-2">
+            <div class="col-6 p-0">
+                <a id="details-button" class="button button-persian-indigo d-inline-flex w-100 justify-content-center" href="/events/edit/<%= event._id %>">Редагувати</a>
+            </div>
+            <div class="col-6 p-0">
+                <a id="details-button" class="button button-ut-orange d-inline-flex w-100 justify-content-center delete-event" data-id="<%= event._id %>">Видалити</a>
+            </div>
+        </div>
+        <% } %>
+    </div>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

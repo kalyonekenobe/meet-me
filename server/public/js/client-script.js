@@ -462,7 +462,7 @@ const showEventBlock = event => {
   dateRange.innerText = dateRangeValue
   title.innerText = event.title
   duration.innerText = `~${durationValue}`
-  participants.innerText = event.participants.length.toString()
+  participants.innerText = `${event.participants.length.toString()} joined`
   description.innerText = event.description
   location.innerText = event.location
   detailsButton.setAttribute('href', `/events/${event._id}`)
@@ -924,6 +924,26 @@ const handleDeleteEventsButtons = () => {
   }
 }
 
+const handleSendJoinRequestButtons = () => {
+  const sendJoinRequestButtons = document.querySelectorAll('.send-join-request')
+
+  if (sendJoinRequestButtons) {
+    sendJoinRequestButtons.forEach(button => {
+      const { id } = button.dataset
+      button.onclick = async () => {
+        const response = await fetch(`/events/join/${id}`, {
+          method: 'POST',
+        })
+
+        if (response.status === 200)
+          alert('Запит на приєднання надіслано успішно!');
+        else
+          alert('Ви вже надіслали запит,чекайте на відповідь!');
+      }
+    })
+  }
+}
+
 document.onreadystatechange = async () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
@@ -939,6 +959,7 @@ document.onreadystatechange = async () => {
     handleEditEventForm()
     handleEditUserForm()
     handleDeleteEventsButtons()
+    handleSendJoinRequestButtons()
     await handleCalendar()
     await handleEventsPage()
   }

@@ -713,47 +713,54 @@ body {
   color: rgba(39, 24, 126, 0.9);
 }
 
-.activity {
+.event-details-page {
+  padding-top: 10px;
+}
+
+.activity, .details-activity {
   width: 100%;
-  max-height: 750px;
   background-color: #FFFFFF;
   border-radius: 5px;
   box-shadow: 0 0 7px -5px #000000;
   margin: auto;
   padding: 20px;
 }
-.activity .activity-img img {
+.activity.activity, .details-activity.activity {
+  max-height: 780px;
+}
+.activity .activity-img img, .details-activity .activity-img img {
+  max-width: 800px;
   width: 100%;
   border-radius: 5px;
   aspect-ratio: 2/1;
   object-fit: cover;
 }
-.activity .title {
+.activity .title, .details-activity .title {
   padding-block: 10px;
 }
-.activity .title #title {
+.activity .title #title, .details-activity .title #title {
   font-size: 1.875rem;
   margin-bottom: 2px;
 }
-.activity .title .date-range {
+.activity .title .date-range, .details-activity .title .date-range {
   font-size: 1rem;
   color: rgba(0, 0, 0, 0.4);
   margin: 0;
 }
-.activity .activity-icons-row {
+.activity .activity-icons-row, .details-activity .activity-icons-row {
   padding-block: 30px;
   display: flex;
   justify-content: space-around;
 }
-.activity .activity-icons-row > div {
+.activity .activity-icons-row > div, .details-activity .activity-icons-row > div {
   text-align: center;
   color: #FF8600;
 }
-.activity .activity-icons-row > div i {
+.activity .activity-icons-row > div i, .details-activity .activity-icons-row > div i {
   font-size: 2.25rem;
 }
-.activity .activity-icons-row > div p {
-  margin-block: 5px;
+.activity .activity-icons-row > div p, .details-activity .activity-icons-row > div p {
+  margin-block: 15px;
   font-size: 1rem;
   overflow: hidden;
   display: -webkit-box;
@@ -761,13 +768,30 @@ body {
   line-clamp: 1;
   -webkit-box-orient: vertical;
 }
-.activity #description {
+.activity #description, .details-activity #description {
   font-size: 1rem;
+}
+.activity.activity #description, .details-activity.activity #description {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   line-clamp: 4;
   -webkit-box-orient: vertical;
+}
+.activity .additional-image, .details-activity .additional-image {
+  padding: 5px;
+}
+.activity .additional-image img, .details-activity .additional-image img {
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 0 7px -5px #000000;
+  aspect-ratio: 2/1;
+  object-fit: cover;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.activity .additional-image img:hover, .details-activity .additional-image img:hover {
+  transform: scale(1.05);
 }
 
 /*-------------------- main calendar --------------------*/
