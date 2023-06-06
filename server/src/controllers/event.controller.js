@@ -9,8 +9,11 @@ const events = async (req, res) => {
   try {
     const payload = {
       title: `Events`,
-      events: await Event.find().populate('organizer'),
+      events: await Event.find({ participants: { $nin: [ req.user ] }})
+        .select('id title description image startsOn endsOn location organizer participants createdAt updatedAt')
+        .populate('organizer'),
       authenticatedUser: req.user,
+      filters: req.query
     }
     return res.render(pathResolver.views('event/list'), payload)
   } catch (err) {
@@ -234,7 +237,7 @@ const join = async (req, res) => {
 
 const list = async (req, res) => {
   try {
-    const events = await Event.find()
+    const events = await Event.find({ participants: { $nin: [ req.user ] }})
       .select('id title description image startsOn endsOn location organizer participants createdAt updatedAt')
       .populate('organizer')
 

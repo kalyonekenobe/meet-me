@@ -1,87 +1,79 @@
 <%- include(`${partials}/root-layout-header`) %>
 <%- include(`${partials}/navbar`) %>
 
-
-<!-- sidebar -->
-<div class="sidebar-activities">
-
-    <form  method="POST" action="/">
-        <div><i class="fa-solid fa-gear fa-2xl"></i></div>
-
-        <div>
-            <label for="activityType" class="form-label"><i class="fa-solid fa-icons fa-xl"></i></label>
-            <select class="form-select" id="activityType" name="activityType">
-                <option selected>Тип активності</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-        </div>
-
-        <div>
-            <label for="date" class="form-label"><i class="fa-solid fa-calendar fa-xl"></i></label>
-            <input type="date" class="form-control" id="date" name="date">
-        </div>
-
-        <div>
-            <label for="time" class="form-label"><i class="fa-solid fa-clock fa-xl"></i></label>
-            <input type="time" class="form-control" id="time" name="time">
-        </div>
-
-        <div>
-            <label for="city" class="form-label"><i class="fa-solid fa-location-dot fa-xl"></i></label>
-            <input type="text" class="form-control" id="city" name="city" placeholder="Назва міста">
-        </div>
-
-        <br>
-        <button class="btn btn-outline-light btn-submit btn-search-activities" type="submit">Пошук</button>
-    </form>
-
-</div>
-
-<!-- main -->
-<div class="main-activities">
-    <div class="row align-items-center justify-content-around">
-        <div class="col-1 button-col btn-heart"><i id="join-request" class="fa-solid fa-heart fa-2xl event-button"></i></div>
-
-        <div class="activity">
-
-            <h2 id="title" style="font-family: 'Ubuntu';"></h2>
-
-            <div class="row activity-icons-row">
-
-                <div class="col-3">
-                    <i class="fa-regular fa-clock fa-2xl"></i>
-                    <p id="event-day"></p>
-                    <p id="event-hours"></p>
-                </div>
-
-                <div class="col-6">
-                    <i class="fa-solid fa-earth-americas fa-2xl"></i>
-                    <p id="location"></p>
-                </div>
-
-                <div class="col-3">
-                    <i class="fa-solid fa-people-group fa-2xl"></i>
-                    <p id="members-number"></p>
-                </div>
-
+<div class="fluid-container events-page">
+    <div class="sidebar-activities">
+        <form method="GET" action="/events" class="form event-filters-form">
+            <div class="form-header">
+                <h5>Фільтри</h5>
             </div>
-
-            <div class="row justify-content-around ">
-
-                <div class="col-4 activity-img"><img id="event-img" src="" alt="event picture"></div>
-                <div id="description" class="col-6 activity-text">
+            <div class="form-content">
+                <div class="form-group col-12 flex-wrap">
+                    <div class="form-item col-12 flex-wrap">
+                        <label for="starts-on" ><i class="fa-solid fa-calendar fa-xl"></i>Початок не раніше ніж:</label>
+                        <input type="datetime-local" id="starts-on" name="startsOn" value="<%= filters.startsOn %>">
+                    </div>
+                    <div class="form-item col-12 flex-wrap">
+                        <label for="ends-on"><i class="fa-solid fa-clock fa-xl"></i>Кінець не пізніше ніж:</label>
+                        <input type="datetime-local" id="ends-on" name="endsOn" value="<%= filters.endsOn %>">
+                    </div>
+                    <div class="form-item col-12 flex-wrap">
+                        <label for="country"><i class="fa-solid fa-globe fa-xl"></i>Країна</label>
+                        <input type="text" id="country" name="country" value="<%= filters.country %>">
+                    </div>
+                    <div class="form-item col-12 flex-wrap">
+                        <label for="city"><i class="fa-solid fa-location-dot fa-xl"></i>Місто</label>
+                        <input type="text" id="city" name="city" value="<%= filters.city %>">
+                    </div>
                 </div>
-
             </div>
-
-
-        </div>
-
-        <div class="col-1 button-col btn-x"><i id="skip" class="fa-solid fa-circle-xmark fa-2xl event-button"></i></div>
-
+            <div class="form-footer">
+                <input type="submit" value="Пошук" class="button button-persian-indigo">
+            </div>
+        </form>
     </div>
-
+    <div class="main-activities">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-1 button-col btn-heart">
+                <i id="join-request" class="fa-solid fa-heart fa-2xl event-button"></i>
+            </div>
+            <div class="col-10 col-sm-8 col-lg-6">
+                <div class="activity">
+                    <div class="col-12 p-0 justify-content-around">
+                        <div class="activity-img">
+                            <img id="event-img" src="" alt="event picture" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
+                        </div>
+                    </div>
+                    <div class="title">
+                        <h2 id="title">--------------</h2>
+                        <p class="date-range">01.01.01, 00:00 - 01.01.01, 00:00</p>
+                    </div>
+                    <div class="col-12 p-0 description">
+                        <p id="description"></p>
+                    </div>
+                    <div class="col-12 d-flex activity-icons-row">
+                        <div class="col-4">
+                            <i class="fa-regular fa-clock fa-2xl"></i>
+                            <p id="duration">~1 day</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fa-solid fa-earth-americas fa-2xl"></i>
+                            <p id="location">Location</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fa-solid fa-people-group fa-2xl"></i>
+                            <p id="participants">0 joined</p>
+                        </div>
+                    </div>
+                    <div class="col-12 p-0">
+                        <a id="details-button" class="button button-periwinkle d-inline-flex w-100 justify-content-center">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1 button-col btn-x">
+                <i id="skip" class="fa-solid fa-circle-xmark fa-2xl event-button"></i>
+            </div>
+        </div>
+    </div>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

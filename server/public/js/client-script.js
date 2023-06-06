@@ -330,11 +330,23 @@ const handleChatList = () => {
     }
   }
 }
+
 const handleEventsPage = async () => {
   const pathname = window.location.pathname
 
   let eventsList;
   if (pathname === '/' || pathname === '/events') {
+    const eventFiltersForm = document.querySelector('.event-filters-form')
+    let filters = {}
+
+    if (eventFiltersForm) {
+      filters = {
+        startsOn: new Date(eventFiltersForm.startsOn.value),
+        endsOn: new Date(eventFiltersForm.endsOn.value),
+        location: `${eventFiltersForm.country.value ?? ''}, ${eventFiltersForm.city.value ?? ''}`
+      }
+    }
+
     const response = await fetch(`${window.location.origin}/events`, {
       method: 'POST',
       headers: {
@@ -345,75 +357,121 @@ const handleEventsPage = async () => {
     if (response.status === 200) {
       const { events } = await response.json()
       eventsList = structuredClone(events);
+      eventsList = eventsList.filter(event => {
+        if (filters.startsOn && new Date(event.startsOn) < filters.startsOn) {
+          return false
+        }
 
-      if (events.length === 0)
-        return;
+        if (filters.endsOn && new Date(event.endsOn) > filters.endsOn) {
+          return false
+        }
 
-      let currentEvent = deleteAndReturnRandomElement(eventsList);
-      showEventBlock(currentEvent);
+        return !(filters.location && !event.location.includes(filters.location))
+      })
 
-      const eventButtons = document.querySelectorAll('.event-button');
-      eventButtons.forEach(button => {
-        button.onclick = async () => {
-          console.log(button)
-          if (button.getAttribute('id') === 'join-request') {
-            const response = await fetch(`/events/join/${currentEvent._id}`, {
-              method: 'POST',
-            })
+      if (eventsList.length > 0) {
+        let currentEvent = returnRandomElement(eventsList);
+        eventsList = eventsList.filter(e => e._id !== currentEvent._id);
+        showEventBlock(currentEvent);
 
-            if(response.status === 200)
-              alert('Запит на приєднання надіслано успішно!');
-            else
-              alert('ой,помилка');
+        const eventButtons = document.querySelectorAll('.event-button');
+        eventButtons.forEach(button => {
+          button.onclick = async () => {
+            if (button.getAttribute('id') === 'join-request') {
+              const response = await fetch(`/events/join/${currentEvent._id}`, {
+                method: 'POST',
+              })
 
-            if(eventsList.length === 0)
+              if(response.status === 200)
+                alert('Запит на приєднання надіслано успішно!');
+              else
+                alert('Ви вже надіслали запит,чекайте на відповідь!');
+            }
+            currentEvent = returnRandomElement(eventsList);
+            eventsList = eventsList.filter(event => event._id !== currentEvent._id);
+
+            if (eventsList.length === 0)
               eventsList = events.filter(event => event._id.toString() !== currentEvent._id.toString());
 
-            currentEvent = deleteAndReturnRandomElement(eventsList);
             showEventBlock(currentEvent);
           }
+        });
+      } else {
+        const container = document.querySelector('.main-activities > .row')
+        if (container) {
+          container.remove()
         }
-      });
+      }
     }
   }
 }
-const showEventBlock = (event) =>{
-  const title = document.getElementById('title');
-  const location = document.getElementById('location');
-  const eventDay = document.getElementById('event-day');
-  const eventHours = document.getElementById('event-hours');
-  const membersNumber = document.getElementById('members-number');
-  const description = document.getElementById('description');
+
+const showEventBlock = event => {
+  const title = document.querySelector('#title');
+  const dateRange = document.querySelector('.date-range')
+  const location = document.querySelector('#location');
+  const duration = document.querySelector('#duration');
+  const participants = document.querySelector('#participants');
+  const description = document.querySelector('#description');
   const image = document.getElementById('event-img');
+  const detailsButton = document.querySelector('#details-button')
 
-  image.setAttribute('src',`/images/${event.image}`)
-  title.innerText = event.title;
+  if(event.image === 'default-event-image.jpg')
+    image.setAttribute('src',`/images/${event.image}`)
+  else
+    image.setAttribute('src',`/uploads/images/events/${event.image}`)
 
-  const date = new Date(event.date);
-
-  const monthAndDayOptions = {
-    month: 'long',
+  const startsOn = new Date(event.startsOn)
+  const endsOn = new Date(event.endsOn)
+  const startsOnString = startsOn.toLocaleString('uk', {
     day: 'numeric',
-  };
+    month: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 
-  const hourAndMinuteOptions = {
-    hour: 'numeric',
-    minute: 'numeric',
-  };
+  const endsOnString = endsOn.toLocaleString('uk', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 
-  eventDay.innerText = date.toLocaleString('uk', monthAndDayOptions);
-  eventHours.innerText = date.toLocaleString('uk', hourAndMinuteOptions);
-  membersNumber.innerText = event.participants.length.toString();
-  description.innerText = event.description;
-  location.innerText = event.location;
+  const dateRangeValue = `${startsOnString} - ${endsOnString}`
+
+  const timeDifference = Math.abs(startsOn.getTime() - endsOn.getTime())
+  let durationValue
+  if (timeDifference < 1000) {
+    durationValue = `${Math.ceil(timeDifference)} milliseconds`
+  } else if (timeDifference < 60 * 1000) {
+    durationValue = `${Math.ceil(timeDifference / 1000)} seconds`
+  } else if (timeDifference < 60 * 60 * 1000) {
+    durationValue = `${Math.ceil(timeDifference / (60 * 1000))} minutes`
+  } else if (timeDifference < 24 * 60 * 60 * 1000) {
+    durationValue = `${Math.ceil(timeDifference / (60 * 60 * 1000))} hours`
+  } else if (timeDifference < 7 * 24 * 60 * 60 * 1000) {
+    durationValue = `${Math.ceil(timeDifference / (24 * 60 * 60 * 1000))} days`
+  } else if (timeDifference < 365 * 24 * 60 * 60 * 1000) {
+    durationValue = `${Math.ceil(timeDifference / (7 * 24 * 60 * 60 * 1000))} weeks`
+  } else {
+    durationValue = `${Math.ceil(timeDifference / (365 * 24 * 60 * 60 * 1000))} years`
+  }
+
+  dateRange.innerText = dateRangeValue
+  title.innerText = event.title
+  duration.innerText = `~${durationValue}`
+  participants.innerText = event.participants.length.toString()
+  description.innerText = event.description
+  location.innerText = event.location
+  detailsButton.setAttribute('href', `/events/${event._id}`)
 }
 
 
-const  deleteAndReturnRandomElement = array => {
+const returnRandomElement = array => {
   const index = Math.floor(Math.random() * array.length);
-  const res = array[index];
-  array = array.filter(e => e._id !== res._id);
-  return res;
+  return array[index];
 }
 
 

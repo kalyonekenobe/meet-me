@@ -651,58 +651,51 @@ body {
 
 /* ----------------- sidebar ------------------------*/
 .sidebar-activities {
-  height: 100%;
   width: 320px;
   position: fixed;
   z-index: 1;
   left: 0;
-  top: 0;
-  margin: 0;
+  top: 57px;
+  border-radius: 5px;
+  box-shadow: 0 0 7px -5px #000000;
+  bottom: 0;
+  margin: 10px;
   background-color: #AEB8FE;
-  overflow-x: hidden;
-  padding-top: 20px;
+  padding: 20px;
 }
-.sidebar-activities form {
-  text-align: center;
-  margin: auto;
-  width: 225px;
-}
-.sidebar-activities div {
-  margin-bottom: 25px;
-}
-.sidebar-activities .fa-solid {
+.sidebar-activities .event-filters-form {
   color: #27187E;
-  margin-bottom: 5px;
 }
-.sidebar-activities .fa-gear {
-  margin: 40px 0 40px 0 !important;
+.sidebar-activities .event-filters-form .form-item {
+  margin-bottom: 20px;
 }
-.sidebar-activities .btn-search-activities {
-  border: 2px solid #27187E;
-  color: #27187E;
-  font-weight: 600;
-  font-size: 14px;
+.sidebar-activities .event-filters-form .form-item label {
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  padding-bottom: 5px;
+  color: #27187E !important;
+}
+.sidebar-activities .event-filters-form .form-item i {
+  font-size: 1rem;
+  margin-right: 5px;
 }
 
 /*----------------------- main activities ------------------- */
 .main-activities {
-  display: block;
+  display: flex;
+  align-items: center;
+  width: 100%;
   margin-left: 320px;
+  height: calc(100vh - 57px);
   padding: 0 10px;
-  margin-top: 80px;
+  position: relative;
 }
-.main-activities .activity {
-  width: 700px;
-  height: 500px;
-  background-color: #FFFFFF;
-  border-radius: 50px;
-  box-shadow: 5px 10px 18px #AEB8FE;
-  margin: auto;
-  padding: 40px;
-  text-align: center;
+.main-activities .row {
+  width: calc(100% - 320px);
 }
 .main-activities .button-col {
-  margin: auto;
+  margin: 30px;
   font-size: 22px;
 }
 .main-activities .btn-heart {
@@ -719,35 +712,62 @@ body {
 .main-activities .btn-x:hover {
   color: rgba(39, 24, 126, 0.9);
 }
-.main-activities .activity-icons-row {
-  margin-top: 45px;
-  margin-bottom: 40px;
-  padding: 0 20px 0 20px;
-}
-.main-activities .activity-icons-row i {
-  color: #FF8600;
-  margin-bottom: 22px;
-}
-.main-activities .activity-icons-row p {
-  margin-bottom: 0;
-}
-.main-activities .activity-img {
-  width: 300px;
-  height: 215px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  border-radius: 15px;
-  margin-left: 10px;
-}
-.main-activities .activity-img img {
-  object-fit: cover;
-  border-radius: 15px;
+
+.activity {
   width: 100%;
-  height: 100%;
+  max-height: 750px;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  box-shadow: 0 0 7px -5px #000000;
+  margin: auto;
+  padding: 20px;
 }
-.main-activities .activity-text {
+.activity .activity-img img {
+  width: 100%;
+  border-radius: 5px;
+  aspect-ratio: 2/1;
+  object-fit: cover;
+}
+.activity .title {
+  padding-block: 10px;
+}
+.activity .title #title {
+  font-size: 1.875rem;
+  margin-bottom: 2px;
+}
+.activity .title .date-range {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.4);
+  margin: 0;
+}
+.activity .activity-icons-row {
+  padding-block: 30px;
+  display: flex;
+  justify-content: space-around;
+}
+.activity .activity-icons-row > div {
   text-align: center;
+  color: #FF8600;
+}
+.activity .activity-icons-row > div i {
+  font-size: 2.25rem;
+}
+.activity .activity-icons-row > div p {
+  margin-block: 5px;
+  font-size: 1rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.activity #description {
+  font-size: 1rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 /*-------------------- main calendar --------------------*/
