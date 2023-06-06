@@ -1121,17 +1121,6 @@ body {
   width: 100%;
 }
 
-.user-activity-edit-delete-icons {
-  color: #758BFD;
-  text-align: end;
-  padding-right: 35px;
-}
-
-.edit-user-activity:hover, .delete-user-activity:hover {
-  color: #27187E;
-  cursor: pointer;
-}
-
 .default-user-control {
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #FFFFFF;

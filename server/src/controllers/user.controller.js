@@ -11,7 +11,7 @@ const profile = async (req, res) => {
   const payload = {
     title: `Profile`,
     authenticatedUser: req.user,
-     events : await Event.find({organizer:req.user._id})
+    events : await Event.find({ organizer: req.user._id })
   }
   if (payload.authenticatedUser) {
     return res.render(pathResolver.views('user/profile'), payload)
@@ -26,9 +26,13 @@ const profile = async (req, res) => {
 const details = async (req, res) => {
   try {
     const { id } = req.params
+    const user = await User.findById(id)
+    const events = await Event.find({ organizer: user })
+
     const payload = {
       title: `User details`,
-      user: await User.findById(id),
+      user: user,
+      events: events,
       authenticatedUser: req.user
     }
 
@@ -62,14 +66,19 @@ const updateProfile = async (req, res) => {
     const { _id, email, password } = req.user
     const imageUploads = []
 
-    const user = { ...req.body, _id, email, password: req.body.password ? req.body.password : password}
-    const requiredFieldsAreNotEmpty = user.firstName && user.lastName && user.email && user.password && user.dateOfBirth
+    const user = { ...req.body, _id, email}
+    const requiredFieldsAreNotEmpty = user.firstName && user.lastName && user.email && user.dateOfBirth
 
     if (!requiredFieldsAreNotEmpty) {
       return res.status(422).json({ error: 'Some of required fields are empty!' })
     }
 
-    user.password = await bcrypt.hash(user.password, 10)
+    if (user.password && user.password.trim() !== '') {
+      user.password = await bcrypt.hash(req.body.password, 10)
+    } else {
+      user.password = password
+    }
+
 
     if (req.files?.profilePicture) {
       const imageName = `${crypto.randomUUID()}.${req.files.profilePicture.name.split('.').pop()}`

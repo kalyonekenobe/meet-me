@@ -126,7 +126,7 @@ const handleSignInForm = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email: email.value, password: password.value, rememberMe: rememberMe.value })
+        body: JSON.stringify({ email: email.value, password: password.value, rememberMe: rememberMe.checked })
       })
 
       if (response.status === 200) {
@@ -354,8 +354,9 @@ const handleEventsPage = async () => {
 
       const eventButtons = document.querySelectorAll('.event-button');
       eventButtons.forEach(button => {
-        button.onclick = async event => {
-          if(button.getAttribute('id') === 'join-request'){
+        button.onclick = async () => {
+          console.log(button)
+          if (button.getAttribute('id') === 'join-request') {
             const response = await fetch(`/events/join/${currentEvent._id}`, {
               method: 'POST',
             })
@@ -366,7 +367,7 @@ const handleEventsPage = async () => {
               alert('ой,помилка');
 
             if(eventsList.length === 0)
-              eventsList = events.filter(e => e._id !== currentEvent._id);
+              eventsList = events.filter(event => event._id.toString() !== currentEvent._id.toString());
 
             currentEvent = deleteAndReturnRandomElement(eventsList);
             showEventBlock(currentEvent);
@@ -799,12 +800,12 @@ const handleEditUserForm = () => {
       event.preventDefault()
       let formData = new FormData(editUserForm)
 
-      if (formData.get('profilePicture').size === 0 || formData.get('profilePicture').name.trim() === '') {
-        formData.set('profilePicture', undefined)
+      if (!editUserForm.password.value || editUserForm.password.value.trim() === '') {
+        formData.delete('password')
       }
 
-      if (!formData.get('password') || formData.get('password').trim() === '') {
-        formData.set('password', undefined)
+      if (formData.get('profilePicture').size === 0 || formData.get('profilePicture').name.trim() === '') {
+        formData.set('profilePicture', undefined)
       }
 
       if (!editUserForm.profilePicture.files[0] || editUserForm.profilePicture.files[0].size === 0 || editUserForm.profilePicture.files[0].name.trim() === '') {
