@@ -88,20 +88,43 @@ const handleWindowOnclick = () => {
   }
 }
 
+const handleWindowResize = () => {
+  let calendarMobile = window.innerWidth < 1200;
+  let chatListMobile = window.innerWidth < 768
+
+  window.onresize = async () => {
+
+    if (window.innerWidth < 768 && !chatListMobile || window.innerWidth >= 768 && chatListMobile) {
+      handleShowChatsButton()
+      chatListMobile = window.innerWidth < 768
+    }
+
+    if (window.innerWidth < 1200 && !calendarMobile || window.innerWidth >= 1200 && calendarMobile) {
+      const calendar = document.querySelector('#calendar > .flatpickr-calendar')
+
+      if (calendar) {
+        calendar.remove()
+        calendarMobile = window.innerWidth < 1200
+        await handleCalendar()
+      }
+    }
+  }
+}
+
 const handleNavbar = () => {
   const navbar = document.querySelector('.navbar')
 
   if (navbar) {
     const navbarButtons = navbar.querySelectorAll('.navigation > .link')
     navbarButtons.forEach(button => {
-      if (window.location.pathname.trim() !== '/' || (window.location.pathname.trim() === '/' && button.href === `${window.location.origin}/events`)) {
+      if (button.href && window.location.pathname.trim() !== '/' || (window.location.pathname.trim() === '/' && button.href === `${window.location.origin}/events`)) {
         if (`${window.location.origin}${window.location.pathname}`.includes(button.href) || (window.location.pathname.trim() === '/' && button.href === `${window.location.origin}/events`)) {
           button.classList.add('active')
         }
       }
     })
 
-    const profileContainer = navbar.querySelector('.profile-container')
+    const profileContainer = navbar.querySelector('.navbar > .profile-container')
     const profileDropdown = navbar.querySelector('.profile-dropdown')
 
     if (profileContainer && profileDropdown) {
@@ -134,6 +157,7 @@ const handleSignInForm = () => {
       } else {
         const { error } = await response.json()
         const errorsContainer = signInForm.querySelector('.errors')
+        errorsContainer.innerHTML = ''
         errorsContainer.append(createElement('span', error, [ 'error' ]))
       }
     }
@@ -170,6 +194,7 @@ const handleSignUpForm = () => {
       } else {
         const { error } = await response.json()
         const errorsContainer = signUpForm.querySelector('.errors')
+        errorsContainer.innerHTML = ''
         errorsContainer.append(createElement('span', error, [ 'error' ]))
       }
     }
@@ -182,16 +207,18 @@ const handleSignUpForm = () => {
 }
 
 const handleLogout = () => {
-  const logoutButton = document.querySelector('.navbar .logout')
-  if (logoutButton) {
-    logoutButton.onclick = async event => {
-      const response = await fetch('http://localhost:8000/logout', {
-        method: "POST",
-      })
-      if (response.status === 200) {
-        redirect('/sign-in')
+  const logoutButtons = document.querySelectorAll('.navbar .logout')
+  if (logoutButtons) {
+    logoutButtons.forEach(button => {
+      button.onclick = async event => {
+        const response = await fetch('http://localhost:8000/logout', {
+          method: "POST",
+        })
+        if (response.status === 200) {
+          redirect('/sign-in')
+        }
       }
-    }
+    })
   }
 }
 
@@ -325,7 +352,7 @@ const handleChatList = () => {
       socket.emit('join-chat', chatUrls)
     }
 
-    if (window.location.pathname.match(new RegExp('/chats/event/[\d\s]*'))) {
+    if (window.location.pathname.match(new RegExp('^/chats/event/[\d\s]*$'))) {
       handleSendMessageForm(socket, window.location.pathname)
     }
   }
@@ -335,7 +362,7 @@ const handleEventsPage = async () => {
   const pathname = window.location.pathname
 
   let eventsList;
-  if (pathname === '/' || pathname === '/events') {
+  if (pathname === '/' || pathname.match(new RegExp('^/events/?$'))) {
     const eventFiltersForm = document.querySelector('.event-filters-form')
     let filters = {}
 
@@ -413,59 +440,66 @@ const showEventBlock = event => {
   const duration = document.querySelector('#duration');
   const participants = document.querySelector('#participants');
   const description = document.querySelector('#description');
-  const image = document.getElementById('event-img');
+  const image = document.querySelector('#event-img');
+  const organizer = document.querySelector('#organizer');
   const detailsButton = document.querySelector('#details-button')
 
-  if(event.image === 'default-event-image.jpg')
-    image.setAttribute('src',`/images/${event.image}`)
-  else
-    image.setAttribute('src',`/uploads/images/events/${event.image}`)
+  const canLoadData = event && title && dateRange && location && duration && participants && description && image && organizer && detailsButton
 
-  const startsOn = new Date(event.startsOn)
-  const endsOn = new Date(event.endsOn)
-  const startsOnString = startsOn.toLocaleString('uk', {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+  if (canLoadData) {
+    if (event.image === 'default-event-image.jpg')
+      image.setAttribute('src',`/images/${event.image}`)
+    else
+      image.setAttribute('src',`/uploads/images/events/${event.image}`)
 
-  const endsOnString = endsOn.toLocaleString('uk', {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+    const startsOn = new Date(event.startsOn)
+    const endsOn = new Date(event.endsOn)
+    const startsOnString = startsOn.toLocaleString('uk', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
 
-  const dateRangeValue = `${startsOnString} - ${endsOnString}`
+    const endsOnString = endsOn.toLocaleString('uk', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
 
-  const timeDifference = Math.abs(startsOn.getTime() - endsOn.getTime())
-  let durationValue
-  if (timeDifference < 1000) {
-    durationValue = `${Math.ceil(timeDifference)} milliseconds`
-  } else if (timeDifference < 60 * 1000) {
-    durationValue = `${Math.ceil(timeDifference / 1000)} seconds`
-  } else if (timeDifference < 60 * 60 * 1000) {
-    durationValue = `${Math.ceil(timeDifference / (60 * 1000))} minutes`
-  } else if (timeDifference < 24 * 60 * 60 * 1000) {
-    durationValue = `${Math.ceil(timeDifference / (60 * 60 * 1000))} hours`
-  } else if (timeDifference < 7 * 24 * 60 * 60 * 1000) {
-    durationValue = `${Math.ceil(timeDifference / (24 * 60 * 60 * 1000))} days`
-  } else if (timeDifference < 365 * 24 * 60 * 60 * 1000) {
-    durationValue = `${Math.ceil(timeDifference / (7 * 24 * 60 * 60 * 1000))} weeks`
-  } else {
-    durationValue = `${Math.ceil(timeDifference / (365 * 24 * 60 * 60 * 1000))} years`
+    const dateRangeValue = `${startsOnString} - ${endsOnString}`
+
+    const timeDifference = Math.abs(startsOn.getTime() - endsOn.getTime())
+    let durationValue
+    if (timeDifference < 1000) {
+      durationValue = `${Math.ceil(timeDifference)} milliseconds`
+    } else if (timeDifference < 60 * 1000) {
+      durationValue = `${Math.ceil(timeDifference / 1000)} seconds`
+    } else if (timeDifference < 60 * 60 * 1000) {
+      durationValue = `${Math.ceil(timeDifference / (60 * 1000))} minutes`
+    } else if (timeDifference < 24 * 60 * 60 * 1000) {
+      durationValue = `${Math.ceil(timeDifference / (60 * 60 * 1000))} hours`
+    } else if (timeDifference < 7 * 24 * 60 * 60 * 1000) {
+      durationValue = `${Math.ceil(timeDifference / (24 * 60 * 60 * 1000))} days`
+    } else if (timeDifference < 365 * 24 * 60 * 60 * 1000) {
+      durationValue = `${Math.ceil(timeDifference / (7 * 24 * 60 * 60 * 1000))} weeks`
+    } else {
+      durationValue = `${Math.ceil(timeDifference / (365 * 24 * 60 * 60 * 1000))} years`
+    }
+
+    dateRange.innerText = dateRangeValue
+    title.innerText = event.title
+    duration.innerText = `~${durationValue}`
+    participants.innerText = `${event.participants.length.toString()} joined`
+    description.innerText = event.description
+    location.innerText = event.location
+    organizer.innerText = `${event.organizer.firstName} ${event.organizer.lastName}`
+    organizer.setAttribute('href', `/users/${event.organizer._id}`)
+    detailsButton.setAttribute('href', `/events/${event._id}`)
   }
-
-  dateRange.innerText = dateRangeValue
-  title.innerText = event.title
-  duration.innerText = `~${durationValue}`
-  participants.innerText = `${event.participants.length.toString()} joined`
-  description.innerText = event.description
-  location.innerText = event.location
-  detailsButton.setAttribute('href', `/events/${event._id}`)
 }
 
 
@@ -537,8 +571,8 @@ const handleAppendAdditionalImageInput = (input, container) => {
   if (input && container) {
     input.onchange = () => {
       input.onchange = undefined
-      const html =`<input type="file" class="w-100" name="additionalImages">`
-      const newInput = createElement('label', html, [ 'form-item', 'col-12', 'col-sm-6', 'additional-image' ])
+      const html =`<label><input type="file" class="w-100" name="additionalImages"></label>`
+      const newInput = createElement('div', html, [ 'form-item', 'col-12', 'col-md-6', 'additional-image' ])
       container.insertBefore(newInput, container.firstChild)
       handleAppendAdditionalImageInput(newInput, container)
     }
@@ -565,7 +599,7 @@ const handleCreateEventForm = () => {
       let formData = new FormData(createEventForm)
 
       if (formData.get('image').size === 0 || formData.get('image').name.trim() === '') {
-        formData.set('image', undefined)
+        formData.delete('image')
       }
 
       formData.delete('additionalImages')
@@ -573,7 +607,7 @@ const handleCreateEventForm = () => {
       formData.delete('country')
       formData.set('location', `${createEventForm.country.value}, ${createEventForm.city.value}`)
 
-      if (Array.isArray(createEventForm.additionalImages)) {
+      if (isIterable(createEventForm.additionalImages)) {
           createEventForm.additionalImages.forEach(image => {
             const file = image.files[0]
 
@@ -582,10 +616,12 @@ const handleCreateEventForm = () => {
             }
           })
       } else {
-        const file = createEventForm.additionalImages.files[0]
+        if (createEventForm.additionalImages.files && createEventForm.additionalImages.files.length > 0) {
+          const file = createEventForm.additionalImages.files[0]
 
-        if (file && (file.size > 0 || file.name.trim() !== '')){
-          formData.append('additionalImages', file)
+          if (file && (file.size > 0 || file.name.trim() !== '')){
+            formData.append('additionalImages', file)
+          }
         }
       }
 
@@ -599,6 +635,7 @@ const handleCreateEventForm = () => {
       } else {
         const { error } = await response.json()
         const errorsContainer = createEventForm.querySelector('.errors')
+        errorsContainer.innerHTML = ''
         errorsContainer.append(createElement('span', error, [ 'error' ]))
       }
     }
@@ -654,7 +691,7 @@ const handleCalendar = async () => {
       if (date.length) {
         for (let i = 0; i < eventDates[key].length; i++) {
           const { id, title, location } = eventDates[key][i]
-          contents += `<div class="col-4">
+          contents += `<div class="col-12 col-md-6 col-lg-4">
                          <div class="event">
                            <a href="/events/${id}">
                              <span class="title">${title}</span>
@@ -680,11 +717,11 @@ const handleCalendar = async () => {
 
       placeholder.flatpickr({
         inline: true,
-        minDate: new Date(new Date().setMonth(new Date().getMonth() - 9)),
-        maxDate: new Date(new Date().setMonth(new Date().getMonth() + 9)),
-        showMonths: 3,
+        minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 5)),
+        maxDate: new Date(new Date().setFullYear(new Date().getFullYear() + 5)),
+        showMonths: window.innerWidth < 1200 ? 1 : 3,
         enable: Object.keys(eventDates),
-        disableMobile: "true",
+        disableMobile: "false",
         onChange: flatpickrChange,
         locale: {
           weekdays: {
@@ -740,7 +777,7 @@ const handleEditEventForm = () => {
       let formData = new FormData(editEventForm)
 
       if (formData.get('image').size === 0 || formData.get('image').name.trim() === '') {
-        formData.set('image', undefined)
+        formData.delete('image')
       }
 
       formData.delete('additionalImages')
@@ -805,6 +842,7 @@ const handleEditEventForm = () => {
       } else {
         const { error } = await response.json()
         const errorsContainer = editEventForm.querySelector('.errors')
+        errorsContainer.innerHTML = ''
         errorsContainer.append(createElement('span', error, [ 'error' ]))
       }
     }
@@ -888,6 +926,7 @@ const handleEditUserForm = () => {
       } else {
         const { error } = await response.json()
         const errorsContainer = editUserForm.querySelector('.errors')
+        errorsContainer.innerHTML = ''
         errorsContainer.append(createElement('span', error, [ 'error' ]))
       }
     }
@@ -944,9 +983,84 @@ const handleSendJoinRequestButtons = () => {
   }
 }
 
+const handleShowChatsButton = () => {
+  const showChatsButton = document.querySelector('.show-chats')
+
+  if (showChatsButton) {
+    showChatsButton.onclick = () => {
+      const chats = document.querySelector('.events')
+
+      if (chats) {
+        chats.classList.add('visible')
+      }
+    }
+  }
+}
+
+const handleShowMobileMenu = () => {
+  const showMobileMenuButton = document.querySelector('.show-mobile-menu')
+
+  if (showMobileMenuButton) {
+    showMobileMenuButton.onclick = () => {
+      const mobileMenu = document.querySelector('.mobile-menu')
+
+      if (mobileMenu) {
+        mobileMenu.style.display = 'flex'
+      }
+    }
+  }
+}
+
+const handleHideMobileMenu = () => {
+  const hideMobileMenuButton = document.querySelector('.hide-mobile-menu')
+
+  if (hideMobileMenuButton) {
+    hideMobileMenuButton.onclick = () => {
+      const mobileMenu = document.querySelector('.mobile-menu')
+
+      if (mobileMenu) {
+        mobileMenu.removeAttribute('style')
+      }
+    }
+  }
+}
+
+const handleShowFilters = () => {
+  const showFiltersButton = document.querySelector('.show-filters')
+
+  if (showFiltersButton) {
+    showFiltersButton.onclick = () => {
+      const filters = document.querySelector('.sidebar-activities')
+
+      if (filters) {
+        filters.style.display= 'flex'
+      }
+    }
+  }
+}
+
+const handleHideFilters = () => {
+  const hideFiltersButton = document.querySelector('.hide-filters')
+
+  if (hideFiltersButton) {
+    hideFiltersButton.onclick = () => {
+      const filters = document.querySelector('.sidebar-activities')
+
+      if (filters) {
+        filters.removeAttribute('style')
+      }
+    }
+  }
+}
+
 document.onreadystatechange = async () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
+    handleWindowResize()
+    handleShowMobileMenu()
+    handleHideMobileMenu()
+    handleShowFilters()
+    handleHideFilters()
     handleNavbar()
     handleSignInForm()
     handleSignUpForm()
@@ -960,6 +1074,7 @@ document.onreadystatechange = async () => {
     handleEditUserForm()
     handleDeleteEventsButtons()
     handleSendJoinRequestButtons()
+    handleShowChatsButton()
     await handleCalendar()
     await handleEventsPage()
   }

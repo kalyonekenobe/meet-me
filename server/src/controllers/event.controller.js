@@ -160,6 +160,11 @@ const update = async (req, res) => {
     }
 
     if (req.files?.additionalImages) {
+
+      if (typeof req.files?.additionalImages[Symbol.iterator] !== 'function') {
+        req.files.additionalImages = [ req.files.additionalImages ]
+      }
+
       event.additionalImages = req.files.additionalImages.map(image => {
         const imageName = `${crypto.randomUUID()}.${image.name.split('.').pop()}`
         const oldImagePath = pathResolver.specificFile(`../../public/uploads/images/events/${image.name}`)
@@ -171,6 +176,8 @@ const update = async (req, res) => {
         }
         return image.name
       })
+    } else {
+      event.additionalImages = []
     }
 
     const updatedEvent = await Event.updateOne({ _id: id }, event)

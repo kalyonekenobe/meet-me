@@ -45,14 +45,14 @@
                     <label for="city">Місто проведення: </label>
                     <input type="text" id="city" name="city" value="<%= event.location.split(', ')[1] %>" required>
                 </div>
-                <div class="form-item col-6 flex-wrap">
+                <div class="form-item col-12 col-sm-6 flex-wrap">
                     <label for="starts-on">Дата та час початку: </label>
                     <%
                     const startsOn = new Date(`${event.startsOn} UTC`).toISOString().slice(0, new Date(`${event.startsOn} UTC`).toISOString().length - 1)
                     %>
                     <input type="datetime-local" id="starts-on" name="startsOn" value="<%= startsOn %>" required>
                 </div>
-                <div class="form-item col-6 flex-wrap">
+                <div class="form-item col-12 col-sm-6 flex-wrap">
                     <label for="ends-on">Дата та час закінчення: </label>
                     <%
                        const endsOn = new Date(`${event.endsOn} UTC`).toISOString().slice(0, new Date(`${event.endsOn} UTC`).toISOString().length - 1)
@@ -65,11 +65,13 @@
                     <label for="additional-images" class="w-100">Додаткові зображення: </label>
                 </div>
                 <div id="additional-images" class="col-12 flex-wrap">
-                    <label class="form-item col-12 col-lg-6 additional-image">
-                        <input type="file" class="w-100" name="additionalImages">
-                    </label>
+                    <div class="form-item col-12 col-md-6 additional-image">
+                        <label>
+                            <input type="file" class="w-100" name="additionalImages">
+                        </label>
+                    </div>
                     <% event.additionalImages.forEach(image => { %>
-                        <div class="form-item col-12 col-lg-6 additional-image selected" data-name="<%= image %>">
+                        <div class="form-item col-12 col-md-6 additional-image selected" data-name="<%= image %>">
                             <div class="selected-image">
                                 <div class="content">
                                     <img src="/uploads/images/events/<%= image %>" alt="Additional image" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">

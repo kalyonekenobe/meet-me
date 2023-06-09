@@ -28,9 +28,15 @@
             %>
             <p class="date-range"><%= `${startsOn} - ${endsOn}` %></p>
         </div>
+        <h6 class="w-100 mt-3">Організатор:</h6>
+        <div class="col-12 p-0 organizer mb-3">
+            <a id="organizer" href="/users/<%= event.organizer._id %>"><%= `${event.organizer.firstName} ${event.organizer.lastName}` %></a>
+        </div>
+        <h6 class="w-100">Опис:</h6>
         <div class="col-12 p-0 description">
             <p id="description"><%= event.description %></p>
         </div>
+        <h6 class="w-100">Основні відомості:</h6>
         <div class="col-12 d-flex activity-icons-row">
             <div class="col-4">
                 <%
@@ -64,27 +70,31 @@
                 <p id="participants"><%= event.participants.length %> joined</p>
             </div>
         </div>
-        <div class="col-12 p-0 d-flex flex-wrap mb-3 additional-images">
-            <h5 class="w-100">Додаткові зображення:</h5>
+        <h6 class="w-100">Додаткові зображення:</h6>
+        <div class="col-12 p-0 d-flex flex-wrap <%= event.additionalImages.length > 0 ? 'mb-3' : '' %> additional-images">
             <% event.additionalImages.forEach(image => { %>
                 <div class="col-12 col-sm-6 col-lg-4 additional-image">
                     <img id="event-img" src="/uploads/images/events/<%= image %>" alt="event picture" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
                 </div>
             <% }) %>
+            <% if (event.additionalImages.length === 0) { %>
+                <p>Відсутні</p>
+            <% } %>
         </div>
         <div class="col-12 p-0 d-flex flex-wrap">
-            <a id="details-button" class="button button-periwinkle d-inline-flex w-100 justify-content-center send-join-request" data-id="<%= event._id %>">Надіслати запит</a>
-        </div>
-        <% if (event.organizer._id.toString() === authenticatedUser._id.toString()) { %>
-        <div class="col-12 p-0 d-flex flex-wrap mt-2">
-            <div class="col-6 p-0">
-                <a id="details-button" class="button button-persian-indigo d-inline-flex w-100 justify-content-center" href="/events/edit/<%= event._id %>">Редагувати</a>
+            <% if (event.organizer._id.toString() !== authenticatedUser._id.toString()) { %>
+            <div class="col-12 p-0 d-flex flex-wrap">
+                <a id="details-button" class="button button-periwinkle d-inline-flex w-100 justify-content-center send-join-request" data-id="<%= event._id %>">Надіслати запит</a>
             </div>
-            <div class="col-6 p-0">
-                <a id="details-button" class="button button-ut-orange d-inline-flex w-100 justify-content-center delete-event" data-id="<%= event._id %>">Видалити</a>
-            </div>
+            <% } else { %>
+                <div class="col-6 pl-0 pr-1 d-flex">
+                    <a id="edit-button" class="button button-persian-indigo d-inline-flex w-100 justify-content-center" href="/events/edit/<%= event._id %>">Редагувати</a>
+                </div>
+                <div class="col-6 pl-1 pr-0 d-flex">
+                    <a id="delete-button" class="button button-ut-orange d-inline-flex w-100 justify-content-center delete-event" data-id="<%= event._id %>">Видалити</a>
+                </div>
+            <% } %>
         </div>
-        <% } %>
     </div>
 </div>
 <%- include(`${partials}/root-layout-footer`) %>

@@ -1,6 +1,155 @@
 @import "reset.css";
 @import "variables";
 
+@media screen and (max-width: 1200px) {
+  .cal-modal {
+    width: auto;
+  }
+
+  .chat-page-container {
+
+    .events {
+      max-width: 400px !important;
+    }
+  }
+
+  .events-page {
+    flex-wrap: wrap;
+    overflow-x: auto;
+
+    .hide-filters, .show-filters {
+      display: inline-flex !important;
+    }
+
+    .show-filters {
+      z-index: 5 !important;
+    }
+
+    .button-col {
+      position: relative;
+      z-index: 8;
+    }
+
+    .sidebar-activities {
+      display: none;
+      max-width: 100% !important;
+      width: 100% !important;
+      position: absolute;
+      border-radius: 0 !important;
+      top: 48px;
+      left: -10px;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+    }
+  }
+}
+
+@media screen and (max-width: 992px) {
+
+  .chat-page-container {
+
+    .events {
+      max-width: 320px !important;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+  .join-requests-page {
+
+    .join-requests-list {
+      min-width: 738px;
+    }
+
+    overflow-x: auto;
+    padding-bottom: 15px;
+    padding-inline: 15px;
+  }
+
+  .user-profile-container {
+
+    .user-container {
+      flex-wrap: wrap;
+
+      .user-picture {
+        width: 100%;
+        text-align: center;
+      }
+
+      .user-info {
+        margin-inline: 0 !important;
+      }
+    }
+  }
+
+  .details-activity {
+
+    .activity-img {
+      text-align: left;
+    }
+  }
+
+  .chat-page-container {
+
+    .events {
+      display: none;
+      max-width: 100% !important;
+      position: absolute !important;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 8;
+
+      &.visible {
+        display: block;
+      }
+    }
+
+    .chat-header {
+
+      h2 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+
+      .show-chats {
+        display: inline-flex !important;
+      }
+    }
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .desktop-hidden {
+    display: block !important;
+  }
+}
+
+@media screen and (max-width: 475px) {
+
+  .cal-modal {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 20px solid $color-cornflower-blue;
+
+    h3 {
+      margin-inline: 35px;
+    }
+
+    #calendar {
+      margin-left: 70px;
+    }
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -136,16 +285,102 @@ body {
   }
 }
 
+.desktop-hidden {
+  display: none;
+}
+
 .navbar {
   background: $color-persian-indigo;
   color: $color-anti-flash-white;
   padding-block: 0 !important;
   width: 100%;
   top: 0;
+  height: 58px;
   z-index: 10;
 
   & + div {
     margin-top: 57px;
+  }
+
+  .show-mobile-menu {
+    margin-block: 5px 5px;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid $color-anti-flash-white;
+
+    svg {
+      width: $font-size-4xl;
+      height: $font-size-4xl;
+    }
+  }
+
+  .mobile-menu {
+    position: absolute;
+    z-index: 11;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: $color-persian-indigo;
+    height: 100vh;
+    transition: 0.3s ease;
+    display: none;
+    flex-direction: column;
+
+    h1 {
+      padding: 20px 20px 10px 20px;
+    }
+
+    .hide-mobile-menu {
+      position: absolute;
+      z-index: 12;
+      right: 20px;
+      top: 20px;
+    }
+
+    > nav {
+      padding: 10px 20px;
+      display: inline-flex;
+      width: 100%;
+      flex-direction: column;
+
+      a {
+        background: $color-cornflower-blue;
+        padding: 10px;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        border: 5px solid $color-cornflower-blue;
+
+        &.active {
+          color: $color-white !important;
+          border: 5px solid $color-periwinkle;
+        }
+
+        svg {
+          margin-right: 10px;
+        }
+
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+      }
+    }
+
+    .profile-container {
+      position: absolute;
+      z-index: 12;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 5px solid $color-ut-orange;
+      border-radius: 5px;
+      padding: 10px;
+      background: $color-ut-orange;
+
+      img {
+        margin-right: 10px;
+      }
+    }
   }
 
   h1 {
@@ -178,7 +413,7 @@ body {
     color: $color-anti-flash-white;
   }
 
-  nav {
+  > nav {
     display: flex;
     @include font($font-size: $font-size-base);
 
@@ -407,6 +642,7 @@ body {
 
 .sign-in-form, .sign-up-form {
   padding: 20px;
+  margin: 10px;
   border-radius: 5px;
   background: white;
   max-width: 500px;
@@ -449,11 +685,10 @@ body {
 
 .chat-page-container {
   position: relative;
-  height: calc(100vh - 57px);
+  height: calc(100vh - 58px);
 
   .events {
     position: relative;
-    max-width: 500px;
     width: 100%;
     height: 100%;
     background: $color-white;
@@ -461,6 +696,7 @@ body {
     overflow-y: auto;
     resize: horizontal;
     min-width: 320px;
+    max-width: 500px;
     padding: 5px;
 
     .event {
@@ -540,13 +776,20 @@ body {
     }
 
     .chat-container {
-      height: calc(100% - 112px);
+      height: calc(100% - 113px);
     }
 
     .chat-header {
-      padding: 15px 20px;
+      padding: 10px;
+      height: 54px;
       box-shadow: 0 3px 5px -5px black;
       z-index: 3;
+      display: inline-flex;
+      align-items: center;
+
+      .show-chats {
+        display: none;
+      }
 
       h2 {
         @include font($font-size: $font-size-xl, $font-weight: 600);
@@ -555,7 +798,7 @@ body {
     }
 
     .chat-footer {
-      padding: 10px 20px;
+      padding: 10px;
       box-shadow: 0 -3px 5px -5px black;
       z-index: 3;
 
@@ -570,6 +813,7 @@ body {
           margin-right: 10px;
           padding: 6px 10px;
           border: 1px solid rgba($color-black, 0.1) !important;
+          min-width: 128px !important;
         }
       }
     }
@@ -577,7 +821,7 @@ body {
     .date-delimiter {
       @include font($font-size: $font-size-sm);
       color: rgba($color-black, 0.5);
-      padding: 20px 10px;
+      padding-block: 20px;
       width: 100%;
       text-align: center;
       position: relative;
@@ -603,7 +847,7 @@ body {
       display: flex;
       flex-direction: column-reverse;
       overflow-y: scroll;
-      padding: 10px 20px;
+      padding: 10px;
       height: 100%;
 
       .message-container.my-message + .message-container:not(.my-message), .message-container:not(.my-message) + .message-container.my-message {
@@ -698,91 +942,108 @@ body {
   }
 }
 
-
-
-/* стилі для сторінки івентів */
-
 .user-avatar:hover{
   color: $color-persian-indigo;
 }
 
-/* ----------------- sidebar ------------------------*/
-
-.sidebar-activities {
-  width: 320px;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 57px;
-  border-radius: 5px;
-  box-shadow: 0 0 7px -5px $color-black;
-  bottom: 0;
-  margin: 10px;
-  background-color: $color-periwinkle;
-  padding: 20px;
-
-  .event-filters-form {
-    color: $color-persian-indigo;
-
-    .form-item {
-      margin-bottom: 20px;
-
-      label {
-        vertical-align: middle;
-        display: inline-flex;
-        align-items: center;
-        padding-bottom: 5px;
-        color: $color-persian-indigo !important;
-      }
-
-      i {
-        font-size: $font-size-base;
-        margin-right: 5px;
-      }
-    }
-  }
-}
-
-/*----------------------- main activities ------------------- */
-.main-activities {
+.events-page {
   display: flex;
-  align-items: center;
-  width: 100%;
-  margin-left: 320px;
-  height: calc(100vh - 57px);
-  padding: 0 10px;
-  position: relative;
 
-  .row {
-    width: calc(100% - 320px);
-  }
+  .show-filters {
+    position: absolute;
+    padding: 10px;
+    background: $color-periwinkle;
+    border-radius: 5px;
+    box-shadow: 0 0 7px -5px $color-black;
+    z-index: -1;
+    margin: 10px;
 
-  .button-col {
-    margin: 30px;
-    font-size: 22px;
-  }
-
-  .btn-heart {
-    text-align: end;
-    color: $color-ut-orange;
-
-    &:hover{
-      color: rgba($color-ut-orange, 0.9);
+    svg {
+      width: $font-size-3xl;
+      height: $font-size-3xl;
     }
   }
 
-  .btn-x {
-    text-align: start;
-    color: $color-persian-indigo;
+  .sidebar-activities {
+    min-width: 320px;
+    width: 320px;
+    border-radius: 5px;
+    box-shadow: 0 0 7px -5px $color-black;
+    margin: 10px;
+    background-color: $color-periwinkle;
+    padding: 20px;
 
-    &:hover{
-      color: rgba($color-persian-indigo, 0.9);
+    .hide-filters, .show-filters {
+      display: none;
+    }
+
+    .event-filters-form {
+      color: $color-persian-indigo;
+
+      .form-item {
+        margin-bottom: 20px;
+
+        label {
+          vertical-align: middle;
+          display: inline-flex;
+          align-items: center;
+          padding-bottom: 5px;
+          color: $color-persian-indigo !important;
+        }
+
+        i {
+          font-size: $font-size-base;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
+  .main-activities {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    min-height: calc(100vh - 58px);
+    position: relative;
+
+    .row {
+      width: 100%;
+      flex-wrap: nowrap;
+    }
+
+    .button-col {
+      font-size: 22px;
+      padding: 0;
+    }
+
+    .btn-heart {
+      text-align: end;
+      color: $color-ut-orange;
+
+      &:hover{
+        color: rgba($color-ut-orange, 0.9);
+      }
+    }
+
+    .btn-x {
+      text-align: start;
+      color: $color-persian-indigo;
+
+      &:hover{
+        color: rgba($color-persian-indigo, 0.9);
+      }
     }
   }
 }
 
 .event-details-page {
-  padding-top: 10px;
+  padding-block: 10px;
+}
+
+.activity-wrapper {
+  max-width: 700px !important;
 }
 
 .activity, .details-activity {
@@ -791,19 +1052,23 @@ body {
   border-radius: 5px;
   box-shadow: 0 0 7px -5px $color-black;
   margin: auto;
-  padding: 20px;
+  padding: 20px 10px;
 
-  &.activity {
-    max-height: 780px;
+  > div, h6 {
+    padding-inline: 10px !important;
   }
 
   .activity-img {
+    border-radius: 5px;
+    text-align: center;
+    width: 100%;
+    max-height: 400px;
+    aspect-ratio: 2 / 1;
+    border: 1px solid rgba($color-black, 0.1);
 
     img {
-      max-width: 800px;
       width: 100%;
-      border-radius: 5px;
-      aspect-ratio: 2 / 1;
+      height: 100%;
       object-fit: cover;
     }
   }
@@ -824,16 +1089,21 @@ body {
   }
 
   .activity-icons-row {
-    padding-block: 30px;
+    padding-block: 10px 15px;
     display: flex;
     justify-content: space-around;
 
     > div {
       text-align: center;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 40px;
       color: $color-ut-orange;
 
       i {
         font-size: $font-size-4xl;
+        margin-bottom: 10px;
       }
 
       p {
@@ -863,6 +1133,10 @@ body {
     }
   }
 
+  .additional-images {
+    padding-inline: 5px !important;
+  }
+
   .additional-image {
     padding: 5px;
 
@@ -882,13 +1156,12 @@ body {
   }
 }
 
-/*-------------------- main calendar --------------------*/
 .cal-modal-container {
   background: $color-anti-flash-white;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 57px);
+  height: calc(100vh - 58px);
 }
 
 .cal-modal {
@@ -901,11 +1174,24 @@ body {
   border-radius: 15px;
   box-shadow: 0 0 10px -5px $color-black;
   min-height: 550px;
+  overflow-x: auto;
+
+  &::-webkit-scrollbar-track {
+    background: $color-cornflower-blue;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0 0 10px 10px;
+  }
 
   h3 {
     font-size: $font-size-4xl;
     font-weight: 900;
     margin-bottom: 40px;
+    display: inline-flex;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
   }
 
   .loading {
@@ -929,6 +1215,10 @@ body {
 
   .placeholder {
     width: 300px;
+  }
+
+  .flatpickr-monthDropdown-months option {
+    color: $color-black;
   }
 
   .flatpickr-calendar {
@@ -1083,6 +1373,7 @@ body {
       border-radius: 5px;
       box-shadow: 0 0 7px -5px $color-black;
       cursor: pointer;
+      height: 100%;
       transition: 0.3s ease;
 
       &:hover {
@@ -1113,41 +1404,6 @@ body {
     }
   }
 }
-
-/*
----------------------- navbar -----------------------
-.navbar{
-  background-color: #27187E;
-  color: white;
-}
-
-.nav-link, .navbar-brand{
-  color: white;
-}
-
-.navbar-brand{
-  font-weight: 600;
-  font-family: 'Ubuntu';
-}
-
-.nav-link:hover, .navbar-brand:hover{
-  color: #AEB8FE;
-}
-
-.user-avatar{
-  height: 33px;
-  width: 33px;
-  background-color: #AEB8FE;
-  border-radius: 20px;
-  text-align: center;
-  padding-top: 5px;
-}
-
-.user-avatar:hover{
-  color: #27187E;
-}*/
-
-/*--------------- user page -----------------*/
 
 .user-profile-page {
   display: flex;
@@ -1226,7 +1482,9 @@ body {
         display: inline-flex;
         justify-content: center;
         text-align: center;
+        align-items: center;
         width: 100%;
+        height: 100%;
       }
     }
   }
@@ -1370,7 +1628,8 @@ body {
       }
 
       .actions {
-        width: 210px;
+        min-width: 210px !important;
+        width: 210px !important;
       }
     }
 
@@ -1470,10 +1729,16 @@ body {
 
     #additional-images {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: flex-start;
       position: relative;
       margin: 0;
       padding: 0;
+
+      label {
+        width: 100%;
+      }
 
       .additional-image:first-child input {
         background: rgba($color-ut-orange, 0.1) !important;
