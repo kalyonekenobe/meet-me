@@ -352,7 +352,7 @@ const handleChatList = () => {
       socket.emit('join-chat', chatUrls)
     }
 
-    if (window.location.pathname.match(new RegExp('^/chats/event/[\d\s]*$'))) {
+    if (window.location.pathname.match(new RegExp('/chats/event/[\d\s]*'))) {
       handleSendMessageForm(socket, window.location.pathname)
     }
   }

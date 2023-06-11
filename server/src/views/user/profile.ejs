@@ -58,21 +58,22 @@
     </div>
     <div class="user-events row">
         <% events.forEach(event => { %>
-            <div class="col-12 col-md-6 col-xl-4">
+            <div class="col-12 col-md-6 col-xl-4 user-activity-container">
                 <div class="user-activity">
-                    <div class="col-12 user-activity-img">
-                        <img src="/uploads/images/events/<%= event.image %>" alt="Event image" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
-                    </div>
-                    <div class="user-activity-name-row">
-                        <h4 class="user-activity-name"><%= event.title %></h4>
-                        <%
-                            const startsOn = new Date(event.startsOn).toLocaleString('uk', {
-                                day: 'numeric',
-                                month: 'numeric',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })
+                    <div class="user-activity-header">
+                        <div class="col-12 user-activity-img">
+                            <img src="/uploads/images/events/<%= event.image %>" alt="Event image" onerror="this.src='/images/default-event-image.jpg'; this.onerror='';">
+                        </div>
+                        <div class="user-activity-name-row">
+                            <h4 class="user-activity-name"><%= event.title %></h4>
+                            <%
+                                const startsOn = new Date(event.startsOn).toLocaleString('uk', {
+                                    day: 'numeric',
+                                    month: 'numeric',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })
 
                             const endsOn = new Date(event.endsOn).toLocaleString('uk', {
                                 day: 'numeric',
@@ -81,8 +82,9 @@
                                 hour: '2-digit',
                                 minute: '2-digit'
                             })
-                        %>
-                        <p class="date-range"><%= `${startsOn} - ${endsOn}` %></p>
+                            %>
+                            <p class="date-range"><%= `${startsOn} - ${endsOn}` %></p>
+                        </div>
                     </div>
                     <div class="user-activity-content">
                         <div class="col-12 d-flex user-activity-row">
