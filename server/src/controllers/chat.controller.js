@@ -2,6 +2,7 @@ const pathResolver = require("../tools/path-resolver");
 const Event = require("../models/event.model");
 const {notFound} = require("../tools/not-found");
 
+// Renders chat list page
 const chats = async (req, res) => {
   try {
     const events = await Event.find({ participants: { $elemMatch: { $eq: req.user } } }).populate('chat.messages.sender')
@@ -18,6 +19,7 @@ const chats = async (req, res) => {
   return notFound(req, res)
 }
 
+//Renders detailed chat page with chat messages
 const details = async (req, res) => {
 
   try {
@@ -42,6 +44,7 @@ const details = async (req, res) => {
   return notFound(req, res)
 }
 
+// Handles sendMessage POST request, saves the message in the certain chat in the database and sends the response to the client
 const sendMessage = async (req, res) => {
   try {
     const { id } = req.params

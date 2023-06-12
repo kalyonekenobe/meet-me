@@ -3,6 +3,7 @@ const {requiresAuth} = require("../tools/auth-middleware");
 const {events, details, create, edit, update, add, remove, join, list} = require("../controllers/event.controller");
 const router = express.Router()
 
+// Defined events routes
 router.get('/', requiresAuth(), events)
 router.get('/events', requiresAuth(), events)
 router.get('/events/create', requiresAuth(), create)

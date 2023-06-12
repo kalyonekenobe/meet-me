@@ -1,8 +1,8 @@
 const pathResolver = require("../tools/path-resolver");
 const Calendar = require("../models/calendar.model");
 const {notFound} = require("../tools/not-found");
-const Event = require("../models/event.model");
 
+// Renders calendar page
 const details = async (req, res) => {
   try {
     const payload = {
@@ -20,8 +20,5 @@ const details = async (req, res) => {
 
   return notFound(req, res)
 }
-
-
-
 
 module.exports = { details }

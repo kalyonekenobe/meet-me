@@ -7,6 +7,7 @@ const fs = require("fs");
 const bcrypt = require("bcrypt");
 const Calendar = require("../models/calendar.model");
 
+// Renders user profile page
 const profile = async (req, res) => {
   const payload = {
     title: `Profile`,
@@ -21,8 +22,7 @@ const profile = async (req, res) => {
   return notFound(req, res)
 }
 
-
-
+// Renders the page with full information about the user
 const details = async (req, res) => {
   try {
     const { id } = req.params
@@ -47,6 +47,7 @@ const details = async (req, res) => {
   return notFound(req, res)
 }
 
+// Renders the page with edit user profile form
 const editProfile = async (req, res) => {
   const payload = {
     title: `Edit profile`,
@@ -61,6 +62,7 @@ const editProfile = async (req, res) => {
   return notFound(req, res)
 }
 
+// Handles edit user profile POST request, saves the updated user in the database and sends the response to the client
 const updateProfile = async (req, res) => {
   try {
     const { _id, email, password } = req.user
@@ -106,6 +108,7 @@ const updateProfile = async (req, res) => {
   return res.status(400).json({ error: 'User profile updating error!' })
 }
 
+// Renders the join requests list page
 const joinRequests = async (req, res) => {
 
   try {
@@ -165,6 +168,7 @@ const joinRequests = async (req, res) => {
   return notFound(req, res)
 }
 
+// Handles process join request POST request, saves the updated join request in the database and sends the response to the client
 const processJoinRequest = async (req, res) => {
   try {
     const { id, action } = req.params
@@ -217,6 +221,7 @@ const processJoinRequest = async (req, res) => {
   return res.status(400).json({ error: 'Cannot process join request!' })
 }
 
+// Handles fetch my events list POST request and sends the response to the client
 const myEvents = async (req, res) => {
   try {
     const calendar = await Calendar.findOne({ user: req.user }).select('events').populate('events')

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
-const Calendar = require("./calendar.model");
 const Schema = mongoose.Schema
 
+// Describes the event model in the database
 const eventSchema = new Schema({
   title: {
     type: String,

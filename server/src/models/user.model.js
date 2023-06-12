@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Calendar = require("./calendar.model");
 const Schema = mongoose.Schema
 
+// Describes the user model in the database
 const userSchema = new Schema({
   email: {
     type: String,
@@ -42,7 +43,7 @@ const userSchema = new Schema({
   },
 }, { timestamps: true })
 
-
+// Defines the behaviour of the model or related models when user is created
 const onCreate = async user => {
   try {
     const existingCalendar = await Calendar.findOne({ user: user._id })

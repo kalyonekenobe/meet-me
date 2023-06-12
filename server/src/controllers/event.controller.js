@@ -5,6 +5,7 @@ const crypto = require('crypto')
 const fs = require('fs')
 const Calendar = require("../models/calendar.model");
 
+// Renders event list page
 const events = async (req, res) => {
   try {
     const payload = {
@@ -23,6 +24,7 @@ const events = async (req, res) => {
   return notFound(req, res)
 }
 
+// Renders the page with the full information about event
 const details = async (req, res) => {
   try {
     const { id } = req.params
@@ -43,6 +45,7 @@ const details = async (req, res) => {
   return notFound(req, res)
 }
 
+// Renders the page with create event form
 const create = async (req, res) => {
   try {
 
@@ -59,6 +62,7 @@ const create = async (req, res) => {
   return notFound(req, res)
 }
 
+// Renders the page with edit event form
 const edit = async (req, res) => {
   try {
 
@@ -79,6 +83,7 @@ const edit = async (req, res) => {
   return notFound(req, res)
 }
 
+// Handles add event POST request, saves the created event in the database and sends the response to the client
 const add = async (req, res) => {
   try {
     const event = { ...req.body, organizer: req.user, participants: [ req.user ] }
@@ -131,6 +136,7 @@ const add = async (req, res) => {
   return res.status(400).json({ error: 'Event creation error!' })
 }
 
+// Handles update event POST request, saves the updated event in the database and sends the response to the client
 const update = async (req, res) => {
   try {
     const { id } = req.params
@@ -193,6 +199,7 @@ const update = async (req, res) => {
   return res.status(400).json({ error: 'Event updating error!' })
 }
 
+// Handles remove event POST request, removes event from the database and sends the response to the client
 const remove = async (req, res) => {
   try {
     const { id } = req.params
@@ -209,6 +216,7 @@ const remove = async (req, res) => {
   return res.status(400).json({ error: 'Event removal error!' })
 }
 
+// Handles join event POST request, saves the created request in the event joinRequests array in the database and sends the response to the client
 const join = async (req, res) => {
   try {
     const { id } = req.params
@@ -242,6 +250,7 @@ const join = async (req, res) => {
   return res.status(400).json({ error: 'Join request error!' })
 }
 
+// Handles fetch event list POST request and sends the response to the client
 const list = async (req, res) => {
   try {
     const events = await Event.find({ participants: { $nin: [ req.user ] }})

@@ -6,6 +6,7 @@ const e = require("express");
 const crypto = require("crypto");
 const fs = require("fs");
 
+// Renders sign in page
 const signIn = async (req, res) => {
   if (req.user) {
     return res.redirect('/')
@@ -18,6 +19,7 @@ const signIn = async (req, res) => {
   return res.render(pathResolver.views('auth/sign-in'), payload)
 }
 
+// Renders sign up page
 const signUp = async (req, res) => {
   if (req.user) {
     return res.redirect('/')
@@ -30,6 +32,7 @@ const signUp = async (req, res) => {
   return res.render(pathResolver.views('auth/sign-up'), payload)
 }
 
+// Handles login POST request and sends the response to the client
 const login = async (req, res) => {
   try {
     const { email, password, rememberMe } = req.body
@@ -67,11 +70,13 @@ const login = async (req, res) => {
   return res.status(401).json({ error: 'Wrong email or password!' })
 }
 
+// Handles logout POST request and sends the response to the client
 const logout = async (req, res) => {
   res.clearCookie(process.env.X_ACCESS_TOKEN)
   return res.status(200).json({ message: 'User was successfully logged out.' })
 }
 
+// Handles register POST request, saves registered user in the database and sends the response to the client
 const register = async (req, res) => {
   try {
     const user = req.body

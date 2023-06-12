@@ -1,9 +1,10 @@
-const fs= require('fs')
+const fs = require('fs')
 const pathResolver = require("./path-resolver");
 const path = require("path");
 const {notFound} = require("./not-found");
 const {getAuthenticatedUser} = require("./auth-middleware");
 
+// Application router
 class AppRouter {
 
   static #routesDirectory = pathResolver.specificFolder('../routes/')
@@ -13,6 +14,7 @@ class AppRouter {
     this.#app = app
   }
 
+  // Setups routes
   setupRoutes() {
     fs.readdir(AppRouter.#routesDirectory, (err, files) => {
       if (!err) {
@@ -29,6 +31,7 @@ class AppRouter {
     })
   }
 
+  // Setups requests settings. Sets headers, authenticatedUser, etc.
   setupRequestsSettings() {
     this.#app.use(async (req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');

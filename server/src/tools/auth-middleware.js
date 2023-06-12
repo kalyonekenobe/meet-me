@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const User = require("../models/user.model");
 
+// Checks if the user who sends the request is authenticated and has an appropriate role to send the request on the specific endpoint
 const requiresAuth = (roles = []) => {
   return async (req, res, next) => {
     const responsePayload = {
@@ -34,6 +35,7 @@ const requiresAuth = (roles = []) => {
   }
 }
 
+// Fetches the authenticated user from jwt token that is stored in cookies or request headers
 const getAuthenticatedUser = async (req, res) => {
   try {
     const token = req.body.token || req.query.token || res.getHeader(process.env.X_ACCESS_TOKEN.toLowerCase()) || req.cookies[process.env.X_ACCESS_TOKEN]

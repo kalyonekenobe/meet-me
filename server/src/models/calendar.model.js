@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema
 
+// Describes the calendar model in the database
 const calendarSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -16,4 +17,3 @@ const calendarSchema = new Schema({
 const Calendar = mongoose.model('Calendar', calendarSchema);
 
 module.exports = Calendar;
-

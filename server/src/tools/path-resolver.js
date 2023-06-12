@@ -1,5 +1,6 @@
 const path = require('path')
 
+// Makes the work with paths easier. Resolves paths to the different views, models, routes, controllers, specific files and folders
 const resolver = {
   views: (name, extension = 'ejs') => path.resolve(__dirname, '../views', `${name}.${extension}`),
   models: (name, extension = 'js') => path.resolve(__dirname, '../models', `${name}.${extension}`),

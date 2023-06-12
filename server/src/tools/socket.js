@@ -1,6 +1,7 @@
 const http = require('http');
 const { Server } = require("socket.io");
 
+// Application socket
 class Socket {
 
     #app
@@ -8,6 +9,7 @@ class Socket {
         this.#app = app
     }
 
+    // Configures sockets server in the application
     configure() {
         const server = http.createServer(this.#app);
         const io = new Server(server);

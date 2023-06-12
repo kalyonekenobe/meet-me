@@ -3,6 +3,7 @@ const {requiresAuth} = require("../tools/auth-middleware");
 const {profile, details, editProfile, updateProfile, joinRequests, processJoinRequest, myEvents} = require("../controllers/user.controller");
 const router = express.Router()
 
+// Defined users routes
 router.get('/profile', requiresAuth(), profile)
 router.get('/users/:id', requiresAuth(), details)
 router.get('/profile/edit', requiresAuth(), editProfile)

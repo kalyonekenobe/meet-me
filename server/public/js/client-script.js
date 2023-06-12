@@ -1,22 +1,27 @@
+// Redirects to the specific path
 const redirect = path => {
   const url = new URL(path, location.origin)
   location.replace(url)
 }
 
+// Checks if the object is iterable
 const isIterable = object => object != null && typeof object[Symbol.iterator] === 'function'
 
+// Fetches the file from the server by its name and path
 const fetchFile = async (filepath, filename) => {
   const image = await fetch(filepath)
   const blob = await image.blob()
   return new File([blob], filename, blob)
 }
 
+// Gets the cookie value by its name
 const getCookieByName = name => {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   if (match)
     return match[2];
 }
 
+// Creates html element and sets the content inside it. Also it is possible to pass classList and id for this element
 const createElement = (tag, content, classList = [], id) => {
   const element = document.createElement(tag)
 
@@ -29,6 +34,7 @@ const createElement = (tag, content, classList = [], id) => {
   return element
 }
 
+// Creates chat message html to show it on the chat page
 const createChatMessageHtml = payload => {
   const { message, sameSenderBefore, isNewMessageDate } = payload
   let profileImagePath;
@@ -74,6 +80,7 @@ const createChatMessageHtml = payload => {
   `
 }
 
+// Handles window onclick events
 const handleWindowOnclick = () => {
   const dropdowns = document.querySelectorAll('.dropdown')
 
@@ -88,6 +95,7 @@ const handleWindowOnclick = () => {
   }
 }
 
+// Handles window resize events
 const handleWindowResize = () => {
   let calendarMobile = window.innerWidth < 1200;
   let chatListMobile = window.innerWidth < 768
@@ -111,6 +119,7 @@ const handleWindowResize = () => {
   }
 }
 
+// Handles web application navigation bar. Adds special classes and onclick events to navigation links
 const handleNavbar = () => {
   const navbar = document.querySelector('.navbar')
 
@@ -138,6 +147,7 @@ const handleNavbar = () => {
   }
 }
 
+// Handles sign in form. Validates all fields and sends the data to the server
 const handleSignInForm = () => {
   const signInForm = document.querySelector('.sign-in-form')
   if (signInForm) {
@@ -169,6 +179,7 @@ const handleSignInForm = () => {
   }
 }
 
+// Handles sign up form. Validates all fields and sends the data to the server
 const handleSignUpForm = () => {
   const signUpForm = document.querySelector('.sign-up-form')
   if (signUpForm) {
@@ -206,6 +217,7 @@ const handleSignUpForm = () => {
   }
 }
 
+// Handles logout request. Sends the request to the server
 const handleLogout = () => {
   const logoutButtons = document.querySelectorAll('.navbar .logout')
   if (logoutButtons) {
@@ -222,6 +234,7 @@ const handleLogout = () => {
   }
 }
 
+// Handles receiving the message from another users in the same active chat
 const handleMessageReceive = socket => {
   socket.on('receive-message', payload => {
     const { chatId, message, token, sameSenderBefore, isNewMessageDate } = payload
@@ -293,6 +306,7 @@ const handleMessageReceive = socket => {
   })
 }
 
+// Handles sending the message in the active chat
 const handleSendMessageForm = (socket, chat) => {
   const sendMessageForm = document.getElementById('send-message-form');
   if (sendMessageForm) {
@@ -324,6 +338,7 @@ const handleSendMessageForm = (socket, chat) => {
   }
 }
 
+// Fetches the list of chats and shows it in the user interface
 const handleChatList = () => {
   const chats = document.querySelectorAll('.chat-page-container .event')
   const socket = io(`http://localhost:3000`);
@@ -358,6 +373,7 @@ const handleChatList = () => {
   }
 }
 
+// Handles events page. Fetches the list of available events and shows them to user
 const handleEventsPage = async () => {
   const pathname = window.location.pathname
 
@@ -433,6 +449,7 @@ const handleEventsPage = async () => {
   }
 }
 
+// Creates event view when it is loaded on the events page.
 const showEventBlock = event => {
   const title = document.querySelector('#title');
   const dateRange = document.querySelector('.date-range')
@@ -504,13 +521,13 @@ const showEventBlock = event => {
   }
 }
 
-
+// Returns random element from the array
 const returnRandomElement = array => {
   const index = Math.floor(Math.random() * array.length);
   return array[index];
 }
 
-
+// Handles join request selector. Adds onchange function on it
 const handleJoinRequestSelect = () => {
   const joinRequestSelect = document.querySelector('.join-requests-type')
 
@@ -521,6 +538,7 @@ const handleJoinRequestSelect = () => {
   }
 }
 
+// Handles join requests buttons (actions accept/reject) and sends the data to the server
 const handleJoinRequestsButtons = () => {
   const joinRequestsButtons = document.querySelectorAll('.join-request-action')
 
@@ -569,6 +587,7 @@ const handleJoinRequestsButtons = () => {
   }
 }
 
+// Handles appending of additional images
 const handleAppendAdditionalImageInput = (input, container) => {
   if (input && container) {
     input.onchange = () => {
@@ -581,6 +600,7 @@ const handleAppendAdditionalImageInput = (input, container) => {
   }
 }
 
+// Defines the behaviour of additional images container
 const handleAdditionalImagesContainer = () => {
   const firstAdditionalImageInput = document.querySelector('#additional-images .additional-image:first-child')
 
@@ -592,6 +612,7 @@ const handleAdditionalImagesContainer = () => {
   }
 }
 
+// Handles create event form. Validates all fields and sends the data to the server
 const handleCreateEventForm = () => {
   const createEventForm = document.querySelector('.create-event-form')
 
@@ -649,6 +670,7 @@ const handleCreateEventForm = () => {
   }
 }
 
+// Handles calendar page. Fetches the events user takes part in and shows them in the calendar
 const handleCalendar = async () => {
   const placeholder = document.getElementById('placeholder')
 
@@ -736,6 +758,7 @@ const handleCalendar = async () => {
   }
 }
 
+// Handles edit event form. Validates all fields and sends the data to the server
 const handleEditEventForm = () => {
   const editEventForm = document.querySelector('.edit-event-form')
 
@@ -856,6 +879,7 @@ const handleEditEventForm = () => {
   }
 }
 
+// Handles edit user form. Validates all fields and sends the data to the server
 const handleEditUserForm = () => {
   const editUserForm = document.querySelector('.edit-user-form')
 
@@ -940,6 +964,7 @@ const handleEditUserForm = () => {
   }
 }
 
+// Handles delete events buttons. Sends the data to the server
 const handleDeleteEventsButtons = () => {
   const deleteEventsButtons = document.querySelectorAll('.delete-event')
 
@@ -965,6 +990,7 @@ const handleDeleteEventsButtons = () => {
   }
 }
 
+// Handles sending of join request buttons. Sends the data to the server
 const handleSendJoinRequestButtons = () => {
   const sendJoinRequestButtons = document.querySelectorAll('.send-join-request')
 
@@ -985,6 +1011,7 @@ const handleSendJoinRequestButtons = () => {
   }
 }
 
+// Handles the behaviour of the button that shows the list of chats
 const handleShowChatsButton = () => {
   const showChatsButton = document.querySelector('.show-chats')
 
@@ -999,6 +1026,7 @@ const handleShowChatsButton = () => {
   }
 }
 
+// Handles the button that shows mobile menu
 const handleShowMobileMenu = () => {
   const showMobileMenuButton = document.querySelector('.show-mobile-menu')
 
@@ -1013,6 +1041,7 @@ const handleShowMobileMenu = () => {
   }
 }
 
+// Handles the button that hides mobile menu
 const handleHideMobileMenu = () => {
   const hideMobileMenuButton = document.querySelector('.hide-mobile-menu')
 
@@ -1027,6 +1056,7 @@ const handleHideMobileMenu = () => {
   }
 }
 
+// Handles the button that shows filters
 const handleShowFilters = () => {
   const showFiltersButton = document.querySelector('.show-filters')
 
@@ -1041,6 +1071,7 @@ const handleShowFilters = () => {
   }
 }
 
+// Handles the button that hides filters
 const handleHideFilters = () => {
   const hideFiltersButton = document.querySelector('.hide-filters')
 
@@ -1055,6 +1086,7 @@ const handleHideFilters = () => {
   }
 }
 
+// Waiting while the page is loaded and running all functions written above
 document.onreadystatechange = async () => {
   if (document.readyState === 'complete') {
     handleWindowOnclick()
