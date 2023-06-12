@@ -219,8 +219,11 @@ const processJoinRequest = async (req, res) => {
 
 const myEvents = async (req, res) => {
   try {
-    const events = await Event.find({ organizer: req.user })
-    return res.status(200).json({ message: 'User events were successfully fetched!', events: events })
+    const calendar = await Calendar.findOne({ user: req.user }).select('events').populate('events')
+    if (calendar) {
+      const events = calendar.events
+      return res.status(200).json({ message: 'User events were successfully fetched!', events: events })
+    }
   } catch (err) {
     console.log(err)
   }
