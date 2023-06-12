@@ -39,7 +39,7 @@ const createChatMessageHtml = payload => {
   return `
     <div class="profile-image">
       <a href="/users/${message.sender._id}">
-        <img src="${profileImagePath}" alt="User profile photo">
+        <img src="${profileImagePath}" alt="User profile photo" onerror="this.src='/images/default-user-image.jpg'; this.onerror='';">
       </a>
     </div>
     <div class="message">
@@ -451,6 +451,8 @@ const showEventBlock = event => {
       image.setAttribute('src',`/images/${event.image}`)
     else
       image.setAttribute('src',`/uploads/images/events/${event.image}`)
+
+    image.setAttribute('onerror', "this.src='/images/default-event-image.jpg'; this.onerror='';")
 
     const startsOn = new Date(event.startsOn)
     const endsOn = new Date(event.endsOn)
